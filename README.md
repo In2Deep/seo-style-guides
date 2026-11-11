@@ -1,4 +1,4 @@
-# google-guides
+# seo-style-guides
 
 Local copies of three Google developer guides, a script that keeps them current, and an MCP server
 that lets an AI agent search and read them.
@@ -52,7 +52,7 @@ Register the launcher with an MCP client. For Claude Code, add this to a project
 {
   "mcpServers": {
     "google_seo_and_style_guides": {
-      "command": "/Users/brandon/google-guides/mcp-server/launch.sh",
+      "command": "/Users/brandon/seo-style-guides/mcp-server/launch.sh",
       "args": []
     }
   }
