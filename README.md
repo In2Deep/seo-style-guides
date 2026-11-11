@@ -16,6 +16,8 @@ Everything runs on Python 3.10 or later with the standard library only. There is
 | Path | What it holds |
 |---|---|
 | `sync_google_docs.py` | Downloads each guide page as Markdown and compares it with the saved copy by SHA-256. |
+| `vectors.py` | Splits the saved pages into sections and embeds them with a local model, for search by meaning. |
+| `vectors/` | The section vectors `vectors.py` writes (about 16 MB). Not in git; rebuild with `python3 vectors.py`. |
 | `guides/<key>/` | The saved pages, a `SHA256SUMS` file, and a generated `README.md` that lists every page. |
 | `mcp-server/server.py` | The MCP server (stdio). It serves the saved copies and can run the sync as a background job. |
 | `mcp-server/launch.sh` | Starts the server with the first Python 3.10 or later on the machine. |
@@ -34,9 +36,20 @@ date, `2` a guide could not be fetched.
 
 After `--save`, `git diff guides` shows exactly what Google changed.
 
-The script fetches pages one at a time, each on a new connection, with a 0.25 second pause between
-them. The 20-page `crawling` guide takes about 13 seconds; all three guides are about 250 pages.
-Run one copy at a time: two runs at once slow each other down.
+The script fetches eight pages at a time. A check of all three guides (about 250 pages) takes about
+20 seconds. Only one run can go at a time: a second run started while one is going is refused.
+
+## Search by meaning
+
+```bash
+python3 vectors.py   # about 3.5 minutes; run it after an update changes pages
+```
+
+`vectors.py` needs LM Studio's local server on `127.0.0.1:1234` with the
+`text-embedding-qwen3-embedding-0.6b` model loaded. With the vectors built, `search_google_docs`
+adds the five closest sections by meaning under its keyword results. Without them, or with
+LM Studio off, search is keyword only and says so. An update through the MCP server rebuilds the
+vectors itself.
 
 Pages are saved byte for byte, so the standard tool also verifies a copy:
 
@@ -59,13 +72,14 @@ Register the launcher with an MCP client. For Claude Code, add this to a project
 }
 ```
 
-The server has six tools:
+The server has seven tools:
 
 | Tool | What it does |
 |---|---|
-| `search_google_docs` | Finds a word or phrase in the saved pages. |
+| `search_google_docs` | Finds a word or phrase in the saved pages, plus the closest sections by meaning. |
 | `list_google_docs` | Lists a guide's pages by section. |
 | `read_google_doc` | Returns one saved page, or one section of it, with its source URL. |
+| `check_google_quote` | Says whether a quote appears word for word in a saved page, and where. |
 | `check_google_docs` | Compares the saved copies with Google's live guides. Writes nothing. |
 | `update_google_docs` | Saves Google's current version of one guide over its local copy. |
 | `google_docs_job` | Reports the progress and result of a check or update. |

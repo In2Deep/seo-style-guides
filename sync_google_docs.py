@@ -29,13 +29,17 @@ writing, save_check() saves it, and read_saved_pages() lists a local copy's page
 The MCP server in mcp-server/ serves the copies this way.
 """
 import argparse
+import contextlib
+import fcntl
 import hashlib
 import html
 import re
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import date
 from html.parser import HTMLParser
@@ -52,7 +56,8 @@ SITE_ORIGIN = f"https://{SITE_HOST}"
 MARKDOWN_SUFFIX = ".md.txt"
 MARKDOWN_CONTENT_TYPE = "text/markdown"
 REQUEST_HEADERS = {"User-Agent": "seo-style-guides-sync/1.0 (python-urllib)", "Accept-Language": "en"}
-REQUEST_DELAY_SECONDS = 0.25
+PARALLEL_DOWNLOADS = 8
+SYNC_LOCK_FILE = Path(tempfile.gettempdir()) / "seo-style-guides-sync.lock"
 REQUEST_TIMEOUT_SECONDS = 30
 RETRY_ATTEMPTS = 3
 RETRYABLE_HTTP_CODES = {429, 500, 502, 503, 504}
@@ -395,28 +400,37 @@ def download_guide(
             pages[path] = GuidePage(path, "", UNLISTED_SECTION)
             queue.append(path)
 
-    while queue:
-        page = pages[queue.pop(0)]
+    def fetch_page(page: GuidePage) -> tuple[bytes | None, str | None, Unavailable | None, str]:
         body, served_path, reason = fetch_markdown(guide, page)
-        time.sleep(REQUEST_DELAY_SECONDS)
-        if served_path != page.path:
-            del pages[page.path]
-            if served_path is not None:
-                add_unlisted_page(served_path)
-            if reason:
-                unavailable.append(reason)
-            continue
-        file_name = guide.file_name(page.path)
-        if file_name in contents:
-            raise FetchError(f"two pages map to the file name {file_name}, one of them {page.page_url}")
-        if page.is_unlisted:
-            pages[page.path] = GuidePage(page.path, read_page_title(page.page_url), page.section)
-        contents[file_name] = body
-        for target in MARKDOWN_LINK_TARGET.findall(body.decode("utf-8", errors="replace")):
-            linked_path = guide.path_of(target)
-            if linked_path:
-                add_unlisted_page(linked_path)
-        on_progress(guide, len(contents), len(contents) + len(queue))
+        title = read_page_title(page.page_url) if page.is_unlisted and served_path == page.path else page.title
+        return body, served_path, reason, title
+
+    # Fetch the whole queue at once, then handle the results in queue order, so the result is
+    # the same as fetching one page at a time; pages found on the way make up the next wave.
+    with ThreadPoolExecutor(PARALLEL_DOWNLOADS) as executor:
+        while queue:
+            wave, queue[:] = queue[:], []
+            results = executor.map(fetch_page, [pages[path] for path in wave])
+            for done_in_wave, (path, (body, served_path, reason, title)) in enumerate(zip(wave, results), 1):
+                page = pages[path]
+                if served_path != page.path:
+                    del pages[page.path]
+                    if served_path is not None:
+                        add_unlisted_page(served_path)
+                    if reason:
+                        unavailable.append(reason)
+                    continue
+                file_name = guide.file_name(page.path)
+                if file_name in contents:
+                    raise FetchError(f"two pages map to the file name {file_name}, one of them {page.page_url}")
+                if page.is_unlisted:
+                    pages[page.path] = GuidePage(page.path, title, page.section)
+                contents[file_name] = body
+                for target in MARKDOWN_LINK_TARGET.findall(body.decode("utf-8", errors="replace")):
+                    linked_path = guide.path_of(target)
+                    if linked_path:
+                        add_unlisted_page(linked_path)
+                on_progress(guide, len(contents), len(contents) + len(wave) - done_in_wave + len(queue))
     unavailable.sort(key=lambda item: UNAVAILABLE_ORDER[item.kind])
     return list(pages.values()), contents, unavailable
 
@@ -535,16 +549,28 @@ def save_snapshot(guide: Guide, contents: dict[str, bytes], removed: list[str], 
     guide.readme_file.write_text(readme_text)
 
 
+@contextlib.contextmanager
+def one_sync_at_a_time():
+    """Hold an exclusive lock so two checks don't run at once and slow each other down."""
+    with open(SYNC_LOCK_FILE, "w") as lock_file:
+        try:
+            fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise FetchError("another sync is already running; wait for it to finish") from None
+        yield
+
+
 def check_guide(guide: Guide, on_progress: ProgressCallback = report_progress) -> GuideCheck:
     """Fetch the guide from Google and compare it with the local copy, writing nothing.
 
     Raises FetchError when the guide can't be fetched.
     """
-    pages, contents, unavailable = download_guide(guide, on_progress)
-    saved_checksums = read_saved_checksums(guide)
-    fetched_checksums = {name: sha256_hex(body) for name, body in contents.items()}
-    readme_with_saved_date = render_readme(guide, pages, saved_snapshot_date(guide) or date.today().isoformat())
-    comparison = compare(guide, fetched_checksums, saved_checksums, readme_with_saved_date)
+    with one_sync_at_a_time():
+        pages, contents, unavailable = download_guide(guide, on_progress)
+        saved_checksums = read_saved_checksums(guide)
+        fetched_checksums = {name: sha256_hex(body) for name, body in contents.items()}
+        readme_with_saved_date = render_readme(guide, pages, saved_snapshot_date(guide) or date.today().isoformat())
+        comparison = compare(guide, fetched_checksums, saved_checksums, readme_with_saved_date)
     return GuideCheck(guide, pages, contents, unavailable, comparison, has_local_copy=bool(saved_checksums))
 
 

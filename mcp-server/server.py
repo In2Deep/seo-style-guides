@@ -7,8 +7,9 @@ guide, the Search Central SEO docs and the crawling infrastructure docs) and run
 check and update, so agents can use the guides without reading whole folders.
 
 Tools:
-    search_google_docs  find a phrase in the saved pages: file:line hits with each page's source URL
+    search_google_docs  find a phrase in the saved pages: file:line hits with each page's source URL, then the closest sections by meaning
     read_google_doc     one saved page, or one section or line range of it
+    check_google_quote  whether a quote appears verbatim in one saved page
     list_google_docs    a guide's pages by section, from its README.md
     check_google_docs   compare the copies with Google's live guides (writes nothing)
     update_google_docs  save Google's current version of one guide (the script's --save)
@@ -28,7 +29,7 @@ Test: python3 -B -m unittest discover -s mcp-server
 """
 import json
 import os
-import re
+import difflib
 import sys
 import threading
 import time
@@ -42,6 +43,8 @@ from typing import Any, Callable
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import sync_google_docs as sync  # noqa: E402  (the repo root is on the path only from the line above)
+import vectors  # noqa: E402
+from vectors import headings  # noqa: E402
 
 SERVER_NAME = "google_seo_and_style_guides"
 SERVER_VERSION = "1.0.0"
@@ -52,7 +55,8 @@ SERVER_INSTRUCTIONS = (
     "documentation style guide (style), the Search Central SEO docs (seo) and the crawling "
     "infrastructure docs (crawling: robots.txt, Googlebot, crawl budget). Find pages with "
     "search_google_docs or list_google_docs, read them with read_google_doc, and cite each page's "
-    "source URL. The copies are a snapshot: check_google_docs compares them with Google's live "
+    "source URL. search_google_docs also lists the sections closest in meaning, so a question in plain words "
+    "works; check_google_quote confirms a quote appears verbatim in a page. The copies are a snapshot: check_google_docs compares them with Google's live "
     "guides; update_google_docs overwrites a copy, so run it only when the user asks."
 )
 
@@ -67,6 +71,7 @@ ALL_GUIDES = "all"
 GUIDE_KEYS = list(sync.GUIDES)
 SEARCH_RESULTS_DEFAULT = 30
 SEARCH_RESULTS_MAX = 200
+MEANING_RESULTS = 5
 LINES_SHOWN_PER_PAGE = 3
 OTHER_PAGES_LISTED = 20
 SNIPPET_LENGTH = 240
@@ -74,11 +79,6 @@ READ_LINES_DEFAULT = 400
 READ_LINES_MAX = 2000
 JOB_WAIT_DEFAULT_SECONDS = 50  # under the 60-second tool timeout some clients use
 JOB_WAIT_MAX_SECONDS = 240
-
-FENCE_LINE = re.compile(r"^\s*(`{3,}|~{3,})")
-HEADING_LINE = re.compile(r"^(#{1,6})\s+(.*?)\s*$")
-HEADING_ATTRIBUTES = re.compile(r"\s*\{:[^}]*\}$")  # Google's "{: #anchor }" suffix
-
 
 class ToolError(Exception):
     """A problem with a tool call's arguments or the files it asks for, reported to the caller as a tool error."""
@@ -159,7 +159,7 @@ def search_google_docs(query: str, guide: str = ALL_GUIDES, max_results: int = S
         hits = find_page_hits(guides, lambda folded_line: all(word in folded_line for word in words))
     scope = "all guides" if guide == ALL_GUIDES else f"guide {guide}"
     if not hits:
-        return f'No saved page in {scope} contains "{query}" (case-insensitive phrase, then every word on one line).'
+        return f'No saved page in {scope} contains "{query}" (case-insensitive phrase, then every word on one line).\n\n' + by_meaning(query, guides)
 
     hits.sort(key=lambda page_hits: (not page_hits.title_matches, -len(page_hits.lines)))  # stable: guide order breaks ties
     total_lines = sum(len(page_hits.lines) for page_hits in hits)
@@ -192,7 +192,22 @@ def search_google_docs(query: str, guide: str = ALL_GUIDES, max_results: int = S
         ]
         more = len(other_pages) - len(listed)
         parts.append("Other pages with matches (matching lines):\n" + "\n".join(listed) + (f"\n- and {more} more" if more > 0 else ""))
+    parts.append(by_meaning(query, guides))
     return "\n\n".join(parts)
+
+
+def by_meaning(query: str, guides: list[sync.Guide]) -> str:
+    """The sections closest in meaning to the query, or one line saying why that search is off."""
+    try:
+        closest = vectors.search(query, {selected.key for selected in guides}, MEANING_RESULTS)
+    except RuntimeError as error:
+        return f"Search by meaning is off: {error}."
+    lines = ["Closest sections by meaning (read one with read_google_doc page + section or start_line):"]
+    for score, piece in closest:
+        path = repo_path(sync.GUIDES[piece["guide"]], piece["file"])
+        lines.append(f'- {path}: {piece["title"]} › {piece["heading"]} (lines {piece["first_line"]}–{piece["last_line"]}, score {score:.2f})')
+        lines.append(f'  source: {piece["url"]}')
+    return "\n".join(lines)
 
 
 # --- read_google_doc ------------------------------------------------------------------------
@@ -238,26 +253,6 @@ def require_saved_file(guide: sync.Guide, file_name: str) -> str:
     return file_name
 
 
-def headings(lines: list[str]) -> list[tuple[int, int, str]]:
-    """(line index, level, text) for each Markdown heading outside code blocks."""
-    found = []
-    fence = None
-    for index, line in enumerate(lines):
-        fence_match = FENCE_LINE.match(line)
-        if fence_match:
-            marker = fence_match.group(1)
-            if fence is None:
-                fence = marker
-            elif marker[0] == fence[0] and len(marker) >= len(fence):
-                fence = None
-            continue
-        heading_match = None if fence else HEADING_LINE.match(line)
-        if heading_match:
-            text = HEADING_ATTRIBUTES.sub("", heading_match.group(2))
-            found.append((index, len(heading_match.group(1)), text))
-    return found
-
-
 def section_range(lines: list[str], section: str) -> tuple[int, int, str]:
     """(first index, end index, heading) of the section whose heading best matches `section`."""
     wanted = " ".join(section.split()).casefold().strip("#` ")
@@ -301,6 +296,37 @@ def read_google_doc(page: str, guide: str = "", section: str = "", start_line: i
         "---",
     ]
     return "\n".join(header + lines[first:last])
+
+
+def check_google_quote(page: str, quote: str, guide: str = "") -> str:
+    found_guide, file_name = find_saved_page(page, guide)
+    saved_page = saved_pages_by_file_name(found_guide).get(file_name)
+    source = saved_page.page_url if saved_page else found_guide.home_url
+    lines = (found_guide.folder / file_name).read_text(encoding="utf-8").splitlines()
+    wanted = " ".join(quote.split())
+    if not wanted:
+        raise ToolError("quote is empty")
+    flat, line_at = "", []  # the page with whitespace collapsed, and the line each character came from
+    for number, line in enumerate(lines, 1):
+        words = " ".join(line.split())
+        if words:
+            flat += (" " if flat else "") + words
+            line_at.extend([number] * (len(words) + 1))
+    where = repo_path(found_guide, file_name)
+    position = flat.find(wanted)
+    if position >= 0:
+        return f"Found verbatim in {where} at line {line_at[position]}. source: {source}"
+    answer = [f"Not found verbatim in {where} (whitespace collapsed, case-sensitive)."]
+    position = flat.casefold().find(wanted.casefold())
+    if position >= 0:
+        answer.append(f"It matches ignoring case at line {line_at[position]}: {flat[position:position + len(wanted)]}")
+    else:
+        stripped = [" ".join(line.split()) for line in lines]
+        close = difflib.get_close_matches(wanted, [line for line in stripped if line], n=1, cutoff=0.6)
+        if close:
+            answer.append(f"Closest line, {stripped.index(close[0]) + 1}: {close[0]}")
+    answer.append(f"source: {source}")
+    return "\n".join(answer)
 
 
 # --- list_google_docs -----------------------------------------------------------------------
@@ -419,6 +445,12 @@ def run_job(job: Job) -> None:
     try:
         for guide in job.guides:
             job.results.append(run_guide(job, guide))
+        if job.kind == "update" and any(result["status"] == "saved" for result in job.results):
+            job.progress = "rebuilding the vectors for search by meaning"
+            try:
+                job.results.append({"vectors": f"rebuilt: {vectors.build()} pieces"})
+            except Exception as error:  # the update itself succeeded; say the vectors are stale
+                job.results.append({"vectors": f"not rebuilt ({error}); run python3 vectors.py"})
         job.state = "done"
     except Exception as error:  # a bug or a disk problem: report it on the job instead of losing it with the thread
         job.error = f"{type(error).__name__}: {error}"
@@ -500,7 +532,7 @@ def job_report(job: Job, wait_seconds: int) -> str:
         if job.state == "failed":
             report["error"] = job.error
         else:
-            report["exit_status"] = max(EXIT_STATUS_BY_RESULT[result["status"]] for result in job.results)
+            report["exit_status"] = max(EXIT_STATUS_BY_RESULT[result["status"]] for result in job.results if "status" in result)
     report["results"] = job.results
     return json.dumps(report, indent=2, ensure_ascii=False)
 
@@ -583,7 +615,8 @@ TOOLS = {
             "SEO docs (seo) and crawling infrastructure docs (crawling: robots.txt, Googlebot, crawl budget). "
             "Matches the query as a case-insensitive phrase on one line; a multi-word query that finds nothing "
             "is retried as every word on one line. Returns repo file:line hits grouped by page, each page with its "
-            "title and developers.google.com source URL; pages whose title matches come first.",
+            "title and developers.google.com source URL; pages whose title matches come first. Then lists the 5 sections "
+            "closest in meaning to the query (local embedding model), with path, heading and line range for read_google_doc.",
             {
                 "query": {"type": "string", "description": "word or phrase to find, such as robots.txt or noindex"},
                 "guide": guide_property("which guide to search (default all)") | {"default": ALL_GUIDES},
@@ -620,6 +653,21 @@ TOOLS = {
             },
             ("page",),
             read_google_doc,
+        ),
+        Tool(
+            "check_google_quote",
+            "Check a quote against a Google doc page",
+            "Say whether `quote` appears verbatim (case-sensitive, any run of whitespace counts as one space, so a "
+            "quote may span lines) in one saved page, with the line it starts on and the source URL. When it doesn't, "
+            "shows a case-insensitive match or the closest line so the quote can be corrected. `page` is given as "
+            "for read_google_doc.",
+            {
+                "page": {"type": "string", "description": "file name, repo path or developers.google.com address of the page"},
+                "quote": {"type": "string", "description": "the exact words to look for"},
+                "guide": guide_property("the page's guide, when a bare file name is in more than one", allow_all=False),
+            },
+            ("page", "quote"),
+            check_google_quote,
         ),
         Tool(
             "list_google_docs",

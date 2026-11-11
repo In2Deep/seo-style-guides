@@ -66,7 +66,7 @@ class GoogleDocsServerTest(unittest.TestCase):
         names = [tool["name"] for tool in self.session.request("tools/list")["result"]["tools"]]
         self.assertEqual(
             names,
-            ["search_google_docs", "read_google_doc", "list_google_docs", "check_google_docs", "update_google_docs", "google_docs_job"],
+            ["search_google_docs", "read_google_doc", "check_google_quote", "list_google_docs", "check_google_docs", "update_google_docs", "google_docs_job"],
         )
 
     def test_search_finds_robots_txt_in_crawling_pages(self) -> None:
@@ -84,6 +84,25 @@ class GoogleDocsServerTest(unittest.TestCase):
         text, is_error = self.session.call("search_google_docs", query="zzqxv-not-a-word")
         self.assertFalse(is_error)
         self.assertTrue(text.startswith("No saved page"))
+
+    def test_search_adds_meaning_block_or_says_it_is_off(self) -> None:
+        text, is_error = self.session.call("search_google_docs", query="robots.txt", guide="crawling")
+        self.assertFalse(is_error)
+        self.assertIn("guides/crawling/robots-txt--", text)
+        self.assertTrue("Closest sections by meaning" in text or "Search by meaning is off:" in text, text[-300:])
+
+    def test_quote_found_across_lines(self) -> None:
+        text, is_error = self.session.call("check_google_quote", page=ROBOTS_SPEC_URL, quote="Google's crawlers download and parse the site's robots.txt file")
+        self.assertFalse(is_error)
+        self.assertTrue(text.startswith("Found verbatim"), text)
+        self.assertIn("at line 7", text)
+        self.assertIn(f"source: {ROBOTS_SPEC_URL}", text)
+
+    def test_quote_not_found_shows_the_case_insensitive_match(self) -> None:
+        text, is_error = self.session.call("check_google_quote", page="robots-txt--robots-txt-spec.md", quote="google's crawlers download and parse")
+        self.assertFalse(is_error)
+        self.assertTrue(text.startswith("Not found verbatim"), text)
+        self.assertIn("Google's crawlers download and parse", text)
 
     def test_read_section_by_url(self) -> None:
         text, is_error = self.session.call("read_google_doc", page=ROBOTS_SPEC_URL, section="syntax")
