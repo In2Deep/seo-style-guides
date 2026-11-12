@@ -1,5 +1,5 @@
 {
-  "name": "seo-style-guides",
+  "name": "lx-seo",
   "version": "0.1.0",
   "description": "Google's SEO, crawling, style, Lighthouse and web.dev guides saved locally, with search, a quote checker, a JSON-LD checker and a page checker.",
   "author": {

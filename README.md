@@ -29,8 +29,9 @@ Everything runs on Python 3.10 or later with the standard library only. There is
 | `mcp-server/server.py` | The MCP server (stdio). It serves the saved copies and can run the sync as a background job. |
 | `mcp-server/launch.sh` | Starts the server with the first Python 3.10 or later on the machine. |
 | `mcp-server/test_server.py` | Tests that drive the server through its launcher. |
-| `skills/json-ld/` | The `json-ld` skill: check a whole site's JSON-LD and report. |
-| `.claude-plugin/` | The plugin and marketplace manifests that let Claude Code install this repo as a plugin. |
+| `skills/json-ld/` | The `/lx-seo:json-ld` action: find mistakes in a whole site's JSON-LD. |
+| `skills/schema/` | The `/lx-seo:schema` action: find markup a site could add, and draft it. |
+| `.claude-plugin/` | The plugin and marketplace manifests. The plugin is named `lx-seo`, so its actions are typed `/lx-seo:<action>`. |
 
 ## Check and update the copies
 
@@ -123,17 +124,17 @@ From a copy of this repo on your computer:
 
 ```
 /plugin marketplace add /path/to/seo-style-guides
-/plugin install seo-style-guides@seo-style-guides
+/plugin install lx-seo@seo-style-guides
 ```
 
 From GitHub, replace `<owner>/<repo>` with the repository that holds it:
 
 ```
-/plugin install seo-style-guides --marketplace <owner>/<repo>
+/plugin install lx-seo --marketplace <owner>/<repo>
 ```
 
-A plugin install is a snapshot. It gives you keyword search, every checker, and the `json-ld`
-skill with no setup. Claude Code replaces the plugin's folder when the plugin updates, so guide
+A plugin install is a snapshot. It gives you keyword search, every checker, and the `/lx-seo`
+actions with no setup. Claude Code replaces the plugin's folder when the plugin updates, so guide
 updates and vectors made inside it do not last. To keep your own updates or use search by meaning,
 use a clone.
 
@@ -164,14 +165,16 @@ You don't call the tools yourself. Ask in plain words and the session picks the 
 | Proof a quote is real | "Confirm that quote is in Google's page." | `check_google_quote` |
 | A JSON-LD block checked | "Check this JSON-LD against Google's requirements." | `check_structured_data` |
 | One built page checked | "Run the page check on dist/index.html." | `check_page` |
-| A whole site's JSON-LD checked | `/seo-style-guides:json-ld https://example.com` | the `json-ld` skill and `page_check.py` |
+| Mistakes in a whole site's JSON-LD | `/lx-seo:json-ld https://example.com` | the `json-ld` skill and `page_check.py` |
+| Markup a whole site could add | `/lx-seo:schema https://example.com` | the `schema` skill and `page_check.py` |
 | To know if Google changed anything | "Are the saved guides current?" | `check_google_docs` |
 | What changed, and when | "What changed in the guides since 2026-11-01?" | `google_docs_changes` |
 | The newest guides | "Update the SEO guide." | `update_google_docs` |
 
-The `json-ld` skill checks every page under the address: required and recommended properties,
-markup that doesn't match what the page shows, and pages that fit a Google search feature but have
-no markup. It reports and changes nothing. It reads JSON-LD only, not microdata or RDFa.
+`/lx-seo:json-ld` checks the markup every page already has: required and recommended properties,
+and markup that doesn't match what the page shows. `/lx-seo:schema` looks for what each page could
+add: Google search features the page fits, with the JSON-LD drafted from what the page shows.
+Both report and change nothing. Both read JSON-LD only, not microdata or RDFa.
 
 The server has ten tools:
 
