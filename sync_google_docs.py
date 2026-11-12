@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Keep local copies of Google developer guides (style, SEO, crawling) and check them for changes.
+"""Keep local copies of Google's developer guides and check them for changes.
 
 Google offers its docs over MCP only with Gemini, which this project doesn't use, so these copies
-stand in. Google serves each page on developers.google.com as Markdown at the page's address plus
-".md.txt". For each guide, this script reads the guide's navigation, downloads every page's
+stand in. Google serves each page on developers.google.com, web.dev and developer.chrome.com as
+Markdown at the page's address plus ".md.txt". For each guide, this script reads the guide's navigation, downloads every page's
 Markdown (plus any page of the guide those pages link to that the navigation leaves out), and
 compares each page's SHA-256 with the SHA256SUMS file in the guide's folder.
 
@@ -11,6 +11,10 @@ Guides, each in its own folder under guides/:
     style  Google developer documentation style guide  https://developers.google.com/style
     seo    Google Search Central SEO documentation      https://developers.google.com/search/docs
     crawling  Google crawling infrastructure documentation  https://developers.google.com/crawling
+    lighthouse  Lighthouse documentation and audits         https://developer.chrome.com/docs/lighthouse
+    vitals  web.dev Core Web Vitals articles                https://web.dev/articles/vitals
+    learn   web.dev Learn courses (performance, images, accessibility, HTML, forms, responsive design)
+    search-help  Google Search help and documentation updates  https://developers.google.com/search/help
 
 Pages are saved byte for byte as Google serves them, so the standard tool also verifies a copy:
     cd guides/seo && shasum -a 256 -c SHA256SUMS
@@ -73,6 +77,7 @@ SNAPSHOT_DATE_LINE = re.compile(r"^- Snapshot: (\d{4}-\d{2}-\d{2})", re.M)
 PAGES_HEADING = "## Pages"
 SECTION_HEADING_PREFIX = "### "
 README_PAGE_LINE = re.compile(r"^- \[(.*)\]\(([^)\s]+)\): <([^>\s]+)>$")
+CHANGES_FILE = REPO_ROOT / "CHANGES.md"
 
 
 @dataclass(frozen=True)
@@ -83,6 +88,14 @@ class Guide:
     change_notes: str  # Markdown link to Google's own list of changes
     home_path: str = ""  # the guide's landing page, when it isn't root_path
     navigation_path: str = ""  # a page that shows the guide's menu, when root_path doesn't
+    host: str = SITE_HOST
+    scopes: tuple[str, ...] = ()  # path prefixes that count as the guide, when not just root_path
+    menus: tuple[tuple[str, str], ...] = ()  # (menu page path, section label) when the guide has several menus
+    follow_links: bool = True  # also save in-guide pages the saved pages link to
+
+    @property
+    def origin(self) -> str:
+        return f"https://{self.host}"
 
     @property
     def folder(self) -> Path:
@@ -98,19 +111,15 @@ class Guide:
 
     @property
     def home_url(self) -> str:
-        return SITE_ORIGIN + (self.home_path or self.root_path)
-
-    @property
-    def navigation_url(self) -> str:
-        return SITE_ORIGIN + (self.navigation_path or self.root_path)
+        return self.origin + (self.home_path or self.root_path)
 
     def path_of(self, href: str) -> str | None:
         """Return the site path for a link to a page of this guide, or None for any other link."""
         parts = urlsplit(href)
-        if parts.netloc not in ("", SITE_HOST):
+        if parts.netloc not in ("", self.host):
             return None
         path = parts.path.removesuffix(MARKDOWN_SUFFIX).rstrip("/")
-        if path != self.root_path and not path.startswith(self.root_path + "/"):
+        if not any(path == scope or path.startswith(scope + "/") for scope in self.scopes or (self.root_path,)):
             return None
         if "." in path.rsplit("/", 1)[-1]:
             return None  # an image or other file, not a page
@@ -139,6 +148,50 @@ GUIDES = {
             home_path="/crawling",  # /crawling/docs itself is a 404
             navigation_path="/crawling/docs/crawlers-fetchers/overview-google-crawlers",
         ),
+        Guide(
+            "lighthouse",
+            "Lighthouse documentation and audits",
+            "/docs/lighthouse",
+            "[Lighthouse releases](https://github.com/GoogleChrome/lighthouse/releases)",
+            home_path="/docs/lighthouse/overview",
+            navigation_path="/docs/lighthouse/overview",
+            host="developer.chrome.com",
+        ),
+        Guide(
+            "vitals",
+            "web.dev Core Web Vitals articles",
+            "/articles",
+            "[Chrome speed metrics changelog](https://chromium.googlesource.com/chromium/src/+/main/docs/speed/metrics_changelog/README.md)",
+            home_path="/articles/vitals",
+            navigation_path="/articles/vitals",
+            host="web.dev",
+            follow_links=False,  # /articles holds all of web.dev's articles; keep to the Core Web Vitals menu
+        ),
+        Guide(
+            "learn",
+            "web.dev Learn courses: performance, images, accessibility, HTML, forms and responsive design",
+            "/learn",
+            "none published; web.dev keeps no change list for its courses",
+            host="web.dev",
+            scopes=tuple(f"/learn/{course}" for course in ("performance", "images", "accessibility", "html", "forms", "design")),
+            menus=(
+                ("/learn/performance/welcome", "Learn Performance"),
+                ("/learn/images/welcome", "Learn Images"),
+                ("/learn/accessibility/welcome", "Learn Accessibility"),
+                ("/learn/html/welcome", "Learn HTML"),
+                ("/learn/forms/welcome", "Learn Forms"),
+                ("/learn/design/welcome", "Learn Responsive Design"),
+            ),
+        ),
+        Guide(
+            "search-help",
+            "Google Search help and documentation updates",
+            "/search",
+            "[Latest documentation updates](updates.md)",
+            home_path="/search/help",
+            scopes=("/search/help", "/search/updates"),
+            menus=(("/search/help", "Help"), ("/search/updates", "Documentation updates")),
+        ),
     )
 }
 
@@ -154,10 +207,11 @@ class GuidePage:
     path: str  # site path, such as "/style/word-list"
     title: str
     section: str
+    host: str = SITE_HOST
 
     @property
     def page_url(self) -> str:
-        return SITE_ORIGIN + self.path
+        return f"https://{self.host}{self.path}"
 
     @property
     def markdown_url(self) -> str:
@@ -317,16 +371,22 @@ def is_client_error(error: FetchError) -> bool:
 
 def read_navigation(guide: Guide) -> list[GuidePage]:
     """Return the guide's pages in navigation order, with their titles and sections."""
-    _, body, _ = fetch(guide.navigation_url)
-    parser = NavigationParser()
-    parser.feed(body.decode("utf-8"))
     pages: dict[str, GuidePage] = {}
-    for section, title, href in parser.entries:
-        path = guide.path_of(href)
-        if path and path not in pages:
-            pages[path] = GuidePage(path, title, section)
-    if not pages:
-        raise FetchError(f"found no pages in the navigation of {guide.navigation_url}; Google may have changed its layout")
+    for menu_path, label in guide.menus or ((guide.navigation_path or guide.root_path, ""),):
+        menu_url = guide.origin + menu_path
+        _, body, _ = fetch(menu_url)
+        parser = NavigationParser()
+        parser.feed(body.decode("utf-8"))
+        found = False
+        for section, title, href in parser.entries:
+            path = guide.path_of(href)
+            found = found or bool(path)
+            if label:
+                section = label if section == FIRST_SECTION else label + SECTION_JOINER + section
+            if path and path not in pages:
+                pages[path] = GuidePage(path, title, section, guide.host)
+        if not found:
+            raise FetchError(f"found no pages in the navigation of {menu_url}; Google may have changed its layout")
     return list(pages.values())
 
 
@@ -397,7 +457,7 @@ def download_guide(
     def add_unlisted_page(path: str) -> None:
         if path not in queued_paths:
             queued_paths.add(path)
-            pages[path] = GuidePage(path, "", UNLISTED_SECTION)
+            pages[path] = GuidePage(path, "", UNLISTED_SECTION, guide.host)
             queue.append(path)
 
     def fetch_page(page: GuidePage) -> tuple[bytes | None, str | None, Unavailable | None, str]:
@@ -424,9 +484,9 @@ def download_guide(
                 if file_name in contents:
                     raise FetchError(f"two pages map to the file name {file_name}, one of them {page.page_url}")
                 if page.is_unlisted:
-                    pages[page.path] = GuidePage(page.path, title, page.section)
+                    pages[page.path] = GuidePage(page.path, title, page.section, guide.host)
                 contents[file_name] = body
-                for target in MARKDOWN_LINK_TARGET.findall(body.decode("utf-8", errors="replace")):
+                for target in MARKDOWN_LINK_TARGET.findall(body.decode("utf-8", errors="replace")) if guide.follow_links else ():
                     linked_path = guide.path_of(target)
                     if linked_path:
                         add_unlisted_page(linked_path)
@@ -516,7 +576,7 @@ def read_saved_pages(guide: Guide) -> list[GuidePage]:
             path = guide.path_of(page_url)
             if path is None or guide.file_name(path) != file_name:
                 raise ValueError(f"unexpected page line in {guide.readme_file}: {line!r}")
-            pages.append(GuidePage(path, title, section))
+            pages.append(GuidePage(path, title, section, guide.host))
     return pages
 
 
@@ -574,8 +634,25 @@ def check_guide(guide: Guide, on_progress: ProgressCallback = report_progress) -
     return GuideCheck(guide, pages, contents, unavailable, comparison, has_local_copy=bool(saved_checksums))
 
 
+def log_changes(check: GuideCheck) -> None:
+    """Append a dated entry to CHANGES.md naming the pages a save changes; write nothing if none."""
+    comparison = check.comparison
+    if not check.has_local_copy:
+        lines = [f"- new guide, {len(check.contents)} pages"]
+    else:
+        lists = (("changed", comparison.changed), ("new", comparison.added), ("removed", comparison.removed))
+        lines = [f"- {label}: {', '.join(names)}" for label, names in lists if names]
+    if not lines:
+        return
+    if not CHANGES_FILE.exists():
+        CHANGES_FILE.write_text("# Changes to the saved Google guides\n")
+    with CHANGES_FILE.open("a") as changes:
+        changes.write(f"\n## {date.today().isoformat()} {check.guide.key}\n\n" + "\n".join(lines) + "\n")
+
+
 def save_check(check: GuideCheck) -> None:
-    """Make the local copy match what the check fetched, dated today."""
+    """Make the local copy match what the check fetched, dated today, and log what changed."""
+    log_changes(check)
     readme_text = render_readme(check.guide, check.pages, date.today().isoformat())
     save_snapshot(check.guide, check.contents, check.comparison.removed, readme_text)
 

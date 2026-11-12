@@ -10,6 +10,7 @@ Tools:
     search_google_docs  find a phrase in the saved pages: file:line hits with each page's source URL, then the closest sections by meaning
     read_google_doc     one saved page, or one section or line range of it
     check_google_quote  whether a quote appears verbatim in one saved page
+    check_structured_data  a page's JSON-LD against Google's required and recommended property tables
     list_google_docs    a guide's pages by section, from its README.md
     check_google_docs   compare the copies with Google's live guides (writes nothing)
     update_google_docs  save Google's current version of one guide (the script's --save)
@@ -43,6 +44,7 @@ from typing import Any, Callable
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import sync_google_docs as sync  # noqa: E402  (the repo root is on the path only from the line above)
+import structured_data  # noqa: E402
 import vectors  # noqa: E402
 from vectors import headings  # noqa: E402
 
@@ -332,6 +334,13 @@ def check_google_quote(page: str, quote: str, guide: str = "") -> str:
             answer.append(f"Closest line, {stripped.index(close[0]) + 1}: {close[0]}")
     answer.append(f"source: {source}")
     return "\n".join(answer)
+
+
+def check_structured_data(markup: str) -> str:
+    try:
+        return structured_data.check_structured_data(markup)
+    except ValueError as error:
+        raise ToolError(str(error)) from None
 
 
 # --- list_google_docs -----------------------------------------------------------------------
@@ -673,6 +682,17 @@ TOOLS = {
             },
             ("page", "quote"),
             check_google_quote,
+        ),
+        Tool(
+            "check_structured_data",
+            "Check JSON-LD against Google's property tables",
+            "Check a page's JSON-LD (JSON text, or a whole HTML page whose application/ld+json scripts are read) "
+            "against the Required and Recommended property tables in the saved Google structured-data pages. "
+            "Per item with an @type: the Google page and source URL, required and recommended properties missing, "
+            "and nested typed objects that page has a table for. Checks presence only, not values; fetches nothing.",
+            {"markup": {"type": "string", "description": "JSON-LD text or a whole HTML document"}},
+            ("markup",),
+            check_structured_data,
         ),
         Tool(
             "list_google_docs",

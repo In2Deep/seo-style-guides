@@ -66,7 +66,7 @@ class GoogleDocsServerTest(unittest.TestCase):
         names = [tool["name"] for tool in self.session.request("tools/list")["result"]["tools"]]
         self.assertEqual(
             names,
-            ["search_google_docs", "read_google_doc", "check_google_quote", "list_google_docs", "check_google_docs", "update_google_docs", "google_docs_job"],
+            ["search_google_docs", "read_google_doc", "check_google_quote", "check_structured_data", "list_google_docs", "check_google_docs", "update_google_docs", "google_docs_job"],
         )
 
     def test_search_finds_robots_txt_in_crawling_pages(self) -> None:
@@ -131,6 +131,28 @@ class GoogleDocsServerTest(unittest.TestCase):
             with self.subTest(page=page):
                 _, is_error = self.session.call("read_google_doc", page=page)
                 self.assertTrue(is_error)
+
+    def test_structured_data_article_missing_recommended(self) -> None:
+        markup = '<html><script type="application/ld+json">{"@context": "https://schema.org", "@type": "NewsArticle", "headline": "Hi", "image": "a.jpg"}</script></html>'
+        text, is_error = self.session.call("check_structured_data", markup=markup)
+        self.assertFalse(is_error)
+        self.assertIn("appearance--structured-data--article.md", text)
+        self.assertIn("required, missing: none", text)
+        self.assertIn("datePublished", text)
+        self.assertIn("never invent a value", text)
+
+    def test_structured_data_product_offer_missing_required(self) -> None:
+        markup = json.dumps({"@context": "https://schema.org", "@graph": [
+            {"@type": "Product", "name": "Lap", "offers": {"@type": "Offer", "priceCurrency": "USD"}},
+            {"@type": "Thing", "name": "x"},
+        ]})
+        text, _ = self.session.call("check_structured_data", markup=markup)
+        self.assertIn("nested Offer in offers", text)
+        self.assertIn("one of price or priceSpecification.price", text)
+        self.assertIn("Google documents no search feature for this type", text)
+        text, is_error = self.session.call("check_structured_data", markup='{"@type": "Product",}')
+        self.assertTrue(is_error)
+        self.assertIn("not valid JSON", text)
 
     def test_list_guide(self) -> None:
         text, _ = self.session.call("list_google_docs", guide="crawling")
