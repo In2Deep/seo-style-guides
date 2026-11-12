@@ -162,7 +162,15 @@ def search(query: str, guide_keys: set[str], count: int = 5) -> list[tuple[float
     wanted = embed([f"Instruct: {QUERY_INSTRUCTION}\nQuery:{query}"], QUERY_TIMEOUT_SECONDS)[0]
     scored = [(dot(wanted, vector), meta) for meta, vector in zip(pieces, vectors) if meta["guide"] in guide_keys]
     scored.sort(key=lambda item: item[0], reverse=True)
-    return scored[:count]
+    best, seen = [], set()  # one piece per section, so a long section can't fill every slot
+    for score, meta in scored:
+        section = (meta["guide"], meta["file"], meta["heading"])
+        if section not in seen:
+            seen.add(section)
+            best.append((score, meta))
+            if len(best) == count:
+                break
+    return best
 
 
 if __name__ == "__main__":

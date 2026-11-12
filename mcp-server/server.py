@@ -298,17 +298,22 @@ def read_google_doc(page: str, guide: str = "", section: str = "", start_line: i
     return "\n".join(header + lines[first:last])
 
 
+def without_marks(text: str) -> str:
+    """Text without Markdown bold, italic and code marks, so a quote copied from the web page still matches."""
+    return text.replace("*", "").replace("`", "")
+
+
 def check_google_quote(page: str, quote: str, guide: str = "") -> str:
     found_guide, file_name = find_saved_page(page, guide)
     saved_page = saved_pages_by_file_name(found_guide).get(file_name)
     source = saved_page.page_url if saved_page else found_guide.home_url
     lines = (found_guide.folder / file_name).read_text(encoding="utf-8").splitlines()
-    wanted = " ".join(quote.split())
+    wanted = " ".join(without_marks(quote).split())
     if not wanted:
         raise ToolError("quote is empty")
     flat, line_at = "", []  # the page with whitespace collapsed, and the line each character came from
     for number, line in enumerate(lines, 1):
-        words = " ".join(line.split())
+        words = " ".join(without_marks(line).split())
         if words:
             flat += (" " if flat else "") + words
             line_at.extend([number] * (len(words) + 1))
@@ -316,12 +321,12 @@ def check_google_quote(page: str, quote: str, guide: str = "") -> str:
     position = flat.find(wanted)
     if position >= 0:
         return f"Found verbatim in {where} at line {line_at[position]}. source: {source}"
-    answer = [f"Not found verbatim in {where} (whitespace collapsed, case-sensitive)."]
+    answer = [f"Not found verbatim in {where} (whitespace collapsed, bold and code marks ignored, case-sensitive)."]
     position = flat.casefold().find(wanted.casefold())
     if position >= 0:
         answer.append(f"It matches ignoring case at line {line_at[position]}: {flat[position:position + len(wanted)]}")
     else:
-        stripped = [" ".join(line.split()) for line in lines]
+        stripped = [" ".join(without_marks(line).split()) for line in lines]
         close = difflib.get_close_matches(wanted, [line for line in stripped if line], n=1, cutoff=0.6)
         if close:
             answer.append(f"Closest line, {stripped.index(close[0]) + 1}: {close[0]}")
