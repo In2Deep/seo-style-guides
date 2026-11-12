@@ -4,10 +4,16 @@ Run (standard library only):
     python3 -B -m unittest discover -s mcp-server
 The check test reaches developers.google.com, so it runs only with GOOGLE_DOCS_NETWORK_TESTS=1.
 """
+import contextlib
+import functools
+import http.server
+import io
 import json
 import os
 import subprocess
 import sys
+import tempfile
+import threading
 import unittest
 from pathlib import Path
 from typing import Any
@@ -216,6 +222,27 @@ class GoogleDocsServerTest(unittest.TestCase):
         report = json.loads(text)
         self.assertEqual(report["state"], "done")
         self.assertIn(report["results"][0]["status"], ("current", "out_of_date"))
+
+
+class SiteCheckTest(unittest.TestCase):
+    def test_site_check_follows_links(self) -> None:
+        with tempfile.TemporaryDirectory() as folder:
+            Path(folder, "index.html").write_text(GOOD_PAGE.replace('href="/specs"', 'href="/second.html"'))
+            Path(folder, "second.html").write_text(GOOD_PAGE.replace('href="/specs"', 'href="/"'))
+            quiet = type("QuietHandler", (http.server.SimpleHTTPRequestHandler,), {"log_message": lambda *args: None})
+            handler = functools.partial(quiet, directory=folder)
+            server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+            threading.Thread(target=server.serve_forever, daemon=True).start()
+            start = f"http://127.0.0.1:{server.server_address[1]}/"
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                page_check.check_site(start)
+            server.shutdown()
+            server.server_close()
+        text = output.getvalue()
+        self.assertIn(f"PASS {start}\n", text)
+        self.assertIn(f"{start}second.html", text)
+        self.assertIn("2 pages checked", text)
 
 
 if __name__ == "__main__":

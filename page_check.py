@@ -4,12 +4,18 @@
 Every check names the saved guide page it comes from and quotes it exactly (a test confirms each
 quote is in its page). Parses with html.parser; fetches nothing and runs no JavaScript.
 
-Run: python3 page_check.py path/to/page.html [more.html ...]   (exit status 1 if any check fails)
+A web address (http:// or https://) checks every page of that site found from its sitemap and links.
+
+Run: python3 page_check.py path/to/page.html|https://site/ [more ...]   (exit status 1 if any check fails)
 """
+import re
 import sys
+from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.error import HTTPError
+from urllib.parse import urldefrag, urljoin, urlsplit
+from urllib.request import Request, urlopen
 
 import structured_data
 
@@ -20,10 +26,15 @@ TEXT_KEPT = ("title", "a", "script")  # elements whose text the checks read
 GENERIC_LINK_TEXT = {"click here", "click this", "go", "here", "this", "start", "right here", "more", "learn more"}
 FAILURES_SHOWN = 10
 CHARSET_BYTES = 1024
+MAX_PAGES = 500
+USER_AGENT = "seo-style-guides-page-check/1.0"
+FETCH_TIMEOUT = 20
+NOT_PAGES = tuple(".png .jpg .jpeg .gif .webp .avif .svg .ico .css .js .mjs .pdf .xml .woff .woff2 .ttf .otf .mp4 .webm .mov .zip".split())
 
 
 class PageParser(HTMLParser):
     """Collects every start tag (name, attributes, line, raw text, end offset), the text of TEXT_KEPT elements and the doctype."""
+    robots_header = ""  # the X-Robots-Tag HTTP header, when the page was fetched by address
 
     def __init__(self, html: str):
         super().__init__(convert_charrefs=True)
@@ -119,6 +130,9 @@ def check_charset(page, html):
 def check_noindex(page, html):
     robots = [e for e in tags(page, "meta") if e["attrs"].get("name", "").lower() in ("robots", "googlebot")]
     blocked = [e for e in robots if {"noindex", "none"} & {word.strip() for word in e["attrs"].get("content", "").lower().split(",")}]
+    if {"noindex", "none"} & set(re.split(r"[\s,:]+", page.robots_header.lower())):
+        found = f"HTTP header X-Robots-Tag: {page.robots_header}" + (f"; {where(blocked)}" if blocked else "")
+        return False, found + " (correct only on a page that is meant to stay out of Google)"
     if blocked:
         return False, where(blocked) + " (correct only on a page that is meant to stay out of Google)"
     return True, where(robots) if robots else "no robots meta tag"
@@ -215,8 +229,9 @@ CHECKS = [
 ]
 
 
-def run_checks(html: str) -> list[tuple[dict, bool, str]]:
+def run_checks(html: str, robots_header: str = "") -> list[tuple[dict, bool, str]]:
     page = PageParser(html)
+    page.robots_header = robots_header
     results = []
     for check in CHECKS:
         passed, found = check["test"](page, html)
@@ -237,11 +252,92 @@ def check_page(html: str) -> str:
     return report(run_checks(html))
 
 
+def fetch(url: str) -> tuple[str, str, str, str]:
+    """The final address, content type, X-Robots-Tag header and text of one web address."""
+    with urlopen(Request(url, headers={"User-Agent": USER_AGENT}), timeout=FETCH_TIMEOUT) as response:
+        robots = ", ".join(response.headers.get_all("X-Robots-Tag") or [])
+        text = response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+        return response.geturl(), response.headers.get_content_type(), robots, text
+
+
+def sitemap_locs(url: str) -> tuple[list[str], bool]:
+    """The <loc> addresses in one sitemap file, and whether it is a sitemap index."""
+    try:
+        xml = fetch(url)[3]
+    except (OSError, ValueError):
+        return [], False
+    return [unescape(loc.strip()) for loc in re.findall(r"<loc>(.*?)</loc>", xml, re.S)], "<sitemapindex" in xml
+
+
+def sitemap_urls(origin: str) -> list[str]:
+    """The page addresses in the site's sitemap, following a sitemap index one level."""
+    for name in ("sitemap-index.xml", "sitemap.xml"):
+        locs, is_index = sitemap_locs(f"{origin}/{name}")
+        if locs:
+            return [page for loc in locs for page in sitemap_locs(loc)[0]] if is_index else locs
+    return []
+
+
+def check_site(start: str) -> bool:
+    """Checks every page found under the start address; prints one block per page and a total. True if any failed."""
+    start = urldefrag(start)[0]
+    parts = urlsplit(start)
+    scope = parts.path.rstrip("/")
+    order, linked_from, passed_pages, failed_pages, limit_reached = [], {}, 0, 0, False
+
+    def add(url: str, source: str) -> None:
+        nonlocal limit_reached
+        url = urldefrag(url)[0]
+        split = urlsplit(url)
+        if (url in linked_from or split.scheme not in ("http", "https") or split.netloc != parts.netloc
+                or not (split.path == scope or split.path.startswith(scope + "/")) or split.path.lower().endswith(NOT_PAGES)):
+            return
+        if len(order) >= MAX_PAGES:
+            limit_reached = True
+            return
+        order.append(url)
+        linked_from[url] = source
+
+    add(start, "the address given")
+    for url in sitemap_urls(f"{parts.scheme}://{parts.netloc}"):
+        add(url, "the sitemap")
+    for url in order:  # grows while links are followed
+        try:
+            final, kind, robots, html = fetch(url)
+        except (OSError, ValueError) as error:
+            status = f"HTTP {error.code}" if isinstance(error, HTTPError) else str(getattr(error, "reason", error))
+            print(f"FAIL {url} (could not fetch: {status}; linked from {linked_from[url]})\n")
+            failed_pages += 1
+            continue
+        if kind not in ("text/html", "application/xhtml+xml"):
+            continue
+        for element in tags(PageParser(html), "a"):
+            add(urljoin(final, element["attrs"].get("href", "").strip()), url)
+        results = run_checks(html, robots)
+        failed = [(check, found) for check, passed, found in results if not passed]
+        try:
+            types = [name for item in structured_data.json_ld_items(html) for name in structured_data.item_types(item)]
+        except ValueError:
+            types = []
+        failed_pages, passed_pages = failed_pages + bool(failed), passed_pages + (not failed)
+        print(f"FAIL {url} ({len(failed)} failed)" if failed else f"PASS {url}", f"  JSON-LD: {', '.join(types) or 'none'}", sep="\n")
+        for check, found in failed:
+            print(f"  FAIL {check['name']}: {found}", f'    Google: "{check["quote"]}"', f"    source: {check['source']}", sep="\n")
+        print("".join(f"  NOTICE {check['name']}: {found}\n" for check, passed, found in results if passed and "Notice:" in found))
+    if limit_reached:
+        print(f"Stopped at the limit of {MAX_PAGES} pages; more pages were found.")
+    print(f"{start}: {passed_pages + failed_pages} pages checked, {passed_pages} passed, {failed_pages} failed.\n")
+    return failed_pages > 0
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         sys.exit(__doc__.strip().splitlines()[-1])
     any_failed = False
     for name in sys.argv[1:]:
+        if name.startswith(("http://", "https://")):
+            any_failed |= check_site(name)
+            continue
         results = run_checks(Path(name).read_text(encoding="utf-8", errors="replace"))
         any_failed |= not all(passed for _, passed, _ in results)
         print(f"== {name}\n{report(results)}\n")

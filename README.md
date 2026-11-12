@@ -60,6 +60,15 @@ on and the page's source URL. Missing recommended JSON-LD properties are listed 
 Exit status: `0` every check passed in every file, `1` a check failed. It fetches nothing and runs
 no JavaScript, so it checks the HTML as built, not as a browser renders it.
 
+```bash
+python3 page_check.py https://example.com/
+```
+
+Given a web address, it checks every page of that site under that address. It finds the pages from
+the site's sitemap and by following links on the same site, and prints one PASS or FAIL line per
+page with only the failed checks. For a fetched page, the noindex check also reads the
+`X-Robots-Tag` HTTP header. It stops at 500 pages, and a site behind a login cannot be checked.
+
 ## Search by meaning
 
 ```bash
