@@ -1,5 +1,6 @@
 """Check a page's JSON-LD against the required and recommended property tables in Google's saved
-structured-data pages (guides/seo/appearance--structured-data--*.md), read at call time.
+structured-data pages (guides/seo/appearance--structured-data--*.md) and its site names page
+(`WebSite`), read at call time.
 
 Checks only which properties are present, never their values. Fetches nothing.
 """
@@ -9,6 +10,7 @@ from pathlib import Path
 
 GUIDE_FOLDER = Path(__file__).resolve().parent / "guides" / "seo"
 PAGE_PREFIX = "appearance--structured-data--"
+SITE_NAME_PAGE = "appearance--site-names.md"  # where Google documents `WebSite`, outside the structured-data pages
 SOURCE_PREFIX = "https://developers.google.com/search/docs/"
 TYPE_DEFINITIONS_HEADING = "Structured data type definitions"
 POLICY = "Policy: fill in recommended properties too, unless the site has no true value for one (never invent a value)."
@@ -88,7 +90,25 @@ def read_sections() -> list[dict]:
         page_sections = [section for section in sections if section["file"] == file_name]
         if len(page_sections) == 1 and page_sections[0]["types"] <= page_sections[0]["title_types"]:
             page_sections[0]["types"] |= page_sections[0]["title_types"] - documented
-    return sections
+    return sections + site_name_section()
+
+
+def site_name_section() -> list[dict]:
+    """The `WebSite` section, from the site names page. Its tables sit under headings that name no type."""
+    path = GUIDE_FOLDER / SITE_NAME_PAGE
+    entries, kind = [], None
+    for line in path.read_text(encoding="utf-8").splitlines() if path.exists() else []:
+        if header := TABLE_HEADER.match(line):
+            kind = header[1].lower()
+        elif not line.startswith("|"):
+            kind = None
+        elif kind and (names := tuple(CODE_NAME.findall(line.split("|")[1]))):
+            entries.append((kind, names, ""))
+    if not entries:
+        return []
+    return [{"heading": "Site name", "types": {"WebSite"}, "title_types": {"WebSite"}, "entries": entries,
+             "file": path.name, "title": "Provide a site name to Google Search",
+             "source": SOURCE_PREFIX + path.stem.replace("--", "/")}]
 
 
 def item_types(item: dict) -> list[str]:

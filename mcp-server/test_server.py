@@ -175,6 +175,13 @@ class GoogleDocsServerTest(unittest.TestCase):
         self.assertTrue(is_error)
         self.assertIn("not valid JSON", text)
 
+    def test_structured_data_website_uses_site_names_page(self) -> None:
+        text, _ = self.session.call("check_structured_data", markup='{"@type": "WebSite", "name": "Example"}')
+        self.assertIn("appearance--site-names.md", text)
+        self.assertIn("required, missing: url", text)
+        self.assertIn("recommended, missing: alternateName", text)
+        self.assertNotIn("Google documents no search feature for this type", text)
+
     def test_every_page_check_quote_is_in_its_page(self) -> None:
         for check in page_check.CHECKS:
             with self.subTest(check=check["name"]):
