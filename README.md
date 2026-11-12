@@ -209,4 +209,7 @@ developers.google.com, web.dev and developer.chrome.com. Google licenses that co
 code samples under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0). Each
 saved page's source address is listed in its guide's `README.md`.
 
+The code in this repo is under the MIT License; see `LICENSE`. That license does not cover the
+pages in `guides/`.
+
 This project is not affiliated with or endorsed by Google.
