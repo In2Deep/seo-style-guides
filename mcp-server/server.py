@@ -2,21 +2,24 @@
 """MCP server (stdio) for the local copies of Google's developer guides in guides/.
 
 Google offers its docs over MCP only with Gemini, which this project doesn't use. This server
-serves the verbatim copies that sync_google_docs.py keeps (the developer documentation style
-guide, the Search Central SEO docs and the crawling infrastructure docs) and runs that script's
-check and update, so agents can use the guides without reading whole folders.
+serves the verbatim copies that sync_google_docs.py keeps (seven guides: style, seo, crawling,
+lighthouse, vitals, learn and search-help, from developers.google.com, developer.chrome.com and
+web.dev) and runs that script's check and update, so agents can use the guides without reading
+whole folders.
 
 Tools:
     search_google_docs  find a phrase in the saved pages: file:line hits with each page's source URL, then the closest sections by meaning
     read_google_doc     one saved page, or one section or line range of it
     check_google_quote  whether a quote appears verbatim in one saved page
     check_structured_data  a page's JSON-LD against Google's required and recommended property tables
+    check_page          mechanical checks on a built HTML page, each quoting the guide page it comes from
+    google_docs_changes  the CHANGES.md entries: what each update of the copies changed
     list_google_docs    a guide's pages by section, from its README.md
     check_google_docs   compare the copies with Google's live guides (writes nothing)
     update_google_docs  save Google's current version of one guide (the script's --save)
     google_docs_job     progress and result of a check or update
 
-A check fetches every page one at a time (about 4 minutes for all three guides), longer than a
+A check fetches every page one at a time (several minutes for all the guides), longer than a
 client may wait for one tool call, so checks and updates run as background jobs. Each call waits
 up to wait_seconds for its job and otherwise returns the job id to ask google_docs_job about.
 Jobs last as long as this process.
@@ -37,13 +40,14 @@ import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from itertools import count
 from pathlib import Path
 from typing import Any, Callable
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import sync_google_docs as sync  # noqa: E402  (the repo root is on the path only from the line above)
+import page_check  # noqa: E402
 import structured_data  # noqa: E402
 import vectors  # noqa: E402
 from vectors import headings  # noqa: E402
@@ -53,13 +57,17 @@ SERVER_VERSION = "1.0.0"
 HANDSHAKE_PROTOCOL_VERSIONS = ("2024-11-05", "2025-03-26", "2025-06-18", "2025-11-25")
 LATEST_PROTOCOL_VERSION = HANDSHAKE_PROTOCOL_VERSIONS[-1]
 SERVER_INSTRUCTIONS = (
-    "Verbatim local copies of three Google guides in guides/: the developer "
-    "documentation style guide (style), the Search Central SEO docs (seo) and the crawling "
-    "infrastructure docs (crawling: robots.txt, Googlebot, crawl budget). Find pages with "
-    "search_google_docs or list_google_docs, read them with read_google_doc, and cite each page's "
-    "source URL. search_google_docs also lists the sections closest in meaning, so a question in plain words "
-    "works; check_google_quote confirms a quote appears verbatim in a page. The copies are a snapshot: check_google_docs compares them with Google's live "
-    "guides; update_google_docs overwrites a copy, so run it only when the user asks."
+    "Verbatim local copies of seven Google guides in guides/: the developer documentation style "
+    "guide (style), the Search Central SEO docs (seo), the crawling infrastructure docs (crawling: "
+    "robots.txt, Googlebot, crawl budget), the Lighthouse audit docs (lighthouse), web.dev's Core Web "
+    "Vitals articles (vitals) and Learn courses (learn), and Google Search help with its documentation "
+    "updates (search-help). Find pages with search_google_docs or list_google_docs, read them with "
+    "read_google_doc, and cite each page's source URL. search_google_docs also lists the sections closest "
+    "in meaning, so a question in plain words works; check_google_quote confirms a quote appears verbatim "
+    "in a page. check_structured_data checks JSON-LD against Google's property tables, check_page runs "
+    "Google-quoted checks on a built HTML page before it is deployed, and google_docs_changes lists what "
+    "recent updates of the copies changed. The copies are a snapshot: check_google_docs compares them with "
+    "Google's live guides; update_google_docs overwrites a copy, so run it only when the user asks."
 )
 
 PARSE_ERROR = -32700
@@ -343,6 +351,30 @@ def check_structured_data(markup: str) -> str:
         raise ToolError(str(error)) from None
 
 
+def check_page(html: str = "", path: str = "") -> str:
+    if bool(html) == bool(path):
+        raise ToolError("give exactly one of html or path")
+    if path:
+        file = Path(path).expanduser()
+        if not file.is_file():
+            raise ToolError(f"no file {path}")
+        html = file.read_text(encoding="utf-8", errors="replace")
+    return page_check.check_page(html)
+
+
+def google_docs_changes(since: str = "") -> str:
+    text = sync.CHANGES_FILE.read_text(encoding="utf-8") if sync.CHANGES_FILE.exists() else ""
+    entries = ["## " + entry.strip() for entry in text.split("\n## ")[1:]][::-1]  # the file is appended to: newest last
+    if not since:
+        return "\n\n".join(entries[:10]) or "CHANGES.md has no entries yet."
+    try:
+        date.fromisoformat(since)
+    except ValueError:
+        raise ToolError("since must be a date as YYYY-MM-DD") from None
+    entries = [entry for entry in entries if entry[3:13] >= since]
+    return "\n\n".join(entries) or f"No changes logged on or after {since}."
+
+
 # --- list_google_docs -----------------------------------------------------------------------
 
 
@@ -354,7 +386,7 @@ def list_google_docs(guide: str = ALL_GUIDES) -> str:
         lines = [
             f"## {selected.key}: {selected.title}",
             f"{len(pages)} pages in {repo_path(selected, '')}/, snapshot {snapshot}. Home: {selected.home_url}",
-            f"Each page's address: {sync.SITE_ORIGIN}{selected.root_path}/ + its file name without .md, "
+            f"Each page's address: {selected.origin}{selected.root_path}/ + its file name without .md, "
             f"with {sync.PATH_SEPARATOR_IN_FILE_NAME} read as /.",
         ]
         current_section = None
@@ -625,11 +657,13 @@ TOOLS = {
         Tool(
             "search_google_docs",
             "Search Google's docs",
-            "Search the saved copies of Google's developer documentation style guide (style), Search Central "
-            "SEO docs (seo) and crawling infrastructure docs (crawling: robots.txt, Googlebot, crawl budget). "
+            "Search the saved copies of Google's guides: developer documentation style guide (style), Search Central "
+            "SEO docs (seo), crawling infrastructure docs (crawling: robots.txt, Googlebot, crawl budget), Lighthouse "
+            "audit docs (lighthouse), web.dev Core Web Vitals articles (vitals) and Learn courses (learn), and Google "
+            "Search help and documentation updates (search-help). "
             "Matches the query as a case-insensitive phrase on one line; a multi-word query that finds nothing "
             "is retried as every word on one line. Returns repo file:line hits grouped by page, each page with its "
-            "title and developers.google.com source URL; pages whose title matches come first. Then lists the 5 sections "
+            "title and source URL; pages whose title matches come first. Then lists the 5 sections "
             "closest in meaning to the query (local embedding model), with path, heading and line range for read_google_doc.",
             {
                 "query": {"type": "string", "description": "word or phrase to find, such as robots.txt or noindex"},
@@ -650,10 +684,10 @@ TOOLS = {
             "Read a Google doc page",
             "Return one saved page verbatim as Markdown, or one section of it, with its source URL. `page` can be "
             "a file name from search or list (robots-txt--robots-txt-spec.md), a repo path, or the page's "
-            f"developers.google.com address. Long pages come back {READ_LINES_DEFAULT} lines at a time; the header "
+            f"source address (developers.google.com, developer.chrome.com or web.dev). Long pages come back {READ_LINES_DEFAULT} lines at a time; the header "
             "says where to continue.",
             {
-                "page": {"type": "string", "description": "file name, repo path or developers.google.com address of the page"},
+                "page": {"type": "string", "description": "file name, repo path or source address of the page"},
                 "guide": guide_property("the page's guide, when a bare file name is in more than one", allow_all=False),
                 "section": {"type": "string", "description": "heading text of the one section to return (exact, else the first heading containing it)"},
                 "start_line": {"type": "integer", "minimum": 1, "default": 1, "description": "first line to return (1 is the top of the page)"},
@@ -676,7 +710,7 @@ TOOLS = {
             "shows a case-insensitive match or the closest line so the quote can be corrected. `page` is given as "
             "for read_google_doc.",
             {
-                "page": {"type": "string", "description": "file name, repo path or developers.google.com address of the page"},
+                "page": {"type": "string", "description": "file name, repo path or source address of the page"},
                 "quote": {"type": "string", "description": "the exact words to look for"},
                 "guide": guide_property("the page's guide, when a bare file name is in more than one", allow_all=False),
             },
@@ -695,10 +729,34 @@ TOOLS = {
             check_structured_data,
         ),
         Tool(
+            "check_page",
+            "Check a built HTML page against Google's guides",
+            "Run mechanical checks on one built HTML page before it is deployed: title, meta description, viewport, "
+            "html lang, doctype, charset, noindex, canonical links, img alt, link href and link text, and JSON-LD "
+            "required properties. Each check reports PASS or FAIL, what it found (the tag and line number for a "
+            "failure), and the exact quote from the saved Google page it comes from, with its source URL. Give "
+            "exactly one of html or path. Parses the HTML only: fetches nothing and runs no JavaScript.",
+            {
+                "html": {"type": "string", "description": "the page's HTML"},
+                "path": {"type": "string", "description": "path of a local HTML file to read instead"},
+            },
+            (),
+            check_page,
+        ),
+        Tool(
+            "google_docs_changes",
+            "What changed in the saved Google guides",
+            "Return the entries of CHANGES.md (which pages each update of the saved copies changed, added or "
+            "removed), newest first: those dated on or after `since`, or the latest 10 without it.",
+            {"since": {"type": "string", "description": "earliest date to include, as YYYY-MM-DD"}},
+            (),
+            google_docs_changes,
+        ),
+        Tool(
             "list_google_docs",
             "List Google doc pages",
             "List a saved guide's pages by section: file name and title, from the guide's README.md, with its "
-            "snapshot date and how file names map to developers.google.com addresses.",
+            "snapshot date and how file names map to the guide's web addresses.",
             {"guide": guide_property("which guide to list (default all)") | {"default": ALL_GUIDES}},
             (),
             list_google_docs,
@@ -707,7 +765,7 @@ TOOLS = {
             "check_google_docs",
             "Check Google docs for changes",
             "Compare the saved copies with Google's live guides, page by page (SHA-256); writes nothing. Fetching "
-            "takes about 15 seconds for crawling, 1 minute for style, 3 minutes for seo and 4 for all, so it runs "
+            "takes about 15 seconds for crawling, 1 minute for style, 3 minutes for seo and longer for all, so it runs "
             "as a background job: the call waits up to wait_seconds and returns the result, or the job id for "
             "google_docs_job. Per guide: status (current, out_of_date, no_local_copy, fetch_failed); pages changed, "
             "new and removed; nav (titles, sections or order changed); local (files edited here); and pages that "

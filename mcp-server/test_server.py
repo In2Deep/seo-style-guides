@@ -7,11 +7,23 @@ The check test reaches developers.google.com, so it runs only with GOOGLE_DOCS_N
 import json
 import os
 import subprocess
+import sys
 import unittest
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import page_check  # noqa: E402
+
 LAUNCHER = Path(__file__).resolve().parent / "launch.sh"
+GOOD_PAGE = """<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lap siding</title><meta name="description" content="Lap siding for builders.">
+<link rel="canonical" href="https://example.com/lap-siding"></head>
+<body><a href="/specs">Siding specs</a> <a href="/"><img src="logo.png" alt="Home"></a></body></html>"""
+BAD_PAGE = """<html><head><meta name="robots" content="noindex"><link rel="canonical" href="/a"><link rel="canonical" href="/b"></head>
+<body><img src="x.png"><a href="javascript:go()">here</a><a href="/x"></a>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Product"}</script></body></html>"""
 ROBOTS_SPEC_URL = "https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec"
 
 
@@ -66,7 +78,8 @@ class GoogleDocsServerTest(unittest.TestCase):
         names = [tool["name"] for tool in self.session.request("tools/list")["result"]["tools"]]
         self.assertEqual(
             names,
-            ["search_google_docs", "read_google_doc", "check_google_quote", "check_structured_data", "list_google_docs", "check_google_docs", "update_google_docs", "google_docs_job"],
+            ["search_google_docs", "read_google_doc", "check_google_quote", "check_structured_data", "check_page", "google_docs_changes",
+             "list_google_docs", "check_google_docs", "update_google_docs", "google_docs_job"],
         )
 
     def test_search_finds_robots_txt_in_crawling_pages(self) -> None:
@@ -153,6 +166,34 @@ class GoogleDocsServerTest(unittest.TestCase):
         text, is_error = self.session.call("check_structured_data", markup='{"@type": "Product",}')
         self.assertTrue(is_error)
         self.assertIn("not valid JSON", text)
+
+    def test_every_page_check_quote_is_in_its_page(self) -> None:
+        for check in page_check.CHECKS:
+            with self.subTest(check=check["name"]):
+                text, is_error = self.session.call("check_google_quote", page=check["source"], quote=check["quote"])
+                self.assertFalse(is_error, text)
+                self.assertTrue(text.startswith("Found verbatim"), text)
+                self.assertIn(f"source: {check['source']}", text)
+
+    def test_check_good_page(self) -> None:
+        text, is_error = self.session.call("check_page", html=GOOD_PAGE)
+        self.assertFalse(is_error)
+        self.assertTrue(text.startswith(f"{len(page_check.CHECKS)} checks: {len(page_check.CHECKS)} passed, 0 failed."), text)
+
+    def test_check_bad_page(self) -> None:
+        text, _ = self.session.call("check_page", html=BAD_PAGE)
+        failed = {line.split(":")[0].removeprefix("FAIL ") for line in text.splitlines() if line.startswith("FAIL ")}
+        self.assertEqual(failed, {"title", "meta description", "viewport", "html lang", "doctype", "charset", "no noindex", "one canonical",
+                                  "canonical absolute", "img alt", "link href", "link text", "generic link text", "structured data"})
+        self.assertIn("meant to stay out of Google", text)
+        self.assertTrue(self.session.call("check_page", html="<p>", path="x.html")[1])
+
+    def test_changes_newest_first(self) -> None:
+        text, is_error = self.session.call("google_docs_changes", since="2026-11-11")
+        self.assertFalse(is_error)
+        self.assertTrue(text.startswith("## 2026-11-11 search-help"), text)
+        self.assertIn("## 2026-11-11 lighthouse", text)
+        self.assertTrue(self.session.call("google_docs_changes", since="last week")[1])
 
     def test_list_guide(self) -> None:
         text, _ = self.session.call("list_google_docs", guide="crawling")

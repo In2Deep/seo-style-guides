@@ -18,6 +18,7 @@ TABLE_HEADER = re.compile(r"^\|\s*\**(Required|Recommended) properties")
 HEADING = re.compile(r"^(#+) (.*)")
 CODE_NAME = re.compile(r"`([\w.@]+)`")
 BARE_TYPE_HEADING = re.compile(r"([A-Z][A-Za-z]+)(?: \(.*\)| entity)?")
+OPTION_ROW = re.compile(r"^\|\s*Option (\w+)\s*\|")  # "| Option A ||": required properties split into alternative sets
 LD_JSON_SCRIPT = re.compile(r"<script\b[^>]*\btype\s*=\s*[\"']?application/ld\+json[\"']?[^>]*>(.*?)</script>", re.I | re.S)
 
 
@@ -36,10 +37,11 @@ def read_sections() -> list[dict]:
     A table belongs to the nearest heading (level 3 or deeper) that names a type; a table straight
     under "Structured data type definitions" belongs to the types in the page title. Beta pages are
     skipped. Entries with several names ("`price` or `priceSpecification.price`") mean any one will do.
+    Rows after an "Option A" row belong to that option; any one complete option will do.
     """
     sections = []
     for path in sorted(GUIDE_FOLDER.glob(PAGE_PREFIX + "*.md")):
-        title, stack, in_code, kind, page_sections = "", [], False, None, {}
+        title, stack, in_code, kind, option, page_sections = "", [], False, None, "", {}
         for line in path.read_text(encoding="utf-8").splitlines():
             if line.startswith("```"):
                 in_code = not in_code
@@ -52,12 +54,15 @@ def read_sections() -> list[dict]:
                 stack = [entry for entry in stack if entry[0] < level] + [(level, text)]
                 continue
             if header := TABLE_HEADER.match(line):
-                kind = header[1].lower()
+                kind, option = header[1].lower(), ""
                 continue
             if not line.startswith("|"):
                 kind = None
                 continue
             if not kind or not stack or line.startswith("|---"):
+                continue
+            if choice := OPTION_ROW.match(line):
+                option = choice[1]
                 continue
             owner = None
             for level, text in reversed(stack):
@@ -71,7 +76,7 @@ def read_sections() -> list[dict]:
             names = tuple(CODE_NAME.findall(line.split("|")[1]))
             if owner and owner[1] and names:
                 section = page_sections.setdefault(owner[0], {"heading": owner[0], "types": set(owner[1]), "entries": []})
-                section["entries"].append((kind, names))
+                section["entries"].append((kind, names, option))
         if "beta" in title.lower():
             continue
         for section in page_sections.values():
@@ -104,31 +109,40 @@ def has_property(item: dict, path: str) -> bool | None:
     return all(has_property(child, rest) for child in children)
 
 
-def missing(item: dict, entries: list[tuple[str, tuple[str, ...]]], kind: str) -> list[str]:
-    absent = []
-    for entry_kind, names in entries:
+def missing(item: dict, entries: list[tuple[str, tuple[str, ...], str]], kind: str, optional: tuple[str, ...] = ()) -> list[str]:
+    absent, options = [], {}
+    for entry_kind, names, option in entries:
+        if entry_kind != kind or names[0] in optional:
+            continue
         found = [has_property(item, name) for name in names]
-        if entry_kind == kind and not any(found) and not (len(names) == 1 and found[0] is None):
-            label = names[0] if len(names) == 1 else "one of " + " or ".join(names)
-            if label not in absent:
-                absent.append(label)
+        gap = not any(found) and not (len(names) == 1 and found[0] is None)
+        label = names[0] if len(names) == 1 else "one of " + " or ".join(names)
+        if option:
+            options.setdefault(option, []).extend([label] if gap else [])
+        elif gap and label not in absent:
+            absent.append(label)
+    if options and all(options.values()):  # no option is complete
+        absent.append("one option of " + " or ".join(f"{key} ({', '.join(labels)})" for key, labels in options.items()))
     return absent
 
 
-def check_against(item: dict, section: dict, sections: list[dict], indent: str) -> list[str]:
+def check_against(item: dict, section: dict, sections: list[dict], indent: str, optional: tuple[str, ...] = ()) -> list[str]:
     lines = []
     for kind in ("required", "recommended"):
-        names = missing(item, section["entries"], kind)
+        names = missing(item, section["entries"], kind, optional)
         lines.append(f"{indent}{kind}, missing: {', '.join(names) if names else 'none'}")
     for name, value in item.items():
-        for child in value if isinstance(value, list) else [value]:
+        children = value if isinstance(value, list) else [value]
+        for child in children:
             if not isinstance(child, dict) or "@type" not in child:
                 continue
             for child_type in item_types(child):
                 for child_section in sections:
                     if child_section["file"] == section["file"] and child_type in child_section["types"]:
                         lines.append(f"{indent}nested {child_type} in {name} ({child_section['heading']}):")
-                        lines.extend(check_against(child, child_section, sections, indent + "  "))
+                        last_crumb = child is children[-1] and child_type == "ListItem" and section["file"].endswith("--breadcrumb.md")
+                        # Google: the last item in the breadcrumb trail may omit `item`
+                        lines.extend(check_against(child, child_section, sections, indent + "  ", ("item",) if last_crumb else ()))
     return lines
 
 
