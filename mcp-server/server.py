@@ -169,7 +169,7 @@ def search_google_docs(query: str, guide: str = ALL_GUIDES, max_results: int = S
         hits = find_page_hits(guides, lambda folded_line: all(word in folded_line for word in words))
     scope = "all guides" if guide == ALL_GUIDES else f"guide {guide}"
     if not hits:
-        return f'No saved page in {scope} contains "{query}" (case-insensitive phrase, then every word on one line).\n\n' + by_meaning(query, guides)
+        return f'No saved page in {scope} contains "{query}" (case-insensitive phrase, then every word on one line).\n\n{by_meaning(query, guides)}'.rstrip()
 
     hits.sort(key=lambda page_hits: (not page_hits.title_matches, -len(page_hits.lines)))  # stable: guide order breaks ties
     total_lines = sum(len(page_hits.lines) for page_hits in hits)
@@ -203,11 +203,17 @@ def search_google_docs(query: str, guide: str = ALL_GUIDES, max_results: int = S
         more = len(other_pages) - len(listed)
         parts.append("Other pages with matches (matching lines):\n" + "\n".join(listed) + (f"\n- and {more} more" if more > 0 else ""))
     parts.append(by_meaning(query, guides))
+    parts = [part for part in parts if part]
     return "\n\n".join(parts)
 
 
 def by_meaning(query: str, guides: list[sync.Guide]) -> str:
-    """The sections closest in meaning to the query, or one line saying why that search is off."""
+    """The sections closest in meaning to the query, or one line saying why that search is off.
+
+    The vectors folder is the switch: until someone builds it with vectors.py, search is keyword
+    only and says nothing about it."""
+    if not vectors.VECTORS_FOLDER.exists():
+        return ""
     try:
         closest = vectors.search(query, {selected.key for selected in guides}, MEANING_RESULTS)
     except RuntimeError as error:
@@ -491,7 +497,7 @@ def run_job(job: Job) -> None:
     try:
         for guide in job.guides:
             job.results.append(run_guide(job, guide))
-        if job.kind == "update" and any(result["status"] == "saved" for result in job.results):
+        if job.kind == "update" and vectors.VECTORS_FOLDER.exists() and any(result["status"] == "saved" for result in job.results):
             job.progress = "rebuilding the vectors for search by meaning"
             try:
                 job.results.append({"vectors": f"rebuilt: {vectors.build()} pieces"})

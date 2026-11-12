@@ -45,6 +45,12 @@ After `--save`, `git diff guides` shows exactly what Google changed, and `CHANGE
 
 The script fetches eight pages at a time. A check of all seven guides (about 500 pages) takes about 45 seconds. Only one run can go at a time: a second run started while one is going is refused.
 
+Pages are saved byte for byte, so the standard tool also verifies a copy:
+
+```bash
+cd guides/seo && shasum -a 256 -c SHA256SUMS
+```
+
 ## Check a page before it is deployed
 
 ```bash
@@ -69,33 +75,52 @@ the site's sitemap and by following links on the same site, and prints one PASS 
 page with only the failed checks. For a fetched page, the noindex check also reads the
 `X-Robots-Tag` HTTP header. It stops at 500 pages, and a site behind a login cannot be checked.
 
-## Search by meaning
+## Search by meaning (optional)
+
+The tool works without this. With no setup, `search_google_docs` is a keyword search, and every
+other tool works the same. Search by meaning adds the five closest sections under the keyword
+results, so a question finds the right section even when it uses different words.
+
+It needs a local embedding model. The defaults are LM Studio's local server on `127.0.0.1:1234`
+with the `text-embedding-qwen3-embedding-0.6b` model loaded.
 
 ```bash
-python3 vectors.py   # several minutes; run it after an update changes pages
+python3 vectors.py   # several minutes; writes the vectors/ folder
 ```
 
-`vectors.py` needs LM Studio's local server on `127.0.0.1:1234` with the
-`text-embedding-qwen3-embedding-0.6b` model loaded. With the vectors built, `search_google_docs`
-adds the five closest sections by meaning under its keyword results. Without them, or with
-LM Studio off, search is keyword only and says so. An update through the MCP server rebuilds the
-vectors itself.
+The `vectors/` folder is the switch:
 
-Pages are saved byte for byte, so the standard tool also verifies a copy:
+- **No folder:** keyword search only. Nothing else to do.
+- **Folder exists:** search by meaning is on. If the embedding server is not running, search says
+  so and stays keyword only. An update through the MCP server rebuilds the vectors itself; after
+  an update from the command line, run `python3 vectors.py` again.
+- **To turn it off:** delete the `vectors/` folder.
 
-```bash
-cd guides/seo && shasum -a 256 -c SHA256SUMS
-```
+### Use a different embedding server
+
+The settings are three lines at the top of `vectors.py`:
+
+| Line | What it is | Default |
+|---|---|---|
+| `ENDPOINT` | The embedding server's address. Any server with an OpenAI-compatible `/v1/embeddings` works. | `http://127.0.0.1:1234/v1/embeddings` |
+| `MODEL` | The model's name as that server knows it. | `text-embedding-qwen3-embedding-0.6b` |
+| `DIMENSIONS` | How many numbers the model returns per text. | `1024` |
+
+After changing any of them, delete `vectors/` and run `python3 vectors.py` again, because vectors
+from one model cannot be searched with another. `QUERY_INSTRUCTION` and the `Instruct: ... Query:`
+wrapper in `search()` are written for Qwen3 embedding models; another model may want a different
+query format. If you change these lines, a later `git pull` may ask you to merge them.
 
 ## Use the MCP server
 
-Register the launcher with an MCP client. For Claude Code, add this to a project's `.mcp.json`:
+Register the launcher with an MCP client. For Claude Code, add this to a project's `.mcp.json`,
+with the full path to where you put this repo:
 
 ```json
 {
   "mcpServers": {
     "google_seo_and_style_guides": {
-      "command": "/Users/brandon/seo-style-guides/mcp-server/launch.sh",
+      "command": "/path/to/seo-style-guides/mcp-server/launch.sh",
       "args": []
     }
   }

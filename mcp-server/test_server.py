@@ -108,7 +108,8 @@ class GoogleDocsServerTest(unittest.TestCase):
         text, is_error = self.session.call("search_google_docs", query="robots.txt", guide="crawling")
         self.assertFalse(is_error)
         self.assertIn("guides/crawling/robots-txt--", text)
-        self.assertTrue("Closest sections by meaning" in text or "Search by meaning is off:" in text, text[-300:])
+        vectors_built = (LAUNCHER.parent.parent / "vectors").exists()  # no folder: keyword only, quietly
+        self.assertEqual(vectors_built, "Closest sections by meaning" in text or "Search by meaning is off:" in text, text[-300:])
 
     def test_quote_found_across_lines(self) -> None:
         text, is_error = self.session.call("check_google_quote", page=ROBOTS_SPEC_URL, quote="Google's crawlers download and parse the site's robots.txt file")
