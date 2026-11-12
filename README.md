@@ -188,6 +188,23 @@ The server has ten tools:
 | `update_google_docs` | Saves Google's current version of one guide over its local copy. |
 | `google_docs_job` | Reports the progress and result of a check or update. |
 
+## When guides disagree
+
+All seven guides are Google's, but they come from different teams and sometimes disagree. For
+example, a web.dev course suggests a title length, and the Search Central guide says there is no
+limit. Google Search's own rules win:
+
+| Tier | Guides | What they are |
+|---|---|---|
+| 1 | `seo`, `crawling`, `search-help` | Google Search's own rules for how it crawls, indexes and shows pages |
+| 2 | `lighthouse` | Chrome's Lighthouse audits |
+| 3 | `vitals`, `learn` | web.dev guidance |
+| none | `style` | How to write documentation; it does not compete with the others |
+
+The lower tier number wins, and a higher-numbered tier still applies wherever tier 1 is silent.
+Every search result, page and guide listing shows its tier, and the server tells each session this
+rule when it connects. The order is `GUIDE_TIERS` in `mcp-server/server.py`.
+
 ## Test
 
 ```bash

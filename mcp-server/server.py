@@ -67,8 +67,31 @@ SERVER_INSTRUCTIONS = (
     "in a page. check_structured_data checks JSON-LD against Google's property tables, check_page runs "
     "Google-quoted checks on a built HTML page before it is deployed, and google_docs_changes lists what "
     "recent updates of the copies changed. The copies are a snapshot: check_google_docs compares them with "
-    "Google's live guides; update_google_docs overwrites a copy, so run it only when the user asks."
+    "Google's live guides; update_google_docs overwrites a copy, so run it only when the user asks. "
+    "When guides disagree, Google Search's own rules win: tier 1 (seo, crawling, search-help) over tier 2 "
+    "(lighthouse) over tier 3 (vitals, learn). Every result shows its tier. Follow the lowest tier number "
+    "and say which guide you set aside; a higher-numbered tier still applies wherever tier 1 is silent. "
+    "The style guide covers how to write documentation and does not compete with the others."
 )
+
+# Which guide wins when two disagree. Google Search's own rules for how it crawls, indexes and shows
+# pages come first; a lower number wins. The style guide is about writing, so it has no tier.
+GUIDE_TIERS = {
+    "seo": (1, "Google Search's own rules"),
+    "crawling": (1, "Google Search's own rules"),
+    "search-help": (1, "Google Search's own rules"),
+    "lighthouse": (2, "Chrome's Lighthouse audits"),
+    "vitals": (3, "web.dev guidance"),
+    "learn": (3, "web.dev guidance"),
+}
+
+
+def tier_label(guide_key: str) -> str:
+    """A short tag such as "[tier 1: Google Search's own rules]" for a result line."""
+    if guide_key not in GUIDE_TIERS:
+        return "[writing style only]" if guide_key == "style" else ""
+    number, name = GUIDE_TIERS[guide_key]
+    return f"[tier {number}: {name}]"
 
 PARSE_ERROR = -32700
 INVALID_REQUEST = -32600
@@ -181,7 +204,7 @@ def search_google_docs(query: str, guide: str = ALL_GUIDES, max_results: int = S
         lines = page_hits.lines[: min(LINES_SHOWN_PER_PAGE, max_results - shown_lines)]
         shown_lines += len(lines)
         block = [
-            f"{repo_path(page_hits.guide, page_hits.file_name)}: {page_hits.page.title}",
+            f"{repo_path(page_hits.guide, page_hits.file_name)}: {page_hits.page.title} {tier_label(page_hits.guide.key)}",
             f"  source: {page_hits.page.page_url}",
             *(f"  {number}: {snippet(line, words[0])}" for number, line in lines),
         ]
@@ -221,7 +244,7 @@ def by_meaning(query: str, guides: list[sync.Guide]) -> str:
     lines = ["Closest sections by meaning (read one with read_google_doc page + section or start_line):"]
     for score, piece in closest:
         path = repo_path(sync.GUIDES[piece["guide"]], piece["file"])
-        lines.append(f'- {path}: {piece["title"]} › {piece["heading"]} (lines {piece["first_line"]}–{piece["last_line"]}, score {score:.2f})')
+        lines.append(f'- {path}: {piece["title"]} › {piece["heading"]} (lines {piece["first_line"]}–{piece["last_line"]}, score {score:.2f}) {tier_label(piece["guide"])}')
         lines.append(f'  source: {piece["url"]}')
     return "\n".join(lines)
 
@@ -306,7 +329,7 @@ def read_google_doc(page: str, guide: str = "", section: str = "", start_line: i
     if last < end:
         shown += f"; more follows: call again with start_line={last + 1}"
     header = [
-        f"{repo_path(found_guide, file_name)}: {title}",
+        f"{repo_path(found_guide, file_name)}: {title} {tier_label(found_guide.key)}",
         f"source: {source} (Google LLC, CC BY 4.0)",
         shown,
         "---",
@@ -390,7 +413,7 @@ def list_google_docs(guide: str = ALL_GUIDES) -> str:
         pages = sync.read_saved_pages(selected)
         snapshot = sync.saved_snapshot_date(selected) or "unknown"
         lines = [
-            f"## {selected.key}: {selected.title}",
+            f"## {selected.key}: {selected.title} {tier_label(selected.key)}",
             f"{len(pages)} pages in {repo_path(selected, '')}/, snapshot {snapshot}. Home: {selected.home_url}",
             f"Each page's address: {selected.origin}{selected.root_path}/ + its file name without .md, "
             f"with {sync.PATH_SEPARATOR_IN_FILE_NAME} read as /.",

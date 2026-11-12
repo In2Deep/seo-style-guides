@@ -108,6 +108,7 @@ class GoogleDocsServerTest(unittest.TestCase):
         text, is_error = self.session.call("search_google_docs", query="robots.txt", guide="crawling")
         self.assertFalse(is_error)
         self.assertIn("guides/crawling/robots-txt--", text)
+        self.assertIn("[tier 1: Google Search's own rules]", text)  # when guides disagree, tier 1 wins
         vectors_built = (LAUNCHER.parent.parent / "vectors").exists()  # no folder: keyword only, quietly
         self.assertEqual(vectors_built, "Closest sections by meaning" in text or "Search by meaning is off:" in text, text[-300:])
 
