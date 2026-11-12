@@ -30,7 +30,7 @@ Everything runs on Python 3.10 or later with the standard library only. There is
 | `mcp-server/launch.sh` | Starts the server with the first Python 3.10 or later on the machine. |
 | `mcp-server/test_server.py` | Tests that drive the server through its launcher. |
 | `skills/json-ld/` | The `/lx-seo:json-ld` action: find mistakes in a whole site's JSON-LD. |
-| `skills/schema/` | The `/lx-seo:schema` action: find markup a site could add, and draft it. |
+| `skills/schema/` | The `/lx-seo:schema` action: find markup a site could add, and draft it. `accessibility-vocabulary.md` holds the allowed values for its optional accessibility metadata. |
 | `.claude-plugin/` | The plugin and marketplace manifests. The plugin is named `lx-seo`, so its actions are typed `/lx-seo:<action>`. |
 
 ## Check and update the copies
@@ -167,6 +167,7 @@ You don't call the tools yourself. Ask in plain words and the session picks the 
 | One built page checked | "Run the page check on dist/index.html." | `check_page` |
 | Mistakes in a whole site's JSON-LD | `/lx-seo:json-ld https://example.com` | the `json-ld` skill and `page_check.py` |
 | Markup a whole site could add | `/lx-seo:schema https://example.com` | the `schema` skill and `page_check.py` |
+| The same, plus accessibility metadata | `/lx-seo:schema https://example.com accessibility` | the `schema` skill and the W3C accessibility vocabulary |
 | To know if Google changed anything | "Are the saved guides current?" | `check_google_docs` |
 | What changed, and when | "What changed in the guides since 2026-11-01?" | `google_docs_changes` |
 | The newest guides | "Update the SEO guide." | `update_google_docs` |
@@ -175,6 +176,14 @@ You don't call the tools yourself. Ask in plain words and the session picks the 
 and markup that doesn't match what the page shows. `/lx-seo:schema` looks for what each page could
 add: Google search features the page fits, with the JSON-LD drafted from what the page shows.
 Both report and change nothing. Both read JSON-LD only, not microdata or RDFa.
+
+With `accessibility` after the address, `/lx-seo:schema` also drafts schema.org's accessibility
+properties, such as `accessibilityFeature`, `accessMode` and `accessibilityHazard`. They describe
+how people with disabilities can use a page's content, using the values in the W3C
+[Schema.org Accessibility Properties for Discoverability Vocabulary](https://www.w3.org/2021/a11y-discov-vocab/latest/).
+Google Search doesn't use these properties, so the report lists them in a separate section and
+never ranks them with the Google suggestions. Values the HTML can't prove, such as hazards and
+contrast, are listed for the site owner to confirm.
 
 The server has ten tools:
 
