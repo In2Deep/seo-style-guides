@@ -29,6 +29,8 @@ Everything runs on Python 3.10 or later with the standard library only. There is
 | `mcp-server/server.py` | The MCP server (stdio). It serves the saved copies and can run the sync as a background job. |
 | `mcp-server/launch.sh` | Starts the server with the first Python 3.10 or later on the machine. |
 | `mcp-server/test_server.py` | Tests that drive the server through its launcher. |
+| `skills/json-ld/` | The `json-ld` skill: check a whole site's JSON-LD and report. |
+| `.claude-plugin/` | The plugin and marketplace manifests that let Claude Code install this repo as a plugin. |
 
 ## Check and update the copies
 
@@ -111,10 +113,33 @@ from one model cannot be searched with another. `QUERY_INSTRUCTION` and the `Ins
 wrapper in `search()` are written for Qwen3 embedding models; another model may want a different
 query format. If you change these lines, a later `git pull` may ask you to merge them.
 
-## Use the MCP server
+## Set it up in Claude Code
 
-Register the launcher with an MCP client. For Claude Code, add this to a project's `.mcp.json`,
-with the full path to where you put this repo:
+There are two ways. Both give a session the same ten tools.
+
+### As a plugin
+
+From a copy of this repo on your computer:
+
+```
+/plugin marketplace add /path/to/seo-style-guides
+/plugin install seo-style-guides@seo-style-guides
+```
+
+From GitHub, replace `<owner>/<repo>` with the repository that holds it:
+
+```
+/plugin install seo-style-guides --marketplace <owner>/<repo>
+```
+
+A plugin install is a snapshot. It gives you keyword search, every checker, and the `json-ld`
+skill with no setup. Claude Code replaces the plugin's folder when the plugin updates, so guide
+updates and vectors made inside it do not last. To keep your own updates or use search by meaning,
+use a clone.
+
+### As a clone
+
+Clone the repo, then add this to a project's `.mcp.json`, with the full path to where you put it:
 
 ```json
 {
@@ -126,6 +151,27 @@ with the full path to where you put this repo:
   }
 }
 ```
+
+Start a new session after either one. Sessions that were already open don't pick it up.
+
+## What to ask for
+
+You don't call the tools yourself. Ask in plain words and the session picks the tool.
+
+| You want | Ask something like | What runs |
+|---|---|---|
+| Google's rule on a topic | "What does Google say about image alt text?" | `search_google_docs`, then `read_google_doc` |
+| Proof a quote is real | "Confirm that quote is in Google's page." | `check_google_quote` |
+| A JSON-LD block checked | "Check this JSON-LD against Google's requirements." | `check_structured_data` |
+| One built page checked | "Run the page check on dist/index.html." | `check_page` |
+| A whole site's JSON-LD checked | `/seo-style-guides:json-ld https://example.com` | the `json-ld` skill and `page_check.py` |
+| To know if Google changed anything | "Are the saved guides current?" | `check_google_docs` |
+| What changed, and when | "What changed in the guides since 2026-11-01?" | `google_docs_changes` |
+| The newest guides | "Update the SEO guide." | `update_google_docs` |
+
+The `json-ld` skill checks every page under the address: required and recommended properties,
+markup that doesn't match what the page shows, and pages that fit a Google search feature but have
+no markup. It reports and changes nothing. It reads JSON-LD only, not microdata or RDFa.
 
 The server has ten tools:
 
@@ -154,3 +200,13 @@ Google; it runs only when `GOOGLE_DOCS_NETWORK_TESTS` is set:
 ```bash
 GOOGLE_DOCS_NETWORK_TESTS=1 python3 -B -m unittest discover -s mcp-server
 ```
+
+## Credits
+
+The pages in `guides/` are unchanged copies of documentation published by Google LLC on
+developers.google.com, web.dev and developer.chrome.com. Google licenses that content under the
+[Creative Commons Attribution 4.0 License](https://creativecommons.org/licenses/by/4.0/) and its
+code samples under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0). Each
+saved page's source address is listed in its guide's `README.md`.
+
+This project is not affiliated with or endorsed by Google.

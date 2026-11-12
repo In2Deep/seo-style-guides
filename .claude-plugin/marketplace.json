@@ -1,0 +1,14 @@
+{
+  "name": "seo-style-guides",
+  "description": "Google's SEO, crawling, style, Lighthouse and web.dev guides saved locally, with tools that check pages against them.",
+  "owner": {
+    "name": "Brandon Hatch"
+  },
+  "plugins": [
+    {
+      "name": "seo-style-guides",
+      "description": "Search and read Google's guides, confirm quotes, check JSON-LD against Google's property tables, and check built pages before they are deployed.",
+      "source": "./"
+    }
+  ]
+}

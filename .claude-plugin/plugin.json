@@ -1,0 +1,15 @@
+{
+  "name": "seo-style-guides",
+  "version": "0.1.0",
+  "description": "Google's SEO, crawling, style, Lighthouse and web.dev guides saved locally, with search, a quote checker, a JSON-LD checker and a page checker.",
+  "author": {
+    "name": "Brandon Hatch"
+  },
+  "keywords": ["seo", "structured-data", "json-ld", "lighthouse", "core-web-vitals", "style-guide", "mcp"],
+  "mcpServers": {
+    "google_seo_and_style_guides": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/mcp-server/launch.sh",
+      "args": []
+    }
+  }
+}
