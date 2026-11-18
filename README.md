@@ -96,14 +96,19 @@ python3 image_check.py https://example.com/
 
 The image checker prints PASS or FAIL for 10 checks, each with the Google quote it rests on: width
 and height on every `<img>`, a format Google Images supports (and a file extension that matches
-it), descriptive file names, alt text that isn't a file name, the first picture of the main
-content not lazy loaded, the file's shape matching its width and height, files no more than twice
-as wide as they show, JPEG or PNG of 10 KB or more with no WebP or AVIF version, JSON-LD images
-of at least 50,000 pixels, and a square favicon. It opens every image file and reads its type and
-pixel size from its first bytes (PNG, JPEG, GIF, BMP, WebP, AVIF, HEIC, TIFF, ICO, SVG). For a
-local file, image paths are read from disk; a path that starts with `/` is looked up in the nearest
-folder above the page that has it. Given a web address, it checks every page the way
-`page_check.py` does and fetches each image once. It reads HTML only, not CSS, and changes nothing.
+it), descriptive file names (a build tool's hash is ignored), alt text present and not a file name,
+the first picture of the main content not lazy loaded, every file's shape matching its width and
+height (Lighthouse's rule, measured at the file's own size; a `<source>` of another shape needs its
+own width and height), files no more than twice as wide as they show, JPEG or PNG of 10 KB or more
+with no file that really is WebP or AVIF beside it, JSON-LD images of at least 50,000 pixels on the
+types whose guides ask for it (Article, Event, LocalBusiness, Product, Recipe), and a square
+favicon in a format Google's favicon page lists. It opens every image file, up to 30 MB of each,
+and reads its type and pixel size from its first bytes (PNG, JPEG, GIF, BMP, WebP, AVIF, HEIC,
+TIFF, ICO, PPM, SVG); a file that is cut short, can't be opened or isn't really an image is a
+failure. For a local file, image paths are read from disk, following `<base href>`; a path that
+starts with `/` is looked up in the nearest folder above the page that has it. Given a web address,
+it checks every page the way `page_check.py` does and fetches each image once. It reads HTML only,
+not CSS, lists every problem it finds, and changes nothing. Needs Python 3.10 or newer.
 
 ## Search by meaning (optional)
 

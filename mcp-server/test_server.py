@@ -288,13 +288,20 @@ class SiteCheckTest(unittest.TestCase):
 class ImageCheckTest(unittest.TestCase):
     def test_bad_images_fail_every_check(self) -> None:
         def png(width: int, height: int, padding: int = 0) -> bytes:
-            return b"\x89PNG\r\n\x1a\n" + b"\x00\x00\x00\rIHDR" + width.to_bytes(4, "big") + height.to_bytes(4, "big") + bytes(padding)
-        jpeg = b"\xff\xd8\xff\xc0\x00\x11\x08" + (300).to_bytes(2, "big") + (400).to_bytes(2, "big") + bytes(12)
+            return (b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR" + width.to_bytes(4, "big") + height.to_bytes(4, "big")
+                    + bytes(9 + padding) + b"\x00\x00\x00\x00IEND\xaeB`\x82")
+        jpeg = b"\xff\xd8\xff\xc0\x00\x11\x08" + (300).to_bytes(2, "big") + (400).to_bytes(2, "big") + bytes(12) + b"\xff\xd9"
         heic = (24).to_bytes(4, "big") + b"ftypheic" + bytes(12) + b"\x00\x00\x00\x14ispe" + bytes(4) + (8).to_bytes(4, "big") * 2
         page = """<!DOCTYPE html><html lang="en"><head><link rel="icon" href="icon.png">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "image": "small.png"}</script></head>
 <body><main><img src="IMG_1234.jpg" alt="IMG_1234.jpg" loading="lazy">
-<img src="/wide.png" width="100" height="100" alt="A wide board"><img src="photo.heic" width="8" height="8" alt="A board"></main></body></html>"""
+<img src="/wide.png" width="100" height="100" alt="A wide board"><img src="photo.heic" width="8" height="8" alt="A board">
+<img src="https://[bad/x.png" srcset="blob:x 2x" width="\u00b2" height="1" alt="A broken address"></main></body></html>"""
+        expected = {"width and height": "no width and height", "supported format": "is HEIC",
+                    "descriptive file names": "IMG_1234.jpg", "alt text": 'alt="IMG_1234.jpg"',
+                    "first picture not lazy": 'has loading="lazy"', "aspect ratio": "is 400x100 but set to 100x100",
+                    "not oversized": "200 wide would be enough", "modern format": "with no WebP or AVIF version",
+                    "structured data images": "under 50,000", "favicon": "not square"}
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
             (root / "pages").mkdir()
@@ -304,10 +311,16 @@ class ImageCheckTest(unittest.TestCase):
             for name, data in files.items():
                 (root / name).write_bytes(data)
             results = image_check.run_checks(page, root / "pages" / "index.html")
-        self.assertEqual([check["name"] for check, passed, _ in results if passed], [], image_check.report(results))
+        found = {check["name"]: (passed, text) for check, passed, text in results}
+        self.assertEqual(set(found), set(expected))
+        for name, words in expected.items():
+            with self.subTest(check=name):
+                self.assertFalse(found[name][0], found[name][1])
+                self.assertIn(words, found[name][1])
         self.assertEqual(image_check.image_facts(jpeg), ("jpeg", 400, 300))
         self.assertEqual(image_check.image_facts(heic), ("heic", 8, 8))
-
+        self.assertEqual(image_check.srcset_urls("board,closeup.png 2x, data:image/png;base64,AAAA 1x"),
+                         ["board,closeup.png", "data:image/png;base64,AAAA"])
 
 if __name__ == "__main__":
     unittest.main()
