@@ -16,7 +16,12 @@ Guides, each in its own folder under guides/:
     learn   web.dev Learn courses (performance, images, accessibility, HTML, forms, responsive design)
     search-help  Google Search help and documentation updates  https://developers.google.com/search/help
 
-Pages are saved byte for byte as Google serves them, so the standard tool also verifies a copy:
+One guide is not Google's and has no Markdown version:
+    a11y-vocab  W3C Schema.org Accessibility Properties for Discoverability Vocabulary
+                https://www.w3.org/2021/a11y-discov-vocab/latest/
+It is one HTML document, which this script converts to Markdown (see html_to_markdown).
+
+Google's pages are saved byte for byte as Google serves them, so the standard tool also verifies a copy:
     cd guides/seo && shasum -a 256 -c SHA256SUMS
 
 Run (Python 3.10+, standard library only):
@@ -92,6 +97,13 @@ class Guide:
     scopes: tuple[str, ...] = ()  # path prefixes that count as the guide, when not just root_path
     menus: tuple[tuple[str, str], ...] = ()  # (menu page path, section label) when the guide has several menus
     follow_links: bool = True  # also save in-guide pages the saved pages link to
+    owner: str = "Google"  # who publishes the guide, for messages such as "Google changed the guide"
+    credit: str = "Google LLC, CC BY 4.0"  # the short credit shown beside every page read
+    # For a guide that isn't Google's: a function that downloads it in place of read_navigation and
+    # the Markdown fetch, and the README.md lines that replace the Google source and license lines.
+    download: Callable | None = None
+    readme_source: tuple[str, ...] = ()
+    readme_license: tuple[str, ...] = ()
 
     @property
     def origin(self) -> str:
@@ -128,6 +140,134 @@ class Guide:
     def file_name(self, path: str) -> str:
         relative = path[len(self.root_path):].strip("/")
         return f"{relative.replace('/', PATH_SEPARATOR_IN_FILE_NAME) or 'index'}.md"
+
+
+
+class MarkdownWriter(HTMLParser):
+    """Convert a W3C report's HTML to plain Markdown: headings, paragraphs, lists, notes and code.
+
+    Scripts, styles, the table of contents and the example format buttons are dropped. Links to
+    other sites keep their address; links within the document keep only their text.
+    """
+
+    SKIPPED = {"script", "style", "nav", "fieldset", "button", "input", "head"}
+    BLOCKS = {"p", "div", "section", "aside", "blockquote", "dl", "dt", "dd", "ul", "ol", "li",
+              "details", "summary", "table", "tr", "hr", "figure", "figcaption", "h1", "h2", "h3",
+              "h4", "h5", "h6"}
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.blocks: list[str] = []
+        self._text: list[str] = []
+        self._prefix = ""
+        self._skip_depth = 0
+        self._skip_tag = ""
+        self._pre: list[str] | None = None
+        self._lists: list[str] = []
+        self._link: str | None = None
+        self._link_text: list[str] = []
+
+    def _flush(self) -> None:
+        text = " ".join("".join(self._text).split())
+        if text:
+            self.blocks.append(self._prefix + text)
+        self._text, self._prefix = [], ""
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        classes = (attributes.get("class") or "").split()
+        if self._skip_depth:
+            self._skip_depth += tag == self._skip_tag
+            return
+        if tag in self.SKIPPED or "ex-buttons" in classes:
+            self._skip_depth, self._skip_tag = 1, tag
+            return
+        if self._pre is not None:
+            return
+        if tag == "pre":
+            self._flush()
+            self._pre = []
+        elif tag in self.BLOCKS:
+            self._flush()
+            if tag in ("ul", "ol"):
+                self._lists.append(tag)
+            elif tag == "li":
+                self._prefix = "  " * max(len(self._lists) - 1, 0) + "- "
+            elif tag == "dt":
+                self._prefix = "- "
+            elif tag[0] == "h" and tag[1:].isdigit():
+                self._prefix = "#" * int(tag[1]) + " "
+            elif tag == "hr":
+                self.blocks.append("---")
+        elif tag == "br":
+            self._text.append(" ")
+        elif tag == "a":
+            href = attributes.get("href") or ""
+            self._link = href if href.startswith(("http://", "https://")) else None
+            self._link_text = []
+
+    def handle_endtag(self, tag):
+        if self._skip_depth:
+            self._skip_depth -= tag == self._skip_tag
+            return
+        if self._pre is not None:
+            if tag == "pre":
+                code = "".join(self._pre).strip("\n")
+                self.blocks.append("```\n" + code + "\n```")
+                self._pre = None
+            return
+        if tag in self.BLOCKS:
+            self._flush()
+            if tag in ("ul", "ol") and self._lists:
+                self._lists.pop()
+        elif tag == "a" and self._link is not None:
+            text = " ".join("".join(self._link_text).split())
+            if text and text != self._link:
+                self._text.append(f"[{text}]({self._link})")
+            else:
+                self._text.append(f"<{self._link}>")
+            self._link = None
+
+    def handle_data(self, data):
+        if self._skip_depth:
+            return
+        if self._pre is not None:
+            self._pre.append(data)
+        elif self._link is not None:
+            self._link_text.append(data)
+        else:
+            self._text.append(data)
+
+
+def html_to_markdown(document: str) -> str:
+    writer = MarkdownWriter()
+    writer.feed(document)
+    writer.close()
+    writer._flush()
+    return "\n\n".join(writer.blocks) + "\n"
+
+
+# The W3C's "latest" address forwards to this page, which names the dated report with a script.
+A11Y_VOCAB_LATEST_POINTER = "https://w3c-cg.github.io/a11y-discov-vocab/latest/"
+A11Y_VOCAB_DATED_REPORT = re.compile(r'"(https://www\.w3\.org/community/reports/a11y-discov-vocab/[A-Za-z0-9-]+/)"')
+
+
+def download_w3c_report(guide: "Guide", on_progress: "ProgressCallback") -> tuple[list["GuidePage"], dict[str, bytes], list["Unavailable"]]:
+    """Find the latest dated report, fetch its HTML, and convert it to one Markdown page."""
+    _, pointer, _ = fetch(A11Y_VOCAB_LATEST_POINTER)
+    match = A11Y_VOCAB_DATED_REPORT.search(pointer.decode("utf-8"))
+    if not match:
+        raise FetchError(f"found no dated report in {A11Y_VOCAB_LATEST_POINTER}; the W3C may have changed how it forwards")
+    report_url = match.group(1)
+    content_type, body, _ = fetch(report_url)
+    if content_type != "text/html":
+        raise FetchError(f"expected HTML from {report_url}, got {content_type}")
+    document = body.decode("utf-8")
+    title = HTML_TITLE.search(document)
+    markdown = f"Source: <{report_url}>\n\nConverted from HTML to Markdown by `{SCRIPT_PATH}`.\n\n" + html_to_markdown(document)
+    page = GuidePage(guide.root_path, html.unescape(title.group(1)).strip() if title else guide.title, FIRST_SECTION, guide.host)
+    on_progress(guide, 1, 1)
+    return [page], {guide.file_name(page.path): markdown.encode("utf-8")}, []
 
 
 GUIDES = {
@@ -192,6 +332,29 @@ GUIDES = {
             scopes=("/search/help", "/search/updates"),
             menus=(("/search/help", "Help"), ("/search/updates", "Documentation updates")),
         ),
+        Guide(
+            "a11y-vocab",
+            "W3C Schema.org Accessibility Properties for Discoverability Vocabulary",
+            "/2021/a11y-discov-vocab/latest",
+            "the \"A. Change log\" section of [index.md](index.md)",
+            host="www.w3.org",
+            owner="W3C",
+            credit="W3C Community Group report, W3C Community Final Specification Agreement",
+            download=download_w3c_report,
+            readme_source=(
+                f"- Source: the latest dated report, found through <{A11Y_VOCAB_LATEST_POINTER}>, converted from",
+                "  HTML to Markdown by the script. Headings, text, lists, notes and code examples are kept; the",
+                "  table of contents, scripts and example format buttons are dropped. The first line names the",
+                "  dated report. The W3C publishes no Markdown version, so this copy is not byte for byte.",
+                "- File names: the whole report is `index.md`.",
+            ),
+            readme_license=(
+                "- License: copyright the contributors to the vocabulary, published by the Accessibility",
+                "  Discoverability Vocabulary for Schema.org Community Group under the",
+                "  [W3C Community Final Specification Agreement](https://www.w3.org/community/about/agreements/fsa/).",
+                "  It is a W3C Community Group report, not a W3C Standard, and not a Google guide.",
+            ),
+        ),
     )
 }
 
@@ -254,7 +417,7 @@ class Comparison:
 
 @dataclass
 class GuideCheck:
-    """What checking one guide found: Google's current pages, compared with the local copy."""
+    """What checking one guide found: its publisher's current pages, compared with the local copy."""
 
     guide: Guide
     pages: list[GuidePage]  # in guide order
@@ -448,6 +611,8 @@ def download_guide(
     Returns the pages in guide order, their Markdown keyed by file name, and the pages that
     could not be saved.
     """
+    if guide.download:
+        return guide.download(guide, on_progress)
     pages = {page.path: page for page in read_navigation(guide)}
     queue = list(pages)
     queued_paths = set(queue)  # every path ever queued, so a page that dropped out isn't queued again
@@ -526,18 +691,24 @@ def render_readme(guide: Guide, pages: list[GuidePage], snapshot_date: str) -> s
         f"# {guide.title} (local copy)",
         "",
         f"A copy of <{guide.home_url}> for writers and AI agents working in this repo.",
-        "Google offers its docs over MCP only with Gemini, which this project doesn't use, so this copy stands in.",
+        *(() if guide.readme_source else (
+            "Google offers its docs over MCP only with Gemini, which this project doesn't use, so this copy stands in.",
+        )),
         f"Generated by `{SCRIPT_PATH}`; don't edit anything in this folder by hand.",
         "",
         f"- Snapshot: {snapshot_date}, {len(pages)} pages.",
-        f"- Source: each page's Markdown, served at the page's address plus `{MARKDOWN_SUFFIX}`, saved byte for byte.",
-        f"- File names: the page's address after `{guide.root_path}/`, with `{PATH_SEPARATOR_IN_FILE_NAME}` for each `/`.",
+        *(guide.readme_source or (
+            f"- Source: each page's Markdown, served at the page's address plus `{MARKDOWN_SUFFIX}`, saved byte for byte.",
+            f"- File names: the page's address after `{guide.root_path}/`, with `{PATH_SEPARATOR_IN_FILE_NAME}` for each `/`.",
+        )),
         "- Checksums: `SHA256SUMS` holds each page's SHA-256.",
-        f"- License: Google LLC, \"{guide.title}\". Page content is under",
-        "  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and code samples under",
-        "  [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0); see the",
-        "  [Google Developers Site Policies](https://developers.google.com/site-policies).",
-        f"- Google's own change notes: {guide.change_notes}.",
+        *(guide.readme_license or (
+            f"- License: Google LLC, \"{guide.title}\". Page content is under",
+            "  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and code samples under",
+            "  [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0); see the",
+            "  [Google Developers Site Policies](https://developers.google.com/site-policies).",
+        )),
+        f"- {guide.owner}'s own change notes: {guide.change_notes}.",
         "",
         "## Check for changes or update",
         "",
@@ -621,7 +792,7 @@ def one_sync_at_a_time():
 
 
 def check_guide(guide: Guide, on_progress: ProgressCallback = report_progress) -> GuideCheck:
-    """Fetch the guide from Google and compare it with the local copy, writing nothing.
+    """Fetch the guide from its publisher and compare it with the local copy, writing nothing.
 
     Raises FetchError when the guide can't be fetched.
     """
@@ -683,12 +854,12 @@ def sync_guide(guide: Guide, save: bool) -> int:
     print_report(check)
 
     if check.is_current:
-        print("No changes: the local copy matches Google's current guide.")
+        print(f"No changes: the local copy matches {guide.owner}'s current guide.")
         return 0
     if not check.has_local_copy:
         print("No local copy yet.")
     elif check.comparison.upstream_changed:
-        print(f"Google changed the guide. Their notes: {guide.change_notes}")
+        print(f"{guide.owner} changed the guide. Their notes: {guide.change_notes}")
 
     if not save:
         print(f"Run with --guide {guide.key} --save to update the local copy.")

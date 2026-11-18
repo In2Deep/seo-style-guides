@@ -45,7 +45,7 @@ Google Search doesn't use these properties. They are the one exception to step 2
 
 1. Search the guides for `accessibilityFeature` and `accessMode` with `search_google_docs`. If a Google guide documents them now, follow that guide: Google Search's rules come first. If none does, say so in the report.
 
-2. Read `accessibility-vocabulary.md` next to this file. It lists the allowed values, which types take them, and when each value is true of a web page. Use only those values.
+2. Read `accessibility-vocabulary.md` next to this file. It lists the allowed values, which types take them, and when each value is true of a web page. Use only those values. For a value's full definition, read the W3C report itself: `read_google_doc` with page `a11y-vocab/index.md`. Confirm every W3C quote in the report with `check_google_quote` on that page.
 
 3. For each page whose main content is a `CreativeWork`, read the HTML. Decide which values are true. Look at the images and their `alt` text, the headings, any `<video>`, `<audio>` and `<track>` elements, transcripts, `role` attributes, and `<math>`. The page checker's image alt check helps with `alternativeText`.
    - Draft only values the page proves.

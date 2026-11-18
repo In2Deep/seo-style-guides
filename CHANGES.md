@@ -15,3 +15,7 @@
 ## 2026-11-11 search-help
 
 - new guide, 26 pages
+
+## 2026-11-12 a11y-vocab
+
+- new guide, 1 pages

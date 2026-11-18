@@ -20,6 +20,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import page_check  # noqa: E402
+import sync_google_docs  # noqa: E402
 
 LAUNCHER = Path(__file__).resolve().parent / "launch.sh"
 GOOD_PAGE = """<!DOCTYPE html>
@@ -147,6 +148,14 @@ class GoogleDocsServerTest(unittest.TestCase):
         text, _ = self.session.call("read_google_doc", page="/style/word-list", start_line=401, max_lines=10)
         self.assertIn("lines 401–410 of", text.splitlines()[2])
 
+    def test_w3c_guide_is_labeled_and_quotable(self) -> None:
+        text, is_error = self.session.call("read_google_doc", page="a11y-vocab/index.md", max_lines=5)
+        self.assertFalse(is_error)
+        self.assertIn("[W3C, not used by Google Search]", text.splitlines()[0])
+        self.assertIn("source: https://www.w3.org/2021/a11y-discov-vocab/latest (W3C Community Group report", text)
+        text, _ = self.session.call("check_google_quote", page="a11y-vocab/index.md", quote="The none value must not be set with any other feature value.")
+        self.assertTrue(text.startswith("Found verbatim"), text)
+
     def test_read_only_saved_pages(self) -> None:
         for page in ("../../AGENTS.md", "README.md", "SHA256SUMS", "https://example.com/style/word-list"):
             with self.subTest(page=page):
@@ -206,7 +215,8 @@ class GoogleDocsServerTest(unittest.TestCase):
     def test_changes_newest_first(self) -> None:
         text, is_error = self.session.call("google_docs_changes", since="2026-11-11")
         self.assertFalse(is_error)
-        self.assertTrue(text.startswith("## 2026-11-11 search-help"), text)
+        newest = [line for line in (LAUNCHER.parent.parent / "CHANGES.md").read_text().splitlines() if line.startswith("## ")][-1]
+        self.assertTrue(text.startswith(newest), text)  # CHANGES.md is appended to, so its last entry comes first
         self.assertIn("## 2026-11-11 lighthouse", text)
         self.assertTrue(self.session.call("google_docs_changes", since="last week")[1])
 
@@ -231,6 +241,26 @@ class GoogleDocsServerTest(unittest.TestCase):
         report = json.loads(text)
         self.assertEqual(report["state"], "done")
         self.assertIn(report["results"][0]["status"], ("current", "out_of_date"))
+
+
+class HtmlToMarkdownTest(unittest.TestCase):
+    def test_converts_a_w3c_report(self) -> None:
+        document = """<html><head><title>T</title><style>p {}</style></head><body>
+<nav id="toc"><ol><li>Contents</li></ol></nav>
+<section><h2><bdi>4.2</bdi> Vocabulary<a class="self-link" href="#v"></a></h2>
+<p>Alt text, as in   the <a href="https://html.spec.whatwg.org/">[html]</a> <code>alt</code> attribute.</p>
+<ul><li>one<ul><li>nested</li></ul></li></ul>
+<aside class="example"><div class="marker"><a class="self-link" href="#e">Example <bdi>3</bdi></a></div>
+<div class="ex-buttons"><button>JSON-LD</button></div><pre>{
+   "a": 1
+}</pre></aside><script>x()</script></section></body></html>"""
+        self.assertEqual(
+            sync_google_docs.html_to_markdown(document),
+            "## 4.2 Vocabulary\n\n"
+            "Alt text, as in the [[html]](https://html.spec.whatwg.org/) alt attribute.\n\n"
+            "- one\n\n  - nested\n\nExample 3\n\n"
+            '```\n{\n   "a": 1\n}\n```\n',
+        )
 
 
 class SiteCheckTest(unittest.TestCase):

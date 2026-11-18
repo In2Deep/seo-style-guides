@@ -4,7 +4,8 @@
 Google offers its docs over MCP only with Gemini, which this project doesn't use. This server
 serves the verbatim copies that sync_google_docs.py keeps (seven guides: style, seo, crawling,
 lighthouse, vitals, learn and search-help, from developers.google.com, developer.chrome.com and
-web.dev) and runs that script's check and update, so agents can use the guides without reading
+web.dev), plus one W3C report converted from HTML (a11y-vocab, the accessibility metadata
+vocabulary), and runs that script's check and update, so agents can use the guides without reading
 whole folders.
 
 Tools:
@@ -71,11 +72,16 @@ SERVER_INSTRUCTIONS = (
     "When guides disagree, Google Search's own rules win: tier 1 (seo, crawling, search-help) over tier 2 "
     "(lighthouse) over tier 3 (vitals, learn). Every result shows its tier. Follow the lowest tier number "
     "and say which guide you set aside; a higher-numbered tier still applies wherever tier 1 is silent. "
-    "The style guide covers how to write documentation and does not compete with the others."
+    "The style guide covers how to write documentation and does not compete with the others. "
+    "One more guide is not Google's: the W3C Schema.org Accessibility Properties for Discoverability "
+    "Vocabulary (a11y-vocab), converted from HTML, which defines the values for schema.org accessibility "
+    "properties such as accessibilityFeature. Google Search doesn't use those properties, so it has no "
+    "tier and never overrides a Google guide; cite it as the W3C's, not Google's."
 )
 
 # Which guide wins when two disagree. Google Search's own rules for how it crawls, indexes and shows
-# pages come first; a lower number wins. The style guide is about writing, so it has no tier.
+# pages come first; a lower number wins. The style guide is about writing, so it has no tier, and
+# the W3C accessibility vocabulary isn't Google's, so it has none either.
 GUIDE_TIERS = {
     "seo": (1, "Google Search's own rules"),
     "crawling": (1, "Google Search's own rules"),
@@ -89,7 +95,7 @@ GUIDE_TIERS = {
 def tier_label(guide_key: str) -> str:
     """A short tag such as "[tier 1: Google Search's own rules]" for a result line."""
     if guide_key not in GUIDE_TIERS:
-        return "[writing style only]" if guide_key == "style" else ""
+        return {"style": "[writing style only]", "a11y-vocab": "[W3C, not used by Google Search]"}.get(guide_key, "")
     number, name = GUIDE_TIERS[guide_key]
     return f"[tier {number}: {name}]"
 
@@ -330,7 +336,7 @@ def read_google_doc(page: str, guide: str = "", section: str = "", start_line: i
         shown += f"; more follows: call again with start_line={last + 1}"
     header = [
         f"{repo_path(found_guide, file_name)}: {title} {tier_label(found_guide.key)}",
-        f"source: {source} (Google LLC, CC BY 4.0)",
+        f"source: {source} ({found_guide.credit})",
         shown,
         "---",
     ]
@@ -456,11 +462,11 @@ def check_message(check: sync.GuideCheck) -> str:
     """What the check found, in the words the script prints, plus how to update the copy."""
     guide = check.guide
     if check.is_current:
-        return "No changes: the local copy matches Google's current guide."
+        return f"No changes: the local copy matches {guide.owner}'s current guide."
     if not check.has_local_copy:
         finding = "No local copy yet."
     elif check.comparison.upstream_changed:
-        finding = f"Google changed the guide. Their notes: {guide.change_notes}"
+        finding = f"{guide.owner} changed the guide. Their notes: {guide.change_notes}"
     else:
         finding = "The local files differ from SHA256SUMS or the README.md the script would write."
     return f'{finding} To update the copy, call update_google_docs with guide "{guide.key}", then review: git diff {repo_path(guide, "")}'
@@ -689,7 +695,8 @@ TOOLS = {
             "Search the saved copies of Google's guides: developer documentation style guide (style), Search Central "
             "SEO docs (seo), crawling infrastructure docs (crawling: robots.txt, Googlebot, crawl budget), Lighthouse "
             "audit docs (lighthouse), web.dev Core Web Vitals articles (vitals) and Learn courses (learn), and Google "
-            "Search help and documentation updates (search-help). "
+            "Search help and documentation updates (search-help). Also the W3C accessibility metadata vocabulary "
+            "(a11y-vocab), which is not Google's. "
             "Matches the query as a case-insensitive phrase on one line; a multi-word query that finds nothing "
             "is retried as every word on one line. Returns repo file:line hits grouped by page, each page with its "
             "title and source URL; pages whose title matches come first. Then lists the 5 sections "

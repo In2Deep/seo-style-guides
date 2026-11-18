@@ -1,6 +1,6 @@
 # seo-style-guides
 
-Local copies of seven Google developer guides, a script that keeps them current, a page checker,
+Local copies of seven Google developer guides and one W3C vocabulary, a script that keeps them current, a page checker,
 and an MCP server that lets an AI agent search and read them.
 
 | Guide | Key | Source |
@@ -12,6 +12,7 @@ and an MCP server that lets an AI agent search and read them.
 | web.dev Core Web Vitals articles | `vitals` | <https://web.dev/articles/vitals> |
 | web.dev Learn courses: performance, images, accessibility, HTML, forms and responsive design | `learn` | <https://web.dev/learn> |
 | Google Search help and documentation updates | `search-help` | <https://developers.google.com/search/help> |
+| W3C Schema.org Accessibility Properties for Discoverability Vocabulary (not Google's) | `a11y-vocab` | <https://www.w3.org/2021/a11y-discov-vocab/latest/> |
 
 Everything runs on Python 3.10 or later with the standard library only. There is nothing to install.
 
@@ -46,13 +47,19 @@ date, `2` a guide could not be fetched.
 
 After `--save`, `git diff guides` shows exactly what Google changed, and `CHANGES.md` gets an entry.
 
-The script fetches eight pages at a time. A check of all seven guides (about 500 pages) takes about 45 seconds. Only one run can go at a time: a second run started while one is going is refused.
+The script fetches eight pages at a time. A check of all eight guides (about 500 pages) takes about 45 seconds. Only one run can go at a time: a second run started while one is going is refused.
 
-Pages are saved byte for byte, so the standard tool also verifies a copy:
+Google's pages are saved byte for byte, so the standard tool also verifies a copy:
 
 ```bash
 cd guides/seo && shasum -a 256 -c SHA256SUMS
 ```
+
+The `a11y-vocab` guide works differently. The W3C publishes the vocabulary as one HTML page with
+no Markdown version, so the script finds the latest dated report, converts its HTML to Markdown,
+and saves it as `guides/a11y-vocab/index.md`. Its first line names the dated report. Its
+SHA-256 covers the converted text, so a new W3C version still shows up as a change, but the file
+is not byte for byte what the W3C serves.
 
 ## Check a page before it is deployed
 
@@ -202,7 +209,7 @@ The server has ten tools:
 
 ## When guides disagree
 
-All seven guides are Google's, but they come from different teams and sometimes disagree. For
+Seven of the guides are Google's. They come from different teams and sometimes disagree. For
 example, a web.dev course suggests a title length, and the Search Central guide says there is no
 limit. Google Search's own rules win:
 
@@ -212,6 +219,7 @@ limit. Google Search's own rules win:
 | 2 | `lighthouse` | Chrome's Lighthouse audits |
 | 3 | `vitals`, `learn` | web.dev guidance |
 | none | `style` | How to write documentation; it does not compete with the others |
+| none | `a11y-vocab` | The W3C's values for schema.org accessibility properties, which Google Search doesn't use; it never overrides a Google guide |
 
 The lower tier number wins, and a higher-numbered tier still applies wherever tier 1 is silent.
 Every search result, page and guide listing shows its tier, and the server tells each session this
@@ -232,7 +240,7 @@ GOOGLE_DOCS_NETWORK_TESTS=1 python3 -B -m unittest discover -s mcp-server
 
 ## Credits
 
-The pages in `guides/` are unchanged copies of documentation published by Google LLC on
+The Google pages in `guides/` are unchanged copies of documentation published by Google LLC on
 developers.google.com, web.dev and developer.chrome.com. Google licenses that content under the
 [Creative Commons Attribution 4.0 License](https://creativecommons.org/licenses/by/4.0/) and its
 code samples under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0). Each
@@ -241,4 +249,10 @@ saved page's source address is listed in its guide's `README.md`.
 The code in this repo is under the MIT License; see `LICENSE`. That license does not cover the
 pages in `guides/`.
 
-This project is not affiliated with or endorsed by Google.
+The copy in `guides/a11y-vocab/` is the Schema.org Accessibility Properties for Discoverability
+Vocabulary, copyright its contributors, published by the W3C Accessibility Discoverability
+Vocabulary for Schema.org Community Group under the
+[W3C Community Final Specification Agreement](https://www.w3.org/community/about/agreements/fsa/).
+It is converted from HTML to Markdown, and its source address is listed in `guides/a11y-vocab/README.md`.
+
+This project is not affiliated with or endorsed by Google or the W3C.

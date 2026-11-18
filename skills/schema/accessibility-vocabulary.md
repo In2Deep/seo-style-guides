@@ -7,7 +7,10 @@ Sources:
 
 - Schema.org Accessibility Properties for Discoverability Vocabulary 1.1, Final Community Group
   Report, 24 August 2026: <https://www.w3.org/2021/a11y-discov-vocab/latest/>. It is a W3C
-  Community Group report, not a W3C Standard.
+  Community Group report, not a W3C Standard. The repo keeps a copy as the `a11y-vocab` guide,
+  `guides/a11y-vocab/index.md`. This file summarizes it. The saved copy is the authority: where
+  they differ, follow the copy. If `check_google_docs` finds the W3C has published a newer
+  version, update this file too.
 - The properties on schema.org, for example <https://schema.org/accessibilityFeature>. Schema.org
   allows all seven properties on `CreativeWork` and its subtypes only.
 
