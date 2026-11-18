@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "lx-seo",
-      "description": "Search and read Google's guides, confirm quotes, check JSON-LD against Google's property tables, and check built pages before they are deployed.",
+      "description": "Search and read Google's guides, confirm quotes, check JSON-LD against Google's property tables, and check built pages and their images before they are deployed.",
       "source": "./"
     }
   ]

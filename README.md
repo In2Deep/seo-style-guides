@@ -23,6 +23,7 @@ Everything runs on Python 3.10 or later with the standard library only. There is
 | `sync_google_docs.py` | Downloads each guide page as Markdown and compares it with the saved copy by SHA-256. |
 | `structured_data.py` | Checks a page's JSON-LD against the required and recommended property tables in the saved structured-data pages. |
 | `page_check.py` | Checks a built HTML page before it is deployed. Each check quotes the Google page it comes from. |
+| `image_check.py` | Checks a page's images and opens their files: size, shape, format, names, alt text, lazy loading, favicon. Each check quotes the Google page it comes from. |
 | `CHANGES.md` | One dated entry per guide each time `--save` changes it, naming the pages changed, added or removed. |
 | `vectors.py` | Splits the saved pages into sections and embeds them with a local model, for search by meaning. |
 | `vectors/` | The section vectors `vectors.py` writes (about 32 MB). Not in git; rebuild with `python3 vectors.py`. |
@@ -31,6 +32,7 @@ Everything runs on Python 3.10 or later with the standard library only. There is
 | `mcp-server/launch.sh` | Starts the server with the first Python 3.10 or later on the machine. |
 | `mcp-server/test_server.py` | Tests that drive the server through its launcher. |
 | `skills/json-ld/` | The `/lx-seo:json-ld` action: find mistakes in a whole site's JSON-LD. |
+| `skills/images/` | The `/lx-seo:images` action: find image problems on a whole site. |
 | `skills/schema/` | The `/lx-seo:schema` action: find markup a site could add, and draft it. `accessibility-vocabulary.md` holds the allowed values for its optional accessibility metadata. |
 | `.claude-plugin/` | The plugin and marketplace manifests. The plugin is named `lx-seo`, so its actions are typed `/lx-seo:<action>`. |
 
@@ -84,6 +86,24 @@ Given a web address, it checks every page of that site under that address. It fi
 the site's sitemap and by following links on the same site, and prints one PASS or FAIL line per
 page with only the failed checks. For a fetched page, the noindex check also reads the
 `X-Robots-Tag` HTTP header. It stops at 500 pages, and a site behind a login cannot be checked.
+
+## Check a page's images
+
+```bash
+python3 image_check.py site/dist/index.html
+python3 image_check.py https://example.com/
+```
+
+The image checker prints PASS or FAIL for 10 checks, each with the Google quote it rests on: width
+and height on every `<img>`, a format Google Images supports (and a file extension that matches
+it), descriptive file names, alt text that isn't a file name, the first picture of the main
+content not lazy loaded, the file's shape matching its width and height, files no more than twice
+as wide as they show, JPEG or PNG of 10 KB or more with no WebP or AVIF version, JSON-LD images
+of at least 50,000 pixels, and a square favicon. It opens every image file and reads its type and
+pixel size from its first bytes (PNG, JPEG, GIF, BMP, WebP, AVIF, HEIC, TIFF, ICO, SVG). For a
+local file, image paths are read from disk; a path that starts with `/` is looked up in the nearest
+folder above the page that has it. Given a web address, it checks every page the way
+`page_check.py` does and fetches each image once. It reads HTML only, not CSS, and changes nothing.
 
 ## Search by meaning (optional)
 
@@ -173,6 +193,7 @@ You don't call the tools yourself. Ask in plain words and the session picks the 
 | A JSON-LD block checked | "Check this JSON-LD against Google's requirements." | `check_structured_data` |
 | One built page checked | "Run the page check on dist/index.html." | `check_page` |
 | Mistakes in a whole site's JSON-LD | `/lx-seo:json-ld https://example.com` | the `json-ld` skill and `page_check.py` |
+| Image problems on a whole site | `/lx-seo:images https://example.com` | the `images` skill and `image_check.py` |
 | Markup a whole site could add | `/lx-seo:schema https://example.com` | the `schema` skill and `page_check.py` |
 | The same, plus accessibility metadata | `/lx-seo:schema https://example.com accessibility` | the `schema` skill and the W3C accessibility vocabulary |
 | To know if Google changed anything | "Are the saved guides current?" | `check_google_docs` |

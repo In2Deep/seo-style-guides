@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import image_check  # noqa: E402
 import page_check  # noqa: E402
 import sync_google_docs  # noqa: E402
 
@@ -192,7 +193,7 @@ class GoogleDocsServerTest(unittest.TestCase):
         self.assertNotIn("Google documents no search feature for this type", text)
 
     def test_every_page_check_quote_is_in_its_page(self) -> None:
-        for check in page_check.CHECKS:
+        for check in page_check.CHECKS + image_check.CHECKS:
             with self.subTest(check=check["name"]):
                 text, is_error = self.session.call("check_google_quote", page=check["source"], quote=check["quote"])
                 self.assertFalse(is_error, text)
@@ -282,6 +283,30 @@ class SiteCheckTest(unittest.TestCase):
         self.assertIn(f"PASS {start}\n", text)
         self.assertIn(f"{start}second.html", text)
         self.assertIn("2 pages checked", text)
+
+
+class ImageCheckTest(unittest.TestCase):
+    def test_bad_images_fail_every_check(self) -> None:
+        def png(width: int, height: int, padding: int = 0) -> bytes:
+            return b"\x89PNG\r\n\x1a\n" + b"\x00\x00\x00\rIHDR" + width.to_bytes(4, "big") + height.to_bytes(4, "big") + bytes(padding)
+        jpeg = b"\xff\xd8\xff\xc0\x00\x11\x08" + (300).to_bytes(2, "big") + (400).to_bytes(2, "big") + bytes(12)
+        heic = (24).to_bytes(4, "big") + b"ftypheic" + bytes(12) + b"\x00\x00\x00\x14ispe" + bytes(4) + (8).to_bytes(4, "big") * 2
+        page = """<!DOCTYPE html><html lang="en"><head><link rel="icon" href="icon.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "image": "small.png"}</script></head>
+<body><main><img src="IMG_1234.jpg" alt="IMG_1234.jpg" loading="lazy">
+<img src="/wide.png" width="100" height="100" alt="A wide board"><img src="photo.heic" width="8" height="8" alt="A board"></main></body></html>"""
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "pages").mkdir()
+            (root / "pages" / "index.html").write_text(page)
+            files = {"pages/IMG_1234.jpg": jpeg, "wide.png": png(400, 100, 20_000), "pages/photo.heic": heic,
+                     "pages/icon.png": png(32, 16), "pages/small.png": png(100, 100)}
+            for name, data in files.items():
+                (root / name).write_bytes(data)
+            results = image_check.run_checks(page, root / "pages" / "index.html")
+        self.assertEqual([check["name"] for check, passed, _ in results if passed], [], image_check.report(results))
+        self.assertEqual(image_check.image_facts(jpeg), ("jpeg", 400, 300))
+        self.assertEqual(image_check.image_facts(heic), ("heic", 8, 8))
 
 
 if __name__ == "__main__":

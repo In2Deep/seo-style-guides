@@ -278,12 +278,15 @@ def sitemap_urls(origin: str) -> list[str]:
     return []
 
 
-def check_site(start: str) -> bool:
-    """Checks every page found under the start address; prints one block per page and a total. True if any failed."""
+def site_pages(start: str):
+    """Fetches every page found under the start address, from the sitemap and by following links, in the order found.
+
+    Yields (address, where it was linked from, page): page is (final address, X-Robots-Tag header, HTML), or the
+    reason it could not be fetched. Other content types are skipped. Stops at MAX_PAGES and says so."""
     start = urldefrag(start)[0]
     parts = urlsplit(start)
     scope = parts.path.rstrip("/")
-    order, linked_from, passed_pages, failed_pages, limit_reached = [], {}, 0, 0, False
+    order, linked_from, limit_reached = [], {}, False
 
     def add(url: str, source: str) -> None:
         nonlocal limit_reached
@@ -306,13 +309,26 @@ def check_site(start: str) -> bool:
             final, kind, robots, html = fetch(url)
         except (OSError, ValueError) as error:
             status = f"HTTP {error.code}" if isinstance(error, HTTPError) else str(getattr(error, "reason", error))
-            print(f"FAIL {url} (could not fetch: {status}; linked from {linked_from[url]})\n")
-            failed_pages += 1
+            yield url, linked_from[url], f"could not fetch: {status}"
             continue
         if kind not in ("text/html", "application/xhtml+xml"):
             continue
         for element in tags(PageParser(html), "a"):
             add(urljoin(final, element["attrs"].get("href", "").strip()), url)
+        yield url, linked_from[url], (final, robots, html)
+    if limit_reached:
+        print(f"Stopped at the limit of {MAX_PAGES} pages; more pages were found.")
+
+
+def check_site(start: str) -> bool:
+    """Checks every page found under the start address; prints one block per page and a total. True if any failed."""
+    passed_pages = failed_pages = 0
+    for url, source, page in site_pages(start):
+        if isinstance(page, str):
+            print(f"FAIL {url} ({page}; linked from {source})\n")
+            failed_pages += 1
+            continue
+        final, robots, html = page
         results = run_checks(html, robots)
         failed = [(check, found) for check, passed, found in results if not passed]
         try:
@@ -324,9 +340,7 @@ def check_site(start: str) -> bool:
         for check, found in failed:
             print(f"  FAIL {check['name']}: {found}", f'    Google: "{check["quote"]}"', f"    source: {check['source']}", sep="\n")
         print("".join(f"  NOTICE {check['name']}: {found}\n" for check, passed, found in results if passed and "Notice:" in found))
-    if limit_reached:
-        print(f"Stopped at the limit of {MAX_PAGES} pages; more pages were found.")
-    print(f"{start}: {passed_pages + failed_pages} pages checked, {passed_pages} passed, {failed_pages} failed.\n")
+    print(f"{urldefrag(start)[0]}: {passed_pages + failed_pages} pages checked, {passed_pages} passed, {failed_pages} failed.\n")
     return failed_pages > 0
 
 
