@@ -11,10 +11,12 @@ size set in CSS is not seen. Needs Python 3.10 or newer.
 Run: python3 image_check.py path/to/page.html|https://site/ [more ...]   (exit status 1 if any check fails)
 """
 import json
+import math
 import re
 import struct
 import sys
 from html.parser import HTMLParser
+from xml.parsers import expat
 from http.client import HTTPException
 from pathlib import Path, PurePosixPath
 from urllib.error import HTTPError
@@ -22,7 +24,6 @@ from urllib.parse import unquote, urldefrag, urljoin, urlsplit
 from urllib.request import Request, urlopen
 
 import page_check
-import structured_data
 from page_check import LIGHTHOUSE, SEARCH, report
 
 SUPPORTED = ("bmp", "gif", "jpeg", "png", "webp", "svg", "avif")  # Google Images, from the quote in CHECKS
@@ -35,11 +36,19 @@ AVIF_BRANDS = {b"avif", b"avis"}
 HEIC_BRANDS = {b"heic", b"heix", b"heim", b"heis", b"hevc", b"hevx", b"mif1", b"msf1"}
 GENERIC_NAME = re.compile(r"(img|image|images|dsc|dscn|dscf|pxl|mvimg|photo|pic|picture|screenshot|screen[-_ ]?shot"
                           r"|untitled|scan|file|placeholder)?[-_ ]?\d*([-_ ]\d+)*|[0-9a-f]{12,}", re.I)
-BUILD_HASH = re.compile(r"[.-](?=[\w]*\d)(?=[\w]*[A-Za-z])\w{8,}$")  # "hero.BRhKKi9a_Z1wcXPz": the part a build tool adds
-IMAGE_SUFFIX = re.compile(r".*\.(jpe?g|png|gif|webp|avif|svg|bmp|heic|heif|tiff?|ico)", re.I | re.S)
+BUILD_HASH = re.compile(r"""(  \.(?=\w*\d)(?=\w*[A-Za-z])\w{8,}         # Astro, Parcel, webpack: hero.BRhKKi9a_Z1wcXPz
+                               | -(?=[\w-]*[A-Z_])[\w-]{8}               # Vite and Rollup: hero-DiwrgTda
+                               | -(?=[0-9a-f]*\d)(?=[0-9a-f]*[a-f])[0-9a-f]{8,}  # a hex content hash
+                             )$""", re.X)  # the part a build tool adds to a file name
+FILE_NAME_ALT = re.compile(r"\S+\.(jpe?g|png|gif|webp|avif|svg|bmp|heic|heif|tiff?|ico)", re.I)  # alt that is a bare file name
 ICON_RELS = {"icon", "apple-touch-icon", "apple-touch-icon-precomposed"}  # the rel values Google's favicon page lists
-SIZE_RULE_TYPES = {"Article", "NewsArticle", "BlogPosting", "Event", "LocalBusiness", "Product", "Recipe"}  # pages that give the 50K rule
+SIZE_RULE_TYPES = {"Article", "NewsArticle", "BlogPosting", "Event", "Restaurant", "Product", "Recipe", "ProfilePage"}  # pages that give the 50K rule
+BROWSER_TYPES = {"image/avif", "image/webp", "image/png", "image/apng", "image/jpeg", "image/gif", "image/svg+xml", "image/bmp",
+                 "image/x-icon", "image/vnd.microsoft.icon"}  # a <source> with another type is skipped by the browser
 SVG_UNITS = {"": 1, "px": 1, "in": 96, "cm": 96 / 2.54, "mm": 96 / 25.4, "pt": 4 / 3, "pc": 16}
+SVG_NAMES = {"svg", "http://www.w3.org/2000/svg svg"}  # the root element, with no namespace or the SVG one
+SVG_HEAD_BYTES = 64_000
+MAX_PIXELS_SIDE = 1_000_000  # a width, height or SVG length beyond this is not taken as a size
 MAX_IMAGE_BYTES = 30_000_000
 ASPECT_THRESHOLD_PX = 2  # Lighthouse: the smaller projected side must be within less than 2 px
 OVERSIZE_FACTOR = 2  # a file up to twice its displayed width still serves sharp screens (2x)
@@ -74,18 +83,20 @@ def image_facts(data: bytes) -> tuple[str, int, int]:
     if data[:4] == b"\x00\x00\x01\x00" and len(data) >= 22:
         entries = [data[6 + 16 * i:8 + 16 * i] for i in range(int.from_bytes(data[4:6], "little")) if len(data) >= 22 + 16 * i]
         return ("ico", *max(((w or 256, h or 256) for w, h in entries), default=(0, 0)))
-    netpbm = re.match(rb"P[1-6](?:\s|#[^\n]*\n)+(\d+)(?:\s|#[^\n]*\n)+(\d+)", data[:512])
+    netpbm = re.match(rb"P[1-6](?:\s|#[^\n]*\n)+(\d{1,7})(?:\s|#[^\n]*\n)+(\d{1,7})", data[:512])
     if netpbm:
         return "ppm", int(netpbm.group(1)), int(netpbm.group(2))
-    head = data[:20_000].decode("utf-8", "ignore")
-    if re.sub(r"<\?xml.*?\?>|<!--.*?-->|<!DOCTYPE[^>]*>", "", head, flags=re.S | re.I).lstrip("﻿ \t\r\n")[:4].lower() == "<svg":
-        return ("svg", *svg_size(head))  # the document's root is <svg>, not an HTML page with an icon in it
+    root = svg_root(data)
+    if root is not None:
+        return ("svg", *svg_size(root))  # the document's root is <svg>, not an HTML page with an icon in it
     return "unknown", 0, 0
 
 
-def jpeg_size(data: bytes) -> tuple[int, int]:
+def jpeg_markers(data: bytes):
+    """(marker, position) of each JPEG marker segment, up to and including the start of scan (0xDA). Segments are
+    skipped by their length, so a thumbnail inside the EXIF data is never read as the picture."""
     at = 2
-    while at + 9 < len(data):
+    while at + 3 < len(data):
         if data[at] != 0xFF or data[at + 1] == 0xFF:
             at += 1
             continue
@@ -93,10 +104,17 @@ def jpeg_size(data: bytes) -> tuple[int, int]:
         if marker == 0x01 or 0xD0 <= marker <= 0xD8:
             at += 2
             continue
-        if 0xC0 <= marker <= 0xCF and marker not in (0xC4, 0xC8, 0xCC):  # start of frame
+        yield marker, at
+        if marker == 0xDA:
+            return
+        at += 2 + int.from_bytes(data[at + 2:at + 4], "big")
+
+
+def jpeg_size(data: bytes) -> tuple[int, int]:
+    for marker, at in jpeg_markers(data):
+        if 0xC0 <= marker <= 0xCF and marker not in (0xC4, 0xC8, 0xCC) and at + 9 <= len(data):  # start of frame
             height, width = struct.unpack(">HH", data[at + 5:at + 9])
             return width, height
-        at += 2 + int.from_bytes(data[at + 2:at + 4], "big")
     return 0, 0
 
 
@@ -129,7 +147,7 @@ def boxes(data: bytes, start: int, end: int):
 
 
 def heif_size(data: bytes) -> tuple[int, int]:
-    """The size of the primary item (pitm), from the ispe property ipma gives it; else the largest ispe."""
+    """The size of the primary item (pitm), from the ispe property ipma gives it; 0 x 0 when that can't be found."""
     try:
         meta = next(((start, end) for kind, start, end in boxes(data, 0, len(data)) if kind == b"meta"), None)
         primary, properties, associations = None, [], {}
@@ -147,9 +165,7 @@ def heif_size(data: bytes) -> tuple[int, int]:
                 return struct.unpack(">II", data[properties[index - 1][1] + 4:properties[index - 1][1] + 12])
     except (IndexError, struct.error):
         pass
-    sizes = [struct.unpack(">II", data[at + 8:at + 16]) for at in (m.start() for m in re.finditer(b"ispe", data))
-             if len(data) >= at + 16]
-    return max(sizes, key=lambda size: size[0] * size[1], default=(0, 0))
+    return 0, 0
 
 
 def ipma(data: bytes, at: int) -> dict[int, list[int]]:
@@ -187,40 +203,80 @@ def tiff_size(data: bytes) -> tuple[int, int]:
         return 0, 0
 
 
-def svg_size(head: str) -> tuple[int, int]:
-    """width and height of the <svg> root in pixels (absolute units converted), else its viewBox size."""
-    tag = re.search(r"<svg\b[^>]*>", head, re.I | re.S)
-    attrs = dict(re.findall(r'([\w:-]+)\s*=\s*["\']([^"\']*)["\']', tag.group(0))) if tag else {}
+class FoundRoot(Exception):
+    """Stops the XML parser at the first element."""
 
-    def length(name: str) -> float | None:
+
+def svg_root(data: bytes) -> dict | None:
+    """The attributes of the document's root element when it is <svg> (in the SVG namespace or none), else None.
+    Read as XML from the first SVG_HEAD_BYTES, so a comment, a DOCTYPE or an <svg-thing> root is not taken for it."""
+    parser, root = expat.ParserCreate(namespace_separator=" "), []
+
+    def start(name: str, attrs: dict) -> None:
+        root.append((name, attrs))
+        raise FoundRoot
+
+    parser.StartElementHandler = start
+    try:
+        parser.Parse(data[:SVG_HEAD_BYTES], False)
+    except (FoundRoot, expat.ExpatError, ValueError):
+        pass
+    return root[0][1] if root and root[0][0] in SVG_NAMES else None
+
+
+def svg_size(attrs: dict) -> tuple[int, int]:
+    """width and height of the <svg> root in pixels (absolute units converted), else its viewBox size."""
+    def pixels(value: float) -> int | None:
+        return round(value) if math.isfinite(value) and 0 < value < MAX_PIXELS_SIDE else None
+
+    def length(name: str) -> int | None:
         found = re.fullmatch(r"\s*(\d*\.?\d+(?:e[-+]?\d+)?)\s*(px|in|cm|mm|pt|pc)?\s*", attrs.get(name, ""), re.I)
-        return float(found.group(1)) * SVG_UNITS[(found.group(2) or "").lower()] if found else None
+        return pixels(float(found.group(1)) * SVG_UNITS[(found.group(2) or "").lower()]) if found else None
 
     width, height = length("width"), length("height")
     if width and height:
-        return round(width), round(height)
+        return width, height
     try:
         box = [float(part) for part in re.split(r"[\s,]+", attrs.get("viewBox", "").strip()) if part]
     except ValueError:
         box = []
-    return (round(box[2]), round(box[3])) if len(box) == 4 and box[2] > 0 and box[3] > 0 else (0, 0)
+    box_width, box_height = (pixels(box[2]), pixels(box[3])) if len(box) == 4 else (None, None)
+    return (box_width, box_height) if box_width and box_height else (0, 0)
 
 
 def cut_short(kind: str, data: bytes) -> bool:
     """True when a file's own structure says it ends early (no full pixel decoding)."""
-    if kind == "png":
-        return b"IEND" not in data[-64:]
-    if kind == "jpeg":
-        return b"\xff\xd9" not in data
-    if kind == "ico":
+    if kind == "png":  # walk the chunks: the file must reach the end of its IEND chunk
+        at = 8
+        while at + 12 <= len(data):
+            length, name = int.from_bytes(data[at:at + 4], "big"), data[at + 4:at + 8]
+            at += 12 + length
+            if name == b"IEND":
+                return at > len(data)
+        return True
+    if kind == "jpeg":  # the end marker must come after the start of scan, not inside a thumbnail
+        scan = next((at for marker, at in jpeg_markers(data) if marker == 0xDA), None)
+        return scan is None or b"\xff\xd9" not in data[scan:]
+    if kind == "gif":
+        return not data.rstrip(b"\x00").endswith(b";")  # the GIF trailer
+    if kind == "webp":
+        return len(data) < 8 + int.from_bytes(data[4:8], "little")  # the RIFF length
+    if kind == "ico":  # every entry needs a payload, and the payload must be inside the file
         entries = [data[6 + 16 * i:22 + 16 * i] for i in range(int.from_bytes(data[4:6], "little"))]
-        return any(len(entry) < 16 or sum(struct.unpack("<II", entry[8:16])) > len(data) for entry in entries)
+        payloads = [struct.unpack("<II", entry[8:16]) if len(entry) == 16 else (0, 0) for entry in entries]
+        return any(size == 0 or offset + size > len(data) for size, offset in payloads)
     return False
+
+
+def is_data(src: str) -> bool:
+    return src[:5].lower() == "data:"
 
 
 def open_image(location: str | Path) -> dict:
     """kind, width, height and bytes read from a local path, a web address or a data: URI, and any problem found."""
     facts = {"kind": "", "width": 0, "height": 0, "bytes": 0, "error": ""}
+    if not isinstance(location, Path) and is_data(location) and len(location) > MAX_IMAGE_BYTES * 4 // 3 + 1_000:
+        return facts | {"error": f"is an inline data: image over {MAX_IMAGE_BYTES // 1_000_000} MB; it was not read"}
     try:
         if isinstance(location, Path):
             with location.open("rb") as stream:
@@ -236,7 +292,7 @@ def open_image(location: str | Path) -> dict:
     facts |= {"kind": kind, "width": width, "height": height, "bytes": len(data)}
     if len(data) > MAX_IMAGE_BYTES:
         facts["error"] = f"is over {MAX_IMAGE_BYTES // 1_000_000} MB; only its start was read"
-    elif expected and expected.isdigit() and len(data) < int(expected):
+    elif expected and expected.isascii() and expected.isdigit() and len(expected) <= 15 and len(data) < int(expected):
         facts["error"] = f"is cut short ({len(data):,} of {int(expected):,} bytes arrived)"
     elif kind in RASTER and (width <= 0 or height <= 0):
         facts["error"] = f"is a {kind.upper()} whose pixel size can't be read"
@@ -247,11 +303,12 @@ def open_image(location: str | Path) -> dict:
 
 class ImageParser(HTMLParser):
     """Collects every <img> (with the <source> elements of its <picture> and where it sits), every favicon <link>,
-    and the first <base href>. Elements inside <template> are not part of the page and are skipped."""
+    the text of every JSON-LD <script> and the first <base href>. Elements inside <template> are not part of the
+    page and are skipped, end tags included."""
 
     def __init__(self, html: str):
         super().__init__(convert_charrefs=True)
-        self.images, self.icons, self.picture, self.base_href = [], [], None, None
+        self.images, self.icons, self.json_ld, self.picture, self.base_href, self.script = [], [], [], None, None, None
         self.depth = {"main": 0, "header": 0, "nav": 0, "template": 0}
         self.feed(html)
         self.close()
@@ -259,10 +316,14 @@ class ImageParser(HTMLParser):
     def handle_starttag(self, tag: str, attrs: list) -> None:
         values = {name: value or "" for name, value in attrs}
         line = self.getpos()[0]
+        if tag == "template":
+            self.depth["template"] += 1
+        if self.depth["template"]:
+            return
         if tag in self.depth:
             self.depth[tag] += 1
-        elif self.depth["template"]:
-            return
+        elif tag == "script" and values.get("type", "").strip().lower() == "application/ld+json":
+            self.script = []
         elif tag == "base" and self.base_href is None and values.get("href", "").strip():
             self.base_href = values["href"].strip()
         elif tag == "picture":
@@ -275,16 +336,31 @@ class ImageParser(HTMLParser):
         elif tag == "link" and ICON_RELS & set(values.get("rel", "").lower().split()) and values.get("href", "").strip():
             self.icons.append({"attrs": values, "line": line})
 
+    def handle_data(self, data: str) -> None:
+        if self.script is not None:
+            self.script.append(data)
+
     def handle_endtag(self, tag: str) -> None:
-        if tag in self.depth:
+        if tag == "template":
+            self.depth["template"] = max(0, self.depth["template"] - 1)
+        elif self.depth["template"]:
+            return
+        elif tag in self.depth:
             self.depth[tag] = max(0, self.depth[tag] - 1)
         elif tag == "picture":
             self.picture = None
+        elif tag == "script" and self.script is not None:
+            self.json_ld.append("".join(self.script))
+            self.script = None
+
+
+DESCRIPTOR = re.compile(r"[1-9]\d*[wh]|(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?x")  # lower-case w, h, x, as HTML has them
 
 
 def srcset_urls(srcset: str) -> list[str]:
     """The candidate addresses of a srcset, split as HTML does: an address runs to whitespace, and a comma only
-    ends it at its end; descriptors run to the next comma outside parentheses."""
+    ends it at its end; descriptors run to the next comma outside parentheses. A candidate whose descriptors are
+    not valid (one w or one x, h only beside w) is dropped, as the browser drops it."""
     urls, at, end = [], 0, len(srcset)
     while at < end:
         while at < end and (srcset[at].isspace() or srcset[at] == ","):
@@ -292,15 +368,20 @@ def srcset_urls(srcset: str) -> list[str]:
         start = at
         while at < end and not srcset[at].isspace():
             at += 1
-        url = srcset[start:at]
+        url, descriptors = srcset[start:at], ""
         if url.endswith(","):
             url = url.rstrip(",")
         else:
-            depth = 0
-            while at < end and (srcset[at] != "," or depth):
-                depth += (srcset[at] == "(") - (srcset[at] == ")")
+            in_parens, descriptor_start = False, at
+            while at < end and (srcset[at] != "," or in_parens):
+                in_parens = srcset[at] == "(" or (in_parens and srcset[at] != ")")
                 at += 1
-        if url:
+            descriptors = srcset[descriptor_start:at]
+        tokens = descriptors.split()
+        kinds = [token[-1] for token in tokens]
+        valid = (all(DESCRIPTOR.fullmatch(token) for token in tokens) and len(set(kinds)) == len(kinds)
+                 and not {"w", "x"} <= set(kinds) and ("h" not in kinds or "w" in kinds))
+        if url and valid:
             urls.append(url)
     return urls
 
@@ -308,7 +389,7 @@ def srcset_urls(srcset: str) -> list[str]:
 def number(value: str) -> int | None:
     """A positive whole number of pixels written in ASCII digits, else None."""
     value = value.strip()
-    return int(value) if value.isascii() and value.isdigit() and int(value) > 0 else None
+    return int(value) if value.isascii() and value.isdigit() and 0 < len(value) <= 7 and int(value) > 0 else None
 
 
 def listed(items: list[str]) -> str:
@@ -316,7 +397,7 @@ def listed(items: list[str]) -> str:
 
 
 def file_name(src: str) -> str:
-    if src.startswith("data:"):
+    if is_data(src):
         return ""
     try:
         return PurePosixPath(unquote(urlsplit(src).path)).name
@@ -330,20 +411,21 @@ def name_stem(src: str) -> str:
 
 
 def shown(src: str) -> str:
-    return src if not src.startswith("data:") else src[:40] + "..."
+    return src if not is_data(src) else src[:40] + "..."
 
 
 def kind_label(facts: dict) -> str:
     return "not an image file this checker recognises" if facts["kind"] == "unknown" else facts["kind"].upper()
 
 
-def json_ld_images(html: str) -> tuple[dict[str, set], list[str]]:
-    """Every image address in the page's JSON-LD with the @type of the item it is on (contentUrl before url,
-    same-document @id references followed), and the blocks that don't parse. Each block is parsed on its own."""
+def json_ld_images(scripts: list[str]) -> tuple[dict[str, set], list[str]]:
+    """Every image address in the page's JSON-LD scripts with the @type of the item it is on (contentUrl before url,
+    same-document @id references followed; a ProfilePage's mainEntity counts as the ProfilePage; a standalone
+    ImageObject counts too), and the blocks that don't parse. Each block is parsed on its own."""
     blocks, errors = [], []
-    for number_in_page, match in enumerate(structured_data.LD_JSON_SCRIPT.finditer(html), 1):
+    for number_in_page, script in enumerate(scripts, 1):
         try:
-            blocks.append(json.loads(match.group(1)))
+            blocks.append(json.loads(script))
         except ValueError as error:
             errors.append(f"JSON-LD block {number_in_page} doesn't parse ({error})")
     nodes, found = {}, {}
@@ -358,22 +440,28 @@ def json_ld_images(html: str) -> tuple[dict[str, set], list[str]]:
             for inner in value:
                 collect(inner)
 
-    def walk(value) -> None:
+    def add(image, types: set) -> None:
+        if isinstance(image, dict) and set(image) == {"@id"} and isinstance(image["@id"], str):
+            image = nodes.get(image["@id"], image)
+        url = (image.get("contentUrl") or image.get("url")) if isinstance(image, dict) else image
+        if isinstance(url, str) and url.strip():
+            found.setdefault(url.strip(), set()).update(types)
+
+    def walk(value, inherited: frozenset = frozenset()) -> None:
         if isinstance(value, dict):
             types = value.get("@type", [])
             types = {types} if isinstance(types, str) else {t for t in types if isinstance(t, str)} if isinstance(types, list) else set()
+            types |= inherited
             images = value.get("image")
             for image in images if isinstance(images, list) else [] if images is None else [images]:
-                if isinstance(image, dict) and set(image) == {"@id"}:
-                    image = nodes.get(image["@id"], image)
-                url = (image.get("contentUrl") or image.get("url")) if isinstance(image, dict) else image
-                if isinstance(url, str) and url.strip():
-                    found.setdefault(url.strip(), set()).update(types)
-            for inner in value.values():
-                walk(inner)
+                add(image, types)
+            if "ImageObject" in types:
+                add(value, types)
+            for key, inner in value.items():
+                walk(inner, frozenset({"ProfilePage"}) if key == "mainEntity" and "ProfilePage" in types else frozenset())
         elif isinstance(value, list):
             for inner in value:
-                walk(inner)
+                walk(inner, inherited)
 
     collect(blocks)
     walk(blocks)
@@ -385,18 +473,33 @@ class ImagePage:
 
     def __init__(self, html: str, base: str | Path, files: dict):
         self.parser, self.files = ImageParser(html), files
-        self.json_ld, self.json_ld_errors = json_ld_images(html)
+        self.json_ld, self.json_ld_errors = json_ld_images(self.parser.json_ld)
         href = self.parser.base_href or ""
+        try:
+            urlsplit(href)
+        except ValueError:
+            href = ""  # a <base href> that can't be read is ignored, as the browser ignores it
         self.web_base, self.page_folder = None, None
         if isinstance(base, str):
             self.web_base = urljoin(base, href)
-        elif urlsplit(href).scheme in ("http", "https"):
-            self.web_base, self.page_folder, self.folder = href, base.parent, base.parent
-        else:
-            self.page_folder = self.folder = base.parent
-            if href and not href.startswith("/"):
-                joined = unquote(urlsplit(urljoin(base.resolve().as_uri(), href)).path)
-                self.folder = Path(joined) if joined.endswith("/") else Path(joined).parent
+            return
+        self.page_folder = self.folder = base.parent
+        if urlsplit(href).scheme in ("http", "https") or href.startswith("//"):
+            self.web_base = urljoin("https:", href)
+        elif href.startswith("/"):  # a site-root base: the nearest folder above the page that has it
+            folder = self.from_site_root(href)
+            self.folder = folder if href.endswith("/") else folder.parent
+        elif href:
+            joined = unquote(urlsplit(urljoin(base.resolve().as_uri(), href)).path)
+            self.folder = Path(joined) if joined.endswith("/") else Path(joined).parent
+
+    def from_site_root(self, path: str) -> Path:
+        """A site-root path (/x/y) as a local path: under the nearest folder above the page that has it."""
+        relative = unquote(path).lstrip("/")
+        for root in (self.page_folder, *self.page_folder.parents):
+            if (root / relative).exists():
+                return (root / relative).resolve()
+        return self.page_folder / relative
 
     def file(self, src: str) -> dict:
         """kind, width, height, bytes and any problem of the file at src (as written in the page)."""
@@ -411,7 +514,7 @@ class ImagePage:
 
     def locate(self, src: str) -> str | Path:
         """A web address, a data: URI or a resolved local path; ValueError for anything else."""
-        if src.startswith("data:"):
+        if is_data(src):
             return src
         if self.web_base is not None:
             address = urldefrag(urljoin(self.web_base, src))[0]
@@ -423,13 +526,9 @@ class ImagePage:
             return urldefrag(urljoin("https:", src))[0]
         if parts.scheme:
             raise ValueError(f"is not a web address or a file it can open ({parts.scheme}:)")
-        path = unquote(parts.path)
-        if path.startswith("/"):  # site-root path: the nearest folder above the page that has the file
-            for root in (self.page_folder, *self.page_folder.parents):
-                if (root / path.lstrip("/")).is_file():
-                    return (root / path.lstrip("/")).resolve()
-            return self.page_folder / path.lstrip("/")
-        return (self.folder / path).resolve()
+        if parts.path.startswith("/"):
+            return self.from_site_root(parts.path)
+        return (self.folder / unquote(parts.path)).resolve()
 
     def image_urls(self, image: dict) -> list[str]:
         """Every file the browser could pick for this <img>: src, srcset and its <picture> sources."""
@@ -456,6 +555,9 @@ def check_size_attributes(page: ImagePage) -> tuple[bool, str]:
 def check_supported_format(page: ImagePage) -> tuple[bool, str]:
     problems, count = [], 0
     for image in page.parser.images:
+        if not image["attrs"].get("src", "").strip():
+            problems.append(at(image, "an <img> with no src; Google recommends a src beside srcset and <picture>, "
+                                      "for crawlers that don't read them"))
         for src in page.image_urls(image):
             count += 1
             facts = page.file(src)
@@ -483,7 +585,7 @@ def check_alt_text(page: ImagePage) -> tuple[bool, str]:
             bad.append(at(image, f'{shown(attrs.get("src", ""))} has no alt attribute (alt="" is right for decoration)'))
             continue
         alt, src = attrs["alt"].strip(), attrs.get("src", "")
-        if alt and (IMAGE_SUFFIX.fullmatch(alt) or alt.lower() in {file_name(src).lower(), name_stem(src).lower()}
+        if alt and (FILE_NAME_ALT.fullmatch(alt) or alt.lower() in {file_name(src).lower(), name_stem(src).lower()}
                     or (re.search(r"[A-Za-z]", alt) and GENERIC_NAME.fullmatch(alt))):
             bad.append(at(image, f'alt="{attrs["alt"]}" (a file name or a generic word, not a description)'))
     return (False, listed(bad)) if bad else (True, "every <img> has alt text that isn't a file name or a generic word")
@@ -504,13 +606,15 @@ def check_first_picture_not_lazy(page: ImagePage) -> tuple[bool, str]:
 
 
 def shapes_match(width: int, height: int, natural_width: int, natural_height: int) -> bool:
-    """Lighthouse's image-aspect-ratio rule (the smaller projected side within less than 2 px), measured at the
-    file's own size, so a small srcset copy's rounding doesn't count as a wrong shape."""
-    ratio = width / height
-    target_height, target_width = natural_width / ratio, natural_height * ratio
+    """Lighthouse's image-aspect-ratio rule: the file's shape projected onto the HTML width and height, the smaller
+    side within less than 2 px. A file smaller than that size may also be off by under one pixel at its own size,
+    since a resized copy's rounding grows when it is scaled up (a 480x123 copy of a 1560x402 picture)."""
+    ratio = natural_width / natural_height
+    target_height, target_width = width / ratio, height * ratio
+    threshold = max(ASPECT_THRESHOLD_PX, min(width / natural_width, height / natural_height))  # one file pixel, scaled up
     if target_height < target_width:
-        return abs(target_height - natural_height) < ASPECT_THRESHOLD_PX
-    return abs(target_width - natural_width) < ASPECT_THRESHOLD_PX
+        return abs(target_height - height) < threshold
+    return abs(target_width - width) < threshold
 
 
 def check_aspect_ratio(page: ImagePage) -> tuple[bool, str]:
@@ -552,14 +656,30 @@ def check_not_oversized(page: ImagePage) -> tuple[bool, str]:
     return (False, listed(big)) if big else (True, f"{count} single-size pictures, none more than twice their width")
 
 
+def offers_modern(page: ImagePage, image: dict) -> bool:
+    """True when the browser can reach a readable WebP or AVIF file in the <img>'s <picture>. Sources are tried in
+    order: one with a type the browser doesn't show, or with no candidates, is skipped; one with no media that
+    isn't WebP or AVIF is always picked, so later sources never are. Media conditions are not evaluated (no
+    screen here), so a WebP for wide screens only still counts."""
+    for source in image["sources"]:
+        source_type = source.get("type", "").split(";")[0].strip().lower()
+        files = [page.file(url) for url in srcset_urls(source.get("srcset", ""))]
+        if (source_type and source_type not in BROWSER_TYPES) or not files:
+            continue
+        if any(not facts["error"] and facts["kind"] in ("webp", "avif") for facts in files):
+            return True
+        if not source.get("media", "").strip():
+            return False
+    return False
+
+
 def check_modern_format(page: ImagePage) -> tuple[bool, str]:
     heavy = []
-    for image in page.parser.images:  # a <source> counts when its file really is WebP or AVIF, whatever its type says
-        offers_modern = any(page.file(url)["kind"] in ("webp", "avif")
-                            for source in image["sources"] for url in srcset_urls(source.get("srcset", "")))
+    for image in page.parser.images:
+        modern = offers_modern(page, image)
         for src in page.image_urls(image):
             facts = page.file(src)
-            if not offers_modern and facts["kind"] in ("jpeg", "png") and facts["bytes"] >= MODERN_FORMAT_MIN_BYTES:
+            if not modern and facts["kind"] in ("jpeg", "png") and facts["bytes"] >= MODERN_FORMAT_MIN_BYTES:
                 heavy.append((facts["bytes"], at(image, f"{shown(src)} is {facts['kind'].upper()}, "
                                                        f"{facts['bytes'] // 1000} KB, with no WebP or AVIF version")))
     heavy.sort(reverse=True)
@@ -650,6 +770,7 @@ def file_totals(files: dict) -> str:
 def check_site(start: str, files: dict | None = None) -> bool:
     """Checks the images of every page found under the start address; one block per page and a total. True if any failed."""
     files = {} if files is None else files
+    so_far = " so far in this run" if files else ""  # the cache is shared with the inputs before this one
     passed_pages = failed_pages = 0
     for url, source, page in page_check.site_pages(start):
         if isinstance(page, str):
@@ -664,7 +785,7 @@ def check_site(start: str, files: dict | None = None) -> bool:
         for check, found in failed:
             print(f"  FAIL {check['name']}: {found}", f'    Google: "{check["quote"]}"', f"    source: {check['source']}", sep="\n")
         print("".join(f"  NOTICE {check['name']}: {found}\n" for check, passed, found in results if passed and "Notice:" in found))
-    print(f"{start}: {passed_pages + failed_pages} pages checked, {passed_pages} passed, {failed_pages} failed; {file_totals(files)}.\n")
+    print(f"{start}: {passed_pages + failed_pages} pages checked, {passed_pages} passed, {failed_pages} failed; {file_totals(files)}{so_far}.\n")
     return failed_pages > 0
 
 
@@ -680,6 +801,6 @@ if __name__ == "__main__":
         results = run_checks(path.read_text(encoding="utf-8", errors="replace"), path, shared_files)
         any_failed |= not all(passed for _, passed, _ in results)
         print(f"== {name}\n{report(results)}\n")
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 2 or not sys.argv[1].startswith(("http://", "https://")):  # a site prints its own total
         print(f"In all: {file_totals(shared_files)}.")
     sys.exit(1 if any_failed else 0)

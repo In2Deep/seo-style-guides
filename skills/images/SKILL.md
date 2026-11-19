@@ -22,7 +22,19 @@ A site behind a login can't be checked. Don't enter a password; ask for the addr
 
    If this skill is not running from an installed plugin, `image_check.py` is at the root of the seo-style-guides repository. If `python3` is older than 3.10, use a newer one (for example `python3.13`). The checker runs 10 checks on every page, each with the Google quote it rests on, opens every image file (up to 30 MB of each) to read its type and pixel size, and lists every problem it finds. It reads the HTML only, not CSS, so a size or shape set in CSS is not seen. Say how many pages and image files it checked.
 
-2. Find each page's largest picture the way Google measures it. Open the page at phone width (375) and desktop width (1440) and read the Largest Contentful Paint element with `new PerformanceObserver(list => ...).observe({type: "largest-contentful-paint", buffered: true})`. If it is an `<img>` with `loading="lazy"`, that is a failure, whatever the static check said. A `first picture not lazy` failure whose picture is not the largest element at either width is dropped, and say why.
+2. Find each page's largest picture the way Google measures it. Open the page at phone width (375) and desktop width (1440), let it finish loading, and read the Largest Contentful Paint element by running this in the page (it gives `null` if the browser recorded none in 3 seconds):
+
+   ```js
+   await new Promise(resolve => {
+     setTimeout(() => resolve(null), 3000);
+     new PerformanceObserver(list => {
+       const element = list.getEntries().at(-1)?.element;
+       resolve(element ? {tag: element.tagName, src: element.currentSrc || "", lazy: element.loading === "lazy"} : null);
+     }).observe({type: "largest-contentful-paint", buffered: true});
+   });
+   ```
+
+   If it is an `<img>` with `loading="lazy"`, that is a failure, whatever the static check said. A `first picture not lazy` failure whose picture is not the largest element at either width is dropped, and say why.
 
 3. Look at the main pictures of each page beside their alt text. Flag alt text that doesn't describe the picture or is stuffed with keywords (`appearance--google-images`, "Use descriptive filenames, titles, and alt text"). Also flag any picture that carries content but is set as a CSS background: Google doesn't index CSS images.
 
@@ -30,4 +42,4 @@ A site behind a login can't be checked. Don't enter a password; ask for the addr
 
 ## Report
 
-One row per page: address and its failures. Then one list of image files to fix, heaviest first, each with what it needs: a WebP or AVIF version, a smaller size (in pixels wide), a descriptive name, width and height in the HTML (or on its `<source>`), a supported format (HEIC to JPEG, WebP or AVIF), a repaired or replaced file, or no lazy loading. A file used on many pages is listed once, with how many pages use it. List notices (such as a small favicon) last, one line each.
+One row per page: address and its failures. Then one list of image files to fix, heaviest first where the checker gave a size (files with no size listed after), each with what it needs: a WebP or AVIF version, a smaller size (in pixels wide), a descriptive name, width and height in the HTML (or on its `<source>`), a supported format (HEIC to JPEG, WebP or AVIF), a repaired or replaced file, or no lazy loading. A file used on many pages is listed once, with how many pages use it. List notices (such as a small favicon) last, one line each.

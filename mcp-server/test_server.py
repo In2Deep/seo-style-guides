@@ -288,10 +288,20 @@ class SiteCheckTest(unittest.TestCase):
 class ImageCheckTest(unittest.TestCase):
     def test_bad_images_fail_every_check(self) -> None:
         def png(width: int, height: int, padding: int = 0) -> bytes:
-            return (b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR" + width.to_bytes(4, "big") + height.to_bytes(4, "big")
-                    + bytes(9 + padding) + b"\x00\x00\x00\x00IEND\xaeB`\x82")
-        jpeg = b"\xff\xd8\xff\xc0\x00\x11\x08" + (300).to_bytes(2, "big") + (400).to_bytes(2, "big") + bytes(12) + b"\xff\xd9"
-        heic = (24).to_bytes(4, "big") + b"ftypheic" + bytes(12) + b"\x00\x00\x00\x14ispe" + bytes(4) + (8).to_bytes(4, "big") * 2
+            return (b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR" + width.to_bytes(4, "big") + height.to_bytes(4, "big") + bytes(9)
+                    + padding.to_bytes(4, "big") + b"IDAT" + bytes(padding + 4) + b"\x00\x00\x00\x00IEND\xaeB`\x82")
+
+        def box(kind: bytes, body: bytes) -> bytes:
+            return (8 + len(body)).to_bytes(4, "big") + kind + body
+
+        def ispe(width: int, height: int) -> bytes:
+            return box(b"ispe", bytes(4) + width.to_bytes(4, "big") + height.to_bytes(4, "big"))
+
+        jpeg = (b"\xff\xd8\xff\xc0\x00\x0b\x08" + (300).to_bytes(2, "big") + (400).to_bytes(2, "big") + b"\x01\x01\x11\x00"
+                + b"\xff\xda\x00\x08\x01\x01\x00\x00\x3f\x00" + bytes(4) + b"\xff\xd9")
+        # primary item 1 is 8x8; item 2 (a bigger thumbnail, say) is 64x64: the primary item's size must win
+        heic = box(b"ftyp", b"heic" + bytes(4) + b"mif1heic") + box(b"meta", bytes(4) + box(b"pitm", bytes(4) + b"\x00\x01") + box(
+            b"iprp", box(b"ipco", ispe(8, 8) + ispe(64, 64)) + box(b"ipma", bytes(4) + (2).to_bytes(4, "big") + b"\x00\x01\x01\x01\x00\x02\x01\x02")))
         page = """<!DOCTYPE html><html lang="en"><head><link rel="icon" href="icon.png">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "image": "small.png"}</script></head>
 <body><main><img src="IMG_1234.jpg" alt="IMG_1234.jpg" loading="lazy">
@@ -321,6 +331,37 @@ class ImageCheckTest(unittest.TestCase):
         self.assertEqual(image_check.image_facts(heic), ("heic", 8, 8))
         self.assertEqual(image_check.srcset_urls("board,closeup.png 2x, data:image/png;base64,AAAA 1x"),
                          ["board,closeup.png", "data:image/png;base64,AAAA"])
+
+    def test_odd_input_is_read_like_a_browser(self) -> None:
+        ic = image_check
+        page = ('<base href="https://[bad/"><script type="application/ld+json">{"@type": "Article", "image": {"@id": []}}</script>'
+                '<!-- <script type="application/ld+json">{broken</script> --><img src="gone.png" width="' + "9" * 5000 + '">')
+        with tempfile.TemporaryDirectory() as folder:
+            self.assertEqual(len(ic.run_checks(page, Path(folder) / "index.html")), len(ic.CHECKS))  # no crash
+        self.assertEqual(ic.ImagePage(page, Path("index.html"), {}).json_ld_errors, [])  # the commented-out block is not read
+        self.assertEqual(ic.image_facts(b'<svg width="1e999" height="1"/>'), ("svg", 0, 0))
+        self.assertEqual(ic.image_facts(b'<!-- <svg width="48" height="48"/> --><svg width="1in" height="2in"/>'), ("svg", 96, 192))
+        self.assertEqual(ic.image_facts(b'<s:svg xmlns:s="http://www.w3.org/2000/svg" width="4" height="4"/>'), ("svg", 4, 4))
+        self.assertEqual(ic.image_facts(b'<svg-thing width="4" height="4"/>')[0], "unknown")
+        self.assertEqual(ic.image_facts(b"\x00\x00\x00\x14ftypavif\x00\x00\x00\x00avif\x00\x00\x00\x1cfreeispe" + bytes(4)
+                                        + (300).to_bytes(4, "big") * 2), ("avif", 0, 0))  # no primary item: size unknown
+        self.assertTrue(ic.cut_short("gif", b"GIF89a\x0a\x00\x0a\x00"))
+        self.assertTrue(ic.cut_short("webp", b"RIFF\x88\x13\x00\x00WEBPVP8X" + bytes(18)))
+        self.assertTrue(ic.cut_short("png", b"\x89PNG\r\n\x1a\n\x00\x00\x00\x08tEXtIEND\xaeB`\x82" + bytes(4)))
+        self.assertTrue(ic.cut_short("jpeg", b"\xff\xd8\xff\xe1\x00\x06\xff\xd9\x00\x00\xff\xda\x00\x02"))  # end marker only in EXIF
+        self.assertTrue(ic.cut_short("ico", b"\x00\x00\x01\x00\x01\x00" + bytes(8) + (0).to_bytes(4, "little") + (22).to_bytes(4, "little")))
+        for width, height, natural_width, natural_height, matches in [(320, 181, 1600, 900, True), (1000, 1010, 100, 100, False),
+                                                                      (100, 102, 100, 100, False), (1560, 402, 480, 123, True)]:
+            self.assertEqual(ic.shapes_match(width, height, natural_width, natural_height), matches, (width, height))
+        parser = ic.ImageParser('<picture><source srcset="a.webp"><template><picture></picture></template><img src="a.png"></picture>')
+        self.assertEqual(len(parser.images[0]["sources"]), 1)
+        self.assertEqual(ic.srcset_urls("ignored.png 2q), selected.png 1x"), ["selected.png"])
+        found, _ = ic.json_ld_images(['{"@type": "ProfilePage", "mainEntity": {"@type": "Person", "image": "me.png"}}',
+                                      '{"@type": "ImageObject", "contentUrl": "board.jpg"}'])
+        self.assertEqual(found, {"me.png": {"Person", "ProfilePage"}, "board.jpg": {"ImageObject"}})
+        self.assertEqual([ic.name_stem(name) for name in ("image-cedar2024.png", "hero.BRhKKi9a_Z1wcXPz.webp", "hero-DiwrgTda.png")],
+                         ["image-cedar2024", "hero", "hero"])
+        self.assertIsNone(ic.FILE_NAME_ALT.fullmatch("The sign reads photo.jpg"))
 
 if __name__ == "__main__":
     unittest.main()
