@@ -292,6 +292,8 @@ def site_pages(start: str):
         nonlocal limit_reached
         url = urldefrag(url)[0]
         split = urlsplit(url)
+        if not split.path:  # https://example.com and https://example.com/ are the same page
+            url = split._replace(path="/").geturl()
         if (url in linked_from or split.scheme not in ("http", "https") or split.netloc != parts.netloc
                 or not (split.path == scope or split.path.startswith(scope + "/")) or split.path.lower().endswith(NOT_PAGES)):
             return

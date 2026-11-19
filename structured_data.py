@@ -23,6 +23,10 @@ HEADING = re.compile(r"^(#+) (.*)")
 CODE_NAME = re.compile(r"`([\w.@]+)`")
 BARE_TYPE_HEADING = re.compile(r"([A-Z][A-Za-z]+)(?: \(.*\)| entity)?")
 OPTION_ROW = re.compile(r"^\|\s*Option (\w+)\s*\|")  # "| Option A ||": required properties split into alternative sets
+FLAT_HEADER = re.compile(r"^Recommended properties\b")  # a table saved as paragraphs; a lost required table is skipped,
+# since its either-or rules ("one of the following") would become false failures
+FLAT_ENTRY = re.compile(r"^`([\w.@]+)`(?=\s.*schema\.org/|$)")  # "`endDate` `https://schema.org/DateTime`", "`image` Repeated ..."
+ALTERNATIVE_HEADINGS = {"Summary pages", "All-in-one pages"}  # the carousel page: one list format or the other
 
 
 class JsonLdScripts(HTMLParser):
@@ -86,11 +90,13 @@ def read_sections() -> list[dict]:
     A table belongs to the nearest heading (level 3 or deeper) that names a type; a table straight
     under "Structured data type definitions" belongs to the types in the page title. Beta pages are
     skipped. Entries with several names ("`price` or `priceSpecification.price`") mean any one will do.
-    Rows after an "Option A" row belong to that option; any one complete option will do.
+    Rows after an "Option A" row belong to that option; any one complete option will do, and so do the
+    carousel page's "Summary pages" and "All-in-one pages" tables. A recommended table the saved copy
+    lost (a "Recommended properties" line, then a paragraph per property) is read from its property lines.
     """
     sections = []
     for path in sorted(GUIDE_FOLDER.glob(PAGE_PREFIX + "*.md")):
-        title, stack, in_code, kind, option, page_sections = "", [], False, None, "", {}
+        title, stack, in_code, kind, option, flat, page_sections = "", [], False, None, "", None, {}
         for line in path.read_text(encoding="utf-8").splitlines():
             if line.startswith("```"):
                 in_code = not in_code
@@ -101,18 +107,26 @@ def read_sections() -> list[dict]:
                 if level == 1 and "`" in text:
                     title = text
                 stack = [entry for entry in stack if entry[0] < level] + [(level, text)]
+                flat = None
                 continue
             if header := TABLE_HEADER.match(line):
-                kind, option = header[1].lower(), ""
+                kind, flat = header[1].lower(), None
+                option = stack[-1][1] if stack and stack[-1][1] in ALTERNATIVE_HEADINGS else ""
                 continue
-            if not line.startswith("|"):
-                kind = None
-                continue
-            if not kind or not stack or line.startswith("|---"):
-                continue
-            if choice := OPTION_ROW.match(line):
-                option = choice[1]
-                continue
+            if flat_header := FLAT_HEADER.match(line):
+                flat, option, line = "recommended", "", line[flat_header.end():].strip()
+            if flat and (entry := FLAT_ENTRY.match(line)):
+                row_kind, row_names = flat, (entry[1],)
+            else:
+                if not line.startswith("|"):
+                    kind = None
+                    continue
+                if not kind or not stack or line.startswith("|---"):
+                    continue
+                if choice := OPTION_ROW.match(line):
+                    option = choice[1]
+                    continue
+                row_kind, row_names = kind, tuple(CODE_NAME.findall(line.split("|")[1]))
             owner = None
             for level, text in reversed(stack):
                 if level <= 2 or text == TYPE_DEFINITIONS_HEADING:
@@ -122,10 +136,9 @@ def read_sections() -> list[dict]:
                 if names := heading_types(text):
                     owner = (text, names)
                     break
-            names = tuple(CODE_NAME.findall(line.split("|")[1]))
-            if owner and owner[1] and names:
+            if owner and owner[1] and row_names:
                 section = page_sections.setdefault(owner[0], {"heading": owner[0], "types": set(owner[1]), "entries": []})
-                section["entries"].append((kind, names, option))
+                section["entries"].append((row_kind, row_names, option))
         if "beta" in title.lower():
             continue
         for section in page_sections.values():

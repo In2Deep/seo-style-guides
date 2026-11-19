@@ -185,6 +185,16 @@ class GoogleDocsServerTest(unittest.TestCase):
                 self.assertFalse(is_error, text)
                 self.assertIn("Item 1: NewsArticle", text)
 
+    def test_structured_data_reads_lost_tables_and_either_or_lists(self) -> None:
+        event = {"@context": "https://schema.org", "@type": "Event", "name": "Trial", "startDate": "2027-03-21",
+                 "location": {"@type": "Place", "name": "Lake Mountain", "address": "Saratoga Springs, UT"}}
+        text, _ = self.session.call("check_structured_data", markup=json.dumps(event))
+        self.assertIn("recommended, missing: description, endDate, eventStatus, image", text)  # a table the saved page lost
+        summary = {"@context": "https://schema.org", "@type": "ItemList",
+                   "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://example.com/a"}]}
+        text, _ = self.session.call("check_structured_data", markup=json.dumps(summary))
+        self.assertNotIn("missing: item", text)  # a summary page lists addresses; only an all-in-one page needs item
+
     def test_structured_data_product_offer_missing_required(self) -> None:
         markup = json.dumps({"@context": "https://schema.org", "@graph": [
             {"@type": "Product", "name": "Lap", "offers": {"@type": "Offer", "priceCurrency": "USD"}},
@@ -281,12 +291,13 @@ class SiteCheckTest(unittest.TestCase):
     def test_site_check_follows_links(self) -> None:
         with tempfile.TemporaryDirectory() as folder:
             Path(folder, "index.html").write_text(GOOD_PAGE.replace('href="/specs"', 'href="/second.html"'))
-            Path(folder, "second.html").write_text(GOOD_PAGE.replace('href="/specs"', 'href="/"'))
             quiet = type("QuietHandler", (http.server.SimpleHTTPRequestHandler,), {"log_message": lambda *args: None})
             handler = functools.partial(quiet, directory=folder)
             server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
             threading.Thread(target=server.serve_forever, daemon=True).start()
             start = f"http://127.0.0.1:{server.server_address[1]}/"
+            home = start.rstrip("/")  # the same page as start, so it is not checked twice
+            Path(folder, "second.html").write_text(GOOD_PAGE.replace('href="/specs"', f'href="{home}"'))
             output = io.StringIO()
             with contextlib.redirect_stdout(output):
                 page_check.check_site(start)
