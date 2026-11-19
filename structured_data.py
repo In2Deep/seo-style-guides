@@ -6,6 +6,7 @@ Checks only which properties are present, never their values. Fetches nothing.
 """
 import json
 import re
+from html.parser import HTMLParser
 from pathlib import Path
 
 GUIDE_FOLDER = Path(__file__).resolve().parent / "guides" / "seo"
@@ -21,7 +22,39 @@ HEADING = re.compile(r"^(#+) (.*)")
 CODE_NAME = re.compile(r"`([\w.@]+)`")
 BARE_TYPE_HEADING = re.compile(r"([A-Z][A-Za-z]+)(?: \(.*\)| entity)?")
 OPTION_ROW = re.compile(r"^\|\s*Option (\w+)\s*\|")  # "| Option A ||": required properties split into alternative sets
-LD_JSON_SCRIPT = re.compile(r"<script\b[^>]*\btype\s*=\s*[\"']?application/ld\+json[\"']?[^>]*>(.*?)</script>", re.I | re.S)
+
+
+class JsonLdScripts(HTMLParser):
+    """The text of every <script type="application/ld+json"> of an HTML page, found the way a browser finds them:
+    markup inside a comment, a script of another type and anything inside <template> are left out."""
+
+    def __init__(self, html: str):
+        super().__init__(convert_charrefs=True)
+        self.scripts, self.text, self.template_depth = [], None, 0
+        self.feed(html)
+        self.close()
+
+    def handle_starttag(self, tag: str, attrs: list) -> None:
+        script_type = next((value or "" for name, value in attrs if name == "type"), "")  # the first one counts
+        if tag == "template":
+            self.template_depth += 1
+        elif tag == "script" and not self.template_depth and script_type.strip().lower() == "application/ld+json":
+            self.text = []
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "template":
+            self.template_depth = max(0, self.template_depth - 1)
+        elif tag == "script" and self.text is not None:
+            self.scripts.append("".join(self.text))
+            self.text = None
+
+    def handle_data(self, data: str) -> None:
+        if self.text is not None:
+            self.text.append(data)
+
+
+def ld_json_scripts(html: str) -> list[str]:
+    return JsonLdScripts(html).scripts
 
 
 def heading_types(heading: str) -> list[str]:
@@ -169,7 +202,7 @@ def check_against(item: dict, section: dict, sections: list[dict], indent: str, 
 def json_ld_items(markup: str) -> list[dict]:
     """The top-level items with an @type in JSON-LD text or in every ld+json script of an HTML page."""
     is_html = markup.lstrip().startswith("<")
-    blocks = LD_JSON_SCRIPT.findall(markup) if is_html else [markup]
+    blocks = ld_json_scripts(markup) if is_html else [markup]
     items = []
     for number, block in enumerate(blocks, 1):
         try:
@@ -185,7 +218,7 @@ def json_ld_items(markup: str) -> list[dict]:
 
 
 def check_structured_data(markup: str) -> str:
-    if markup.lstrip().startswith("<") and not LD_JSON_SCRIPT.search(markup):
+    if markup.lstrip().startswith("<") and not ld_json_scripts(markup):
         return 'No <script type="application/ld+json"> block found in the HTML.'
     items = json_ld_items(markup)
     if not items:

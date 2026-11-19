@@ -171,6 +171,11 @@ class GoogleDocsServerTest(unittest.TestCase):
         self.assertIn("required, missing: none", text)
         self.assertIn("datePublished", text)
         self.assertIn("never invent a value", text)
+        hidden = ('<html><!-- <script type="application/ld+json">{broken</script> -->'
+                  '<script data-type="application/ld+json" type="text/plain">{"@type": "Recipe"}</script>'
+                  '<template><script type="application/ld+json">{"@type": "Recipe"}</script></template></html>')
+        text, _ = self.session.call("check_structured_data", markup=hidden)
+        self.assertIn("No <script", text)  # a comment, another type and a <template> hold no JSON-LD
 
     def test_structured_data_product_offer_missing_required(self) -> None:
         markup = json.dumps({"@context": "https://schema.org", "@graph": [

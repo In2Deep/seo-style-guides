@@ -24,6 +24,7 @@ from urllib.parse import unquote, urldefrag, urljoin, urlsplit
 from urllib.request import Request, urlopen
 
 import page_check
+import structured_data
 from page_check import LIGHTHOUSE, SEARCH, report
 
 SUPPORTED = ("bmp", "gif", "jpeg", "png", "webp", "svg", "avif")  # Google Images, from the quote in CHECKS
@@ -302,13 +303,13 @@ def open_image(location: str | Path) -> dict:
 
 
 class ImageParser(HTMLParser):
-    """Collects every <img> (with the <source> elements of its <picture> and where it sits), every favicon <link>,
-    the text of every JSON-LD <script> and the first <base href>. Elements inside <template> are not part of the
-    page and are skipped, end tags included."""
+    """Collects every <img> (with the <source> elements of its <picture> and where it sits), every favicon <link>
+    and the first <base href>. Elements inside <template> are not part of the page and are skipped, end tags
+    included."""
 
     def __init__(self, html: str):
         super().__init__(convert_charrefs=True)
-        self.images, self.icons, self.json_ld, self.picture, self.base_href, self.script = [], [], [], None, None, None
+        self.images, self.icons, self.picture, self.base_href = [], [], None, None
         self.depth = {"main": 0, "header": 0, "nav": 0, "template": 0}
         self.feed(html)
         self.close()
@@ -322,8 +323,6 @@ class ImageParser(HTMLParser):
             return
         if tag in self.depth:
             self.depth[tag] += 1
-        elif tag == "script" and values.get("type", "").strip().lower() == "application/ld+json":
-            self.script = []
         elif tag == "base" and self.base_href is None and values.get("href", "").strip():
             self.base_href = values["href"].strip()
         elif tag == "picture":
@@ -336,10 +335,6 @@ class ImageParser(HTMLParser):
         elif tag == "link" and ICON_RELS & set(values.get("rel", "").lower().split()) and values.get("href", "").strip():
             self.icons.append({"attrs": values, "line": line})
 
-    def handle_data(self, data: str) -> None:
-        if self.script is not None:
-            self.script.append(data)
-
     def handle_endtag(self, tag: str) -> None:
         if tag == "template":
             self.depth["template"] = max(0, self.depth["template"] - 1)
@@ -349,9 +344,6 @@ class ImageParser(HTMLParser):
             self.depth[tag] = max(0, self.depth[tag] - 1)
         elif tag == "picture":
             self.picture = None
-        elif tag == "script" and self.script is not None:
-            self.json_ld.append("".join(self.script))
-            self.script = None
 
 
 DESCRIPTOR = re.compile(r"[1-9]\d*[wh]|(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?x")  # lower-case w, h, x, as HTML has them
@@ -473,7 +465,7 @@ class ImagePage:
 
     def __init__(self, html: str, base: str | Path, files: dict):
         self.parser, self.files = ImageParser(html), files
-        self.json_ld, self.json_ld_errors = json_ld_images(self.parser.json_ld)
+        self.json_ld, self.json_ld_errors = json_ld_images(structured_data.ld_json_scripts(html))
         href = self.parser.base_href or ""
         try:
             urlsplit(href)
