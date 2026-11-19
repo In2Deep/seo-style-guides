@@ -22,19 +22,28 @@ A site behind a login can't be checked. Don't enter a password; ask for the addr
 
    If this skill is not running from an installed plugin, `image_check.py` is at the root of the seo-style-guides repository. If `python3` is older than 3.10, use a newer one (for example `python3.13`). The checker runs 10 checks on every page, each with the Google quote it rests on, opens every image file (up to 30 MB of each) to read its type and pixel size, and lists every problem it finds. It reads the HTML only, not CSS, so a size or shape set in CSS is not seen. Say how many pages and image files it checked.
 
-2. Find each page's largest picture the way Google measures it. Open the page at phone width (375) and desktop width (1440), let it finish loading, and read the Largest Contentful Paint element by running this in the page (it gives `null` if the browser recorded none in 3 seconds):
+2. Set the viewport to phone width (375) or desktop width (1440), then load the page at that size. After the page loads and before scrolling or clicking, run this to observe the Largest Contentful Paint element for three seconds. Repeat with a fresh load at the other width:
 
    ```js
    await new Promise(resolve => {
-     setTimeout(() => resolve(null), 3000);
-     new PerformanceObserver(list => {
-       const element = list.getEntries().at(-1)?.element;
+     if (!globalThis.PerformanceObserver?.supportedEntryTypes?.includes("largest-contentful-paint")) {
+       resolve(null);
+       return;
+     }
+     let latest;
+     const observer = new PerformanceObserver(list => {
+       latest = list.getEntries().at(-1) ?? latest;
+     });
+     observer.observe({type: "largest-contentful-paint", buffered: true});
+     setTimeout(() => {
+       const element = (observer.takeRecords().at(-1) ?? latest)?.element;
+       observer.disconnect();
        resolve(element ? {tag: element.tagName, src: element.currentSrc || "", lazy: element.loading === "lazy"} : null);
-     }).observe({type: "largest-contentful-paint", buffered: true});
+     }, 3000);
    });
    ```
 
-   If it is an `<img>` with `loading="lazy"`, that is a failure, whatever the static check said. A `first picture not lazy` failure whose picture is not the largest element at either width is dropped, and say why.
+   Report a measured `<img loading="lazy">` as a failure. Clear a static flag only when both viewports have a measured LCP on another element and the flagged image has finished loading wherever it is visible. Treat a `null` result or a visible image still loading as inconclusive.
 
 3. Look at the main pictures of each page beside their alt text. Flag alt text that doesn't describe the picture or is stuffed with keywords (`appearance--google-images`, "Use descriptive filenames, titles, and alt text"). Also flag any picture that carries content but is set as a CSS background: Google doesn't index CSS images.
 

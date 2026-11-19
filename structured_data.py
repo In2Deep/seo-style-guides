@@ -6,6 +6,7 @@ Checks only which properties are present, never their values. Fetches nothing.
 """
 import json
 import re
+from collections.abc import Iterator
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -55,6 +56,19 @@ class JsonLdScripts(HTMLParser):
 
 def ld_json_scripts(html: str) -> list[str]:
     return JsonLdScripts(html).scripts
+
+
+def json_ld_objects(value: object) -> Iterator[dict]:
+    """Yield the objects in a decoded JSON-LD block, including nested objects."""
+    if isinstance(value, dict):
+        yield value
+        children = value.values()
+    elif isinstance(value, list):
+        children = value
+    else:
+        return
+    for child in children:
+        yield from json_ld_objects(child)
 
 
 def heading_types(heading: str) -> list[str]:
@@ -201,14 +215,20 @@ def check_against(item: dict, section: dict, sections: list[dict], indent: str, 
 
 def json_ld_items(markup: str) -> list[dict]:
     """The top-level items with an @type in JSON-LD text or in every ld+json script of an HTML page."""
+    markup = markup.lstrip().removeprefix("\ufeff")
     is_html = markup.lstrip().startswith("<")
     blocks = ld_json_scripts(markup) if is_html else [markup]
     items = []
     for number, block in enumerate(blocks, 1):
+        where = f"JSON-LD script block {number}" if is_html else "The markup"
         try:
-            data = json.loads(block)
-        except json.JSONDecodeError as error:
-            where = f"JSON-LD script block {number}" if is_html else "The markup"
+            data = json.loads(block.lstrip().removeprefix("\ufeff"))
+            # Some Python versions can decode trees too deep for the later property checks.
+            for _ in json_ld_objects(data):
+                pass
+        except RecursionError:
+            raise ValueError(f"{where} is too deeply nested") from None
+        except ValueError as error:
             raise ValueError(f"{where} is not valid JSON: {error}") from None
         for entry in data if isinstance(data, list) else [data]:
             if isinstance(entry, dict):
@@ -218,6 +238,7 @@ def json_ld_items(markup: str) -> list[dict]:
 
 
 def check_structured_data(markup: str) -> str:
+    markup = markup.lstrip().removeprefix("\ufeff")
     if markup.lstrip().startswith("<") and not ld_json_scripts(markup):
         return 'No <script type="application/ld+json"> block found in the HTML.'
     items = json_ld_items(markup)
@@ -234,5 +255,8 @@ def check_structured_data(markup: str) -> str:
         for section in matched:
             report.append(f"  page: guides/seo/{section['file']}: {section['title']} [{section['heading']}]")
             report.append(f"  source: {section['source']}")
-            report.extend(check_against(item, section, sections, "  "))
+            try:
+                report.extend(check_against(item, section, sections, "  "))
+            except RecursionError:
+                raise ValueError(f"JSON-LD item {number} is too deeply nested") from None
     return "\n".join(report)

@@ -37,13 +37,14 @@ AVIF_BRANDS = {b"avif", b"avis"}
 HEIC_BRANDS = {b"heic", b"heix", b"heim", b"heis", b"hevc", b"hevx", b"mif1", b"msf1"}
 GENERIC_NAME = re.compile(r"(img|image|images|dsc|dscn|dscf|pxl|mvimg|photo|pic|picture|screenshot|screen[-_ ]?shot"
                           r"|untitled|scan|file|placeholder)?[-_ ]?\d*([-_ ]\d+)*|[0-9a-f]{12,}", re.I)
-BUILD_HASH = re.compile(r"""(  \.(?=\w*\d)(?=\w*[A-Za-z])\w{8,}         # Astro, Parcel, webpack: hero.BRhKKi9a_Z1wcXPz
+BUILD_HASH = re.compile(r"""(  \.(?=\w*\d)(?=\w*[A-Z_])\w{8,}          # Astro, Parcel, webpack: hero.BRhKKi9a_Z1wcXPz
                                | -(?=[\w-]*[A-Z_])[\w-]{8}               # Vite and Rollup: hero-DiwrgTda
-                               | -(?=[0-9a-f]*\d)(?=[0-9a-f]*[a-f])[0-9a-f]{8,}  # a hex content hash
+                               | [.-](?=[0-9a-f]*\d)(?=[0-9a-f]*[a-f])[0-9a-f]{8,}  # a hex content hash: hero.3f2a1b9c
                              )$""", re.X)  # the part a build tool adds to a file name
 FILE_NAME_ALT = re.compile(r"\S+\.(jpe?g|png|gif|webp|avif|svg|bmp|heic|heif|tiff?|ico)", re.I)  # alt that is a bare file name
 ICON_RELS = {"icon", "apple-touch-icon", "apple-touch-icon-precomposed"}  # the rel values Google's favicon page lists
-SIZE_RULE_TYPES = {"Article", "NewsArticle", "BlogPosting", "Event", "Restaurant", "Product", "Recipe", "ProfilePage"}  # pages that give the 50K rule
+RESTAURANT_CAROUSEL = "Restaurant carousel"
+SIZE_RULE_TYPES = {"Article", "NewsArticle", "BlogPosting", "Event", "Product", "Recipe", "ProfilePage", RESTAURANT_CAROUSEL}
 BROWSER_TYPES = {"image/avif", "image/webp", "image/png", "image/apng", "image/jpeg", "image/gif", "image/svg+xml", "image/bmp",
                  "image/x-icon", "image/vnd.microsoft.icon"}  # a <source> with another type is skipped by the browser
 SVG_UNITS = {"": 1, "px": 1, "in": 96, "cm": 96 / 2.54, "mm": 96 / 25.4, "pt": 4 / 3, "pc": 16}
@@ -57,6 +58,12 @@ MODERN_FORMAT_MIN_BYTES = 10_000  # ours, not Google's: smaller JPEG and PNG fil
 MIN_STRUCTURED_DATA_PIXELS = 50_000
 FAVICON_MIN_PX, FAVICON_RECOMMENDED_PX = 8, 48
 WEB_DEV = "https://web.dev/"
+
+
+NETPBM_SPACE = rb"(?:\s|#[^\r\n]*[\r\n])+"
+NETPBM_SIZE = re.compile(rb"P[1-6]" + NETPBM_SPACE + rb"(\d{1,7})" + NETPBM_SPACE + rb"(\d{1,7})(?!\d)")
+NETPBM_MAXVAL = re.compile(NETPBM_SPACE + rb"0*(\d{1,5})(?!\d)")
+NETPBM_RASTER_START = re.compile(rb"(?:#[^\r\n]*)?\s")
 
 
 def image_facts(data: bytes) -> tuple[str, int, int]:
@@ -84,7 +91,7 @@ def image_facts(data: bytes) -> tuple[str, int, int]:
     if data[:4] == b"\x00\x00\x01\x00" and len(data) >= 22:
         entries = [data[6 + 16 * i:8 + 16 * i] for i in range(int.from_bytes(data[4:6], "little")) if len(data) >= 22 + 16 * i]
         return ("ico", *max(((w or 256, h or 256) for w, h in entries), default=(0, 0)))
-    netpbm = re.match(rb"P[1-6](?:\s|#[^\n]*\n)+(\d{1,7})(?:\s|#[^\n]*\n)+(\d{1,7})", data[:512])
+    netpbm = NETPBM_SIZE.match(data, 0, 512)
     if netpbm:
         return "ppm", int(netpbm.group(1)), int(netpbm.group(2))
     root = svg_root(data)
@@ -94,28 +101,44 @@ def image_facts(data: bytes) -> tuple[str, int, int]:
 
 
 def jpeg_markers(data: bytes):
-    """(marker, position) of each JPEG marker segment, up to and including the start of scan (0xDA). Segments are
-    skipped by their length, so a thumbnail inside the EXIF data is never read as the picture."""
-    at = 2
-    while at + 3 < len(data):
-        if data[at] != 0xFF or data[at + 1] == 0xFF:
+    """(marker, position) through the last scan, skipping length-delimited segments and stuffed scan bytes."""
+    at, in_scan = 2, False
+    while at + 1 < len(data):
+        if in_scan:
+            at = data.find(b"\xff", at)
+            if at == -1:
+                return
+        elif data[at] != 0xFF:
+            return
+        while at + 1 < len(data) and data[at + 1] == 0xFF:
             at += 1
-            continue
+        if at + 1 >= len(data):
+            return
         marker = data[at + 1]
-        if marker == 0x01 or 0xD0 <= marker <= 0xD8:
+        if marker == 0x01 or (in_scan and (marker == 0x00 or 0xD0 <= marker <= 0xD7)):
             at += 2
             continue
-        yield marker, at
-        if marker == 0xDA:
+        if marker == 0xD9:
+            yield marker, at
             return
-        at += 2 + int.from_bytes(data[at + 2:at + 4], "big")
+        if marker == 0x00 or 0xD0 <= marker <= 0xD8 or at + 4 > len(data):
+            return
+        length = int.from_bytes(data[at + 2:at + 4], "big")
+        segment_end = at + 2 + length
+        minimum_length = 8 if marker == 0xDA else 2  # a scan header includes at least one component
+        if length < minimum_length or segment_end > len(data):
+            return
+        yield marker, at
+        at, in_scan = segment_end, marker == 0xDA
 
 
 def jpeg_size(data: bytes) -> tuple[int, int]:
     for marker, at in jpeg_markers(data):
-        if 0xC0 <= marker <= 0xCF and marker not in (0xC4, 0xC8, 0xCC) and at + 9 <= len(data):  # start of frame
-            height, width = struct.unpack(">HH", data[at + 5:at + 9])
-            return width, height
+        if 0xC0 <= marker <= 0xCF and marker not in (0xC4, 0xC8, 0xCC):  # start of frame
+            if int.from_bytes(data[at + 2:at + 4], "big") >= 11:
+                height, width = struct.unpack_from(">HH", data, at + 5)
+                return width, height
+            break
     return 0, 0
 
 
@@ -220,7 +243,7 @@ def svg_root(data: bytes) -> dict | None:
     parser.StartElementHandler = start
     try:
         parser.Parse(data[:SVG_HEAD_BYTES], False)
-    except (FoundRoot, expat.ExpatError, ValueError):
+    except (FoundRoot, expat.ExpatError, LookupError, ValueError):
         pass
     return root[0][1] if root and root[0][0] in SVG_NAMES else None
 
@@ -245,27 +268,119 @@ def svg_size(attrs: dict) -> tuple[int, int]:
     return (box_width, box_height) if box_width and box_height else (0, 0)
 
 
+def gif_has_trailer(data: bytes) -> bool:
+    """Follow color tables and sub-block lengths to the GIF trailer."""
+    if len(data) < 13:
+        return False
+    at = 13  # header and logical screen descriptor
+    if data[10] & 0x80:
+        at += 3 * (2 << (data[10] & 7))  # global color table
+    while at < len(data):
+        block = data[at]
+        at += 1
+        if block == 0x3B:
+            return True
+        if block == 0x21:  # extension label before the sub-blocks
+            at += 1
+        elif block == 0x2C:  # image descriptor, optional color table, LZW code size
+            if at + 9 >= len(data):
+                return False
+            flags = data[at + 8]
+            at += 9
+            if flags & 0x80:
+                at += 3 * (2 << (flags & 7))
+            at += 1  # skip the LZW code size before the sub-blocks
+        else:
+            return False
+        while at < len(data):
+            size = data[at]
+            at += 1 + size
+            if size == 0:
+                break
+    return False
+
+
+def webp_has_image(data: bytes) -> bool:
+    """Find a bounded image or animation-frame chunk inside the declared RIFF container."""
+    end = 8 + int.from_bytes(data[4:8], "little")
+    if end > len(data):
+        return False
+    header_sizes = {b"VP8 ": 10, b"VP8L": 5, b"ANMF": 16 + 8 + 5}  # ANMF also contains a bitstream chunk
+    at, found = 12, False
+    while at + 8 <= end:
+        name, size = struct.unpack_from("<4sI", data, at)
+        at += 8 + size + (size % 2)  # RIFF pads odd-sized chunks
+        if at > end:
+            return False
+        if name in header_sizes and size > header_sizes[name]:
+            found = True
+    return found and at == end
+
+
+def netpbm_has_raster(data: bytes) -> bool:
+    """Check the byte count of the first raster in a binary PBM, PGM or PPM file."""
+    dimensions = NETPBM_SIZE.match(data, 0, 512)
+    if dimensions is None:
+        return False
+    width, height = map(int, dimensions.groups())
+    at = dimensions.end()
+    if data[1:2] == b"4":  # one bit per pixel, with each PBM row padded to a byte
+        size = ((width + 7) // 8) * height
+    else:
+        maximum = NETPBM_MAXVAL.match(data, at, 512)
+        max_value = int(maximum[1]) if maximum else 0
+        if not 0 < max_value <= 65535:
+            return False
+        channels = 3 if data[1:2] == b"6" else 1
+        size = width * height * channels * (2 if max_value >= 256 else 1)
+        at = maximum.end()
+    separator = NETPBM_RASTER_START.match(data, at, 512)
+    return separator is not None and len(data) - separator.end() >= size
+
+
 def cut_short(kind: str, data: bytes) -> bool:
     """True when a file's own structure says it ends early (no full pixel decoding)."""
-    if kind == "png":  # walk the chunks: the file must reach the end of its IEND chunk
-        at = 8
+    if kind == "png":  # require image data before a complete, empty IEND chunk
+        if data[8:16] != b"\x00\x00\x00\rIHDR":
+            return True
+        at, found = 8, False
         while at + 12 <= len(data):
-            length, name = int.from_bytes(data[at:at + 4], "big"), data[at + 4:at + 8]
-            at += 12 + length
+            size, name = struct.unpack_from(">I4s", data, at)
+            at += 12 + size
+            if at > len(data):
+                return True
             if name == b"IEND":
-                return at > len(data)
+                return size != 0 or not found
+            found |= name == b"IDAT"
         return True
-    if kind == "jpeg":  # the end marker must come after the start of scan, not inside a thumbnail
-        scan = next((at for marker, at in jpeg_markers(data) if marker == 0xDA), None)
-        return scan is None or b"\xff\xd9" not in data[scan:]
+    if kind == "jpeg":
+        saw_scan = False
+        for marker, _ in jpeg_markers(data):
+            if marker == 0xD9:
+                return not saw_scan
+            saw_scan |= marker == 0xDA
+        return True
     if kind == "gif":
-        return not data.rstrip(b"\x00").endswith(b";")  # the GIF trailer
+        return not gif_has_trailer(data)
     if kind == "webp":
-        return len(data) < 8 + int.from_bytes(data[4:8], "little")  # the RIFF length
-    if kind == "ico":  # every entry needs a payload, and the payload must be inside the file
-        entries = [data[6 + 16 * i:22 + 16 * i] for i in range(int.from_bytes(data[4:6], "little"))]
-        payloads = [struct.unpack("<II", entry[8:16]) if len(entry) == 16 else (0, 0) for entry in entries]
-        return any(size == 0 or offset + size > len(data) for size, offset in payloads)
+        return not webp_has_image(data)
+    if kind == "bmp":
+        if len(data) < 26:
+            return True
+        size = int.from_bytes(data[2:6], "little") or len(data)
+        offset, dib_size = struct.unpack_from("<II", data, 10)
+        return dib_size < 12 or not 14 + dib_size <= offset < size <= len(data)
+    if kind == "ico":
+        count = int.from_bytes(data[4:6], "little")
+        directory_end = 6 + 16 * count
+        if not count or directory_end >= len(data):
+            return True
+        for at in range(6, directory_end, 16):
+            size, offset = struct.unpack_from("<II", data, at + 8)
+            if not size or offset < directory_end or offset + size > len(data):
+                return True
+    if kind == "ppm" and data[1:2] in (b"4", b"5", b"6"):
+        return not netpbm_has_raster(data)
     return False
 
 
@@ -323,8 +438,8 @@ class ImageParser(HTMLParser):
             return
         if tag in self.depth:
             self.depth[tag] += 1
-        elif tag == "base" and self.base_href is None and values.get("href", "").strip():
-            self.base_href = values["href"].strip()
+        elif tag == "base" and self.base_href is None and "href" in values:
+            self.base_href = next((value or "").strip() for name, value in attrs if name == "href")
         elif tag == "picture":
             self.picture = []
         elif tag == "source" and self.picture is not None:
@@ -346,7 +461,8 @@ class ImageParser(HTMLParser):
             self.picture = None
 
 
-DESCRIPTOR = re.compile(r"[1-9]\d*[wh]|(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?x")  # lower-case w, h, x, as HTML has them
+SRCSET_WHITESPACE = " \t\n\r\f"  # HTML ASCII whitespace
+DESCRIPTOR = re.compile(r"0*[1-9]\d*[wh]|(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?x", re.ASCII)
 
 
 def srcset_urls(srcset: str) -> list[str]:
@@ -355,10 +471,10 @@ def srcset_urls(srcset: str) -> list[str]:
     not valid (one w or one x, h only beside w) is dropped, as the browser drops it."""
     urls, at, end = [], 0, len(srcset)
     while at < end:
-        while at < end and (srcset[at].isspace() or srcset[at] == ","):
+        while at < end and (srcset[at] in SRCSET_WHITESPACE or srcset[at] == ","):
             at += 1
         start = at
-        while at < end and not srcset[at].isspace():
+        while at < end and srcset[at] not in SRCSET_WHITESPACE:
             at += 1
         url, descriptors = srcset[start:at], ""
         if url.endswith(","):
@@ -369,7 +485,7 @@ def srcset_urls(srcset: str) -> list[str]:
                 in_parens = srcset[at] == "(" or (in_parens and srcset[at] != ")")
                 at += 1
             descriptors = srcset[descriptor_start:at]
-        tokens = descriptors.split()
+        tokens = re.findall(r"[^ \t\n\r\f]+", descriptors)
         kinds = [token[-1] for token in tokens]
         valid = (all(DESCRIPTOR.fullmatch(token) for token in tokens) and len(set(kinds)) == len(kinds)
                  and not {"w", "x"} <= set(kinds) and ("h" not in kinds or "w" in kinds))
@@ -410,53 +526,68 @@ def kind_label(facts: dict) -> str:
     return "not an image file this checker recognises" if facts["kind"] == "unknown" else facts["kind"].upper()
 
 
-def json_ld_images(scripts: list[str]) -> tuple[dict[str, set], list[str]]:
-    """Every image address in the page's JSON-LD scripts with the @type of the item it is on (contentUrl before url,
-    same-document @id references followed; a ProfilePage's mainEntity counts as the ProfilePage; a standalone
-    ImageObject counts too), and the blocks that don't parse. Each block is parsed on its own."""
-    blocks, errors = [], []
+def json_ld_images(scripts: list[str]) -> tuple[dict[str, set[str]], list[str]]:
+    """Image addresses with their owning types and feature contexts, plus errors from individual JSON-LD blocks."""
+    objects, errors = [], []
     for number_in_page, script in enumerate(scripts, 1):
         try:
-            blocks.append(json.loads(script))
+            value = json.loads(script.lstrip().removeprefix("\ufeff"))
+            block_objects = list(structured_data.json_ld_objects(value))
+        except RecursionError:
+            errors.append(f"JSON-LD block {number_in_page} is too deeply nested")
         except ValueError as error:
             errors.append(f"JSON-LD block {number_in_page} doesn't parse ({error})")
+        else:
+            objects.extend(block_objects)
+
     nodes, found = {}, {}
+    for value in objects:
+        if isinstance(item_id := value.get("@id"), str):
+            node = nodes.setdefault(item_id, {})
+            for name, inner in value.items():
+                node.setdefault(name, inner)
 
-    def collect(value) -> None:
-        if isinstance(value, dict):
-            if isinstance(value.get("@id"), str) and len(value) > 1:
-                nodes.setdefault(value["@id"], value)
-            for inner in value.values():
-                collect(inner)
-        elif isinstance(value, list):
-            for inner in value:
-                collect(inner)
+    def values(value) -> list:
+        return value if isinstance(value, list) else [value]
 
-    def add(image, types: set) -> None:
-        if isinstance(image, dict) and set(image) == {"@id"} and isinstance(image["@id"], str):
-            image = nodes.get(image["@id"], image)
+    def node_key(value: dict) -> str | int:
+        item_id = value.get("@id")
+        return item_id if isinstance(item_id, str) else id(value)
+
+    def resolve(value):
+        if isinstance(value, dict) and isinstance(item_id := value.get("@id"), str):
+            return nodes[item_id] | value
+        return value
+
+    profile_entities, carousel_items = set(), set()
+    for value in objects:
+        item = resolve(value)
+        types = set(structured_data.item_types(item))
+        if "ProfilePage" in types:
+            profile_entities.update(node_key(entity) for entity in values(item.get("mainEntity")) if isinstance(entity, dict))
+        if "ItemList" in types:
+            for entry in values(item.get("itemListElement")):
+                member = resolve(entry)
+                if isinstance(member, dict) and "ListItem" in structured_data.item_types(member):
+                    carousel_items.update(node_key(target) for target in values(member.get("item")) if isinstance(target, dict))
+
+    def add(image, types: set[str]) -> None:
+        image = resolve(image)
         url = (image.get("contentUrl") or image.get("url")) if isinstance(image, dict) else image
         if isinstance(url, str) and url.strip():
             found.setdefault(url.strip(), set()).update(types)
 
-    def walk(value, inherited: frozenset = frozenset()) -> None:
-        if isinstance(value, dict):
-            types = value.get("@type", [])
-            types = {types} if isinstance(types, str) else {t for t in types if isinstance(t, str)} if isinstance(types, list) else set()
-            types |= inherited
-            images = value.get("image")
-            for image in images if isinstance(images, list) else [] if images is None else [images]:
-                add(image, types)
-            if "ImageObject" in types:
-                add(value, types)
-            for key, inner in value.items():
-                walk(inner, frozenset({"ProfilePage"}) if key == "mainEntity" and "ProfilePage" in types else frozenset())
-        elif isinstance(value, list):
-            for inner in value:
-                walk(inner, inherited)
-
-    collect(blocks)
-    walk(blocks)
+    for value in objects:
+        types = set(structured_data.item_types(resolve(value)))
+        key = node_key(value)
+        if key in profile_entities:
+            types.add("ProfilePage")
+        if key in carousel_items and "Restaurant" in types:
+            types.add(RESTAURANT_CAROUSEL)
+        for image in values(value.get("image")):
+            add(image, types)
+        if "ImageObject" in types:
+            add(value, types)
     return found, errors
 
 
@@ -466,30 +597,35 @@ class ImagePage:
     def __init__(self, html: str, base: str | Path, files: dict):
         self.parser, self.files = ImageParser(html), files
         self.json_ld, self.json_ld_errors = json_ld_images(structured_data.ld_json_scripts(html))
-        href = self.parser.base_href or ""
-        try:
-            urlsplit(href)
-        except ValueError:
-            href = ""  # a <base href> that can't be read is ignored, as the browser ignores it
-        self.web_base, self.page_folder = None, None
-        if isinstance(base, str):
-            self.web_base = urljoin(base, href)
+        self.web_base = base if isinstance(base, str) else None
+        self.page_folder = base.parent if isinstance(base, Path) else None
+        self.local_base = base.resolve().as_uri() if isinstance(base, Path) else None
+        href = self.parser.base_href
+        if not href:
             return
-        self.page_folder = self.folder = base.parent
-        if urlsplit(href).scheme in ("http", "https") or href.startswith("//"):
-            self.web_base = urljoin("https:", href)
-        elif href.startswith("/"):  # a site-root base: the nearest folder above the page that has it
-            folder = self.from_site_root(href)
-            self.folder = folder if href.endswith("/") else folder.parent
-        elif href:
-            joined = unquote(urlsplit(urljoin(base.resolve().as_uri(), href)).path)
-            self.folder = Path(joined) if joined.endswith("/") else Path(joined).parent
+        try:
+            parts = urlsplit(href)
+            if parts.scheme in ("javascript", "data"):
+                return
+            if self.web_base is not None or parts.scheme in ("http", "https") or (not parts.scheme and parts.netloc):
+                address = urljoin(self.web_base or "https:", href)
+                target = urlsplit(address)
+                if target.scheme in ("http", "https"):
+                    if not target.hostname:
+                        return
+                    _ = target.port  # validates the port before accepting the base URL
+                self.web_base = address
+            else:
+                # Resolve each asset against a site-root base before looking for its file on disk.
+                self.local_base = href if parts.path.startswith("/") else urljoin(self.local_base, href)
+        except ValueError:
+            pass  # Invalid bases use the document URL.
 
     def from_site_root(self, path: str) -> Path:
         """A site-root path (/x/y) as a local path: under the nearest folder above the page that has it."""
         relative = unquote(path).lstrip("/")
         for root in (self.page_folder, *self.page_folder.parents):
-            if (root / relative).exists():
+            if (root / relative).is_file():
                 return (root / relative).resolve()
         return self.page_folder / relative
 
@@ -497,7 +633,7 @@ class ImagePage:
         """kind, width, height, bytes and any problem of the file at src (as written in the page)."""
         try:
             location = self.locate(src.strip())
-        except ValueError as error:
+        except (ValueError, OSError, RuntimeError) as error:
             reason = str(error) if str(error).startswith("is ") else f"is not an address it can read ({error})"
             return {"kind": "", "width": 0, "height": 0, "bytes": 0, "error": reason}
         if location not in self.files:
@@ -507,20 +643,23 @@ class ImagePage:
     def locate(self, src: str) -> str | Path:
         """A web address, a data: URI or a resolved local path; ValueError for anything else."""
         if is_data(src):
-            return src
-        if self.web_base is not None:
-            address = urldefrag(urljoin(self.web_base, src))[0]
-            if urlsplit(address).scheme not in ("http", "https"):
-                raise ValueError(f"is not a web address it can open ({urlsplit(address).scheme}:)")
-            return address
+            inline = src.partition("#")[0]
+            return inline if inline.startswith("data:") else "data:" + inline[5:]
         parts = urlsplit(src)
-        if parts.scheme in ("http", "https") or src.startswith("//"):
-            return urldefrag(urljoin("https:", src))[0]
+        if self.web_base is not None or parts.scheme in ("http", "https") or parts.netloc:
+            address = urldefrag(urljoin(self.web_base or "https:", src))[0]
+            scheme = urlsplit(address).scheme
+            if scheme not in ("http", "https"):
+                raise ValueError(f"is not a web address it can open ({scheme}:)")
+            return address
         if parts.scheme:
             raise ValueError(f"is not a web address or a file it can open ({parts.scheme}:)")
-        if parts.path.startswith("/"):
-            return self.from_site_root(parts.path)
-        return (self.folder / unquote(parts.path)).resolve()
+        resolved = urlsplit(urljoin("/" if parts.path.startswith("/") else self.local_base, src))
+        if not resolved.scheme:
+            return self.from_site_root(resolved.path)
+        if resolved.scheme != "file":
+            raise ValueError(f"is not a web address or a file it can open ({resolved.scheme}:)")
+        return Path(unquote(resolved.path)).resolve()
 
     def image_urls(self, image: dict) -> list[str]:
         """Every file the browser could pick for this <img>: src, srcset and its <picture> sources."""
@@ -597,13 +736,14 @@ def check_first_picture_not_lazy(page: ImagePage) -> tuple[bool, str]:
     return True, at(first, f"the first picture {where} is not lazy loaded")
 
 
-def shapes_match(width: int, height: int, natural_width: int, natural_height: int) -> bool:
+def shapes_match(width: int, height: int, natural_width: int, natural_height: int, *, responsive: bool = False) -> bool:
     """Lighthouse's image-aspect-ratio rule: the file's shape projected onto the HTML width and height, the smaller
-    side within less than 2 px. A file smaller than that size may also be off by under one pixel at its own size,
-    since a resized copy's rounding grows when it is scaled up (a 480x123 copy of a 1560x402 picture)."""
+    side within less than 2 px. A smaller srcset candidate can also differ by less than one file pixel from rounding."""
     ratio = natural_width / natural_height
     target_height, target_width = width / ratio, height * ratio
-    threshold = max(ASPECT_THRESHOLD_PX, min(width / natural_width, height / natural_height))  # one file pixel, scaled up
+    threshold = ASPECT_THRESHOLD_PX
+    if responsive:
+        threshold = max(threshold, min(width / natural_width, height / natural_height))  # one file pixel, scaled up
     if target_height < target_width:
         return abs(target_height - height) < threshold
     return abs(target_width - width) < threshold
@@ -613,22 +753,29 @@ def check_aspect_ratio(page: ImagePage) -> tuple[bool, str]:
     wrong, count = [], 0
     for image in page.parser.images:
         attrs = image["attrs"]
-        pairs = [(attrs, [attrs.get("src", "")] + srcset_urls(attrs.get("srcset", "")), False)]
-        for source in image["sources"]:  # a <source> with its own width and height is measured against those
-            own = number(source.get("width", "")) and number(source.get("height", ""))
-            pairs.append((source if own else attrs, srcset_urls(source.get("srcset", "")), not own))
-        for holder, urls, borrowed in pairs:
-            width, height = number(holder.get("width", "")), number(holder.get("height", ""))
-            for src in dict.fromkeys(url.strip() for url in urls if url.strip()):
+        fallback = attrs.get("src", "").strip()
+        width, height = number(attrs.get("width", "")), number(attrs.get("height", ""))
+        pairs = [(width, height, [fallback] + srcset_urls(attrs.get("srcset", "")), False)]
+        for source in image["sources"]:  # a <source> with a width or height is sized by its own two only, as in Chrome;
+            urls = srcset_urls(source.get("srcset", ""))  # with just one, the other side follows the file's shape
+            if "width" in source or "height" in source:
+                pairs.append((number(source.get("width", "")), number(source.get("height", "")), urls, False))
+            else:
+                pairs.append((width, height, urls, True))
+        for display_width, display_height, urls, borrowed in pairs:
+            if not (display_width and display_height):
+                continue
+            for src in dict.fromkeys(url for url in urls if url):
                 facts = page.file(src)
-                if not (width and height) or facts["error"] or facts["kind"] not in RASTER or not (facts["width"] and facts["height"]):
+                if facts["error"] or facts["kind"] not in RASTER or not (facts["width"] and facts["height"]):
                     continue
                 count += 1
-                if shapes_match(width, height, facts["width"], facts["height"]):
+                if shapes_match(display_width, display_height, facts["width"], facts["height"], responsive=src != fallback):
                     continue
                 size = f"{shown(src)} is {facts['width']}x{facts['height']}"
-                wrong.append(at(image, f"{size}, a different shape from the <img>'s {width}x{height}; give its <source> "
-                                       "its own width and height" if borrowed else f"{size} but set to {width}x{height}"))
+                display_size = f"{display_width}x{display_height}"
+                wrong.append(at(image, f"{size}, a different shape from the <img>'s {display_size}; give its <source> "
+                                       "its own width and height" if borrowed else f"{size} but set to {display_size}"))
     return (False, listed(wrong)) if wrong else (True, f"{count} image files set to their own shape")
 
 
@@ -648,32 +795,36 @@ def check_not_oversized(page: ImagePage) -> tuple[bool, str]:
     return (False, listed(big)) if big else (True, f"{count} single-size pictures, none more than twice their width")
 
 
-def offers_modern(page: ImagePage, image: dict) -> bool:
-    """True when the browser can reach a readable WebP or AVIF file in the <img>'s <picture>. Sources are tried in
-    order: one with a type the browser doesn't show, or with no candidates, is skipped; one with no media that
-    isn't WebP or AVIF is always picked, so later sources never are. Media conditions are not evaluated (no
-    screen here), so a WebP for wide screens only still counts."""
+def modern_alternatives(page: ImagePage, image: dict) -> tuple[bool, set[str]]:
+    """Whether a selectable <source> offers WebP or AVIF, and which JPEG/PNG files can still be chosen within such a
+    source. An unconditional source blocks later sources. Viewport-specific media conditions remain unknown."""
+    modern, mixed = False, set()
     for source in image["sources"]:
-        source_type = source.get("type", "").split(";")[0].strip().lower()
-        files = [page.file(url) for url in srcset_urls(source.get("srcset", ""))]
-        if (source_type and source_type not in BROWSER_TYPES) or not files:
+        source_type = source.get("type", "").partition(";")[0].strip().lower()
+        if source_type and source_type not in BROWSER_TYPES:
             continue
-        if any(not facts["error"] and facts["kind"] in ("webp", "avif") for facts in files):
-            return True
-        if not source.get("media", "").strip():
-            return False
-    return False
+        files = {url: page.file(url) for url in srcset_urls(source.get("srcset", ""))}
+        if not files:
+            continue
+        if any(not facts["error"] and facts["kind"] in ("webp", "avif") for facts in files.values()):
+            modern = True
+            mixed.update(url for url, facts in files.items() if facts["kind"] in ("jpeg", "png"))
+        if source.get("media", "").strip().lower() in ("", "all"):
+            break
+    return modern, mixed
 
 
 def check_modern_format(page: ImagePage) -> tuple[bool, str]:
     heavy = []
     for image in page.parser.images:
-        modern = offers_modern(page, image)
+        modern, mixed = modern_alternatives(page, image)
         for src in page.image_urls(image):
             facts = page.file(src)
-            if not modern and facts["kind"] in ("jpeg", "png") and facts["bytes"] >= MODERN_FORMAT_MIN_BYTES:
-                heavy.append((facts["bytes"], at(image, f"{shown(src)} is {facts['kind'].upper()}, "
-                                                       f"{facts['bytes'] // 1000} KB, with no WebP or AVIF version")))
+            heavy_legacy = not facts["error"] and facts["kind"] in ("jpeg", "png") and facts["bytes"] >= MODERN_FORMAT_MIN_BYTES
+            if heavy_legacy and (not modern or src in mixed):
+                reason = "still selectable from a mixed-format srcset" if src in mixed else "with no WebP or AVIF version"
+                detail = f"{shown(src)} is {facts['kind'].upper()}, {facts['bytes'] // 1000} KB, {reason}"
+                heavy.append((facts["bytes"], at(image, detail)))
     heavy.sort(reverse=True)
     if heavy:
         return False, listed(list(dict.fromkeys(text for _, text in heavy))) + " (largest first)"
@@ -694,7 +845,7 @@ def check_structured_data_images(page: ImagePage) -> tuple[bool, str]:
                             f"{facts['width'] * facts['height']:,} pixels (under {MIN_STRUCTURED_DATA_PIXELS:,})")
     if problems:
         return False, listed(problems)
-    return True, f"{len(page.json_ld)} JSON-LD images, all readable and big enough" if page.json_ld else "no JSON-LD image"
+    return True, f"{len(page.json_ld)} JSON-LD images, all readable and meeting applicable size guidance" if page.json_ld else "no JSON-LD image"
 
 
 def check_favicon(page: ImagePage) -> tuple[bool, str]:

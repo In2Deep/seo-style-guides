@@ -4,17 +4,20 @@ Run (standard library only):
     python3 -B -m unittest discover -s mcp-server
 The check test reaches developers.google.com, so it runs only with GOOGLE_DOCS_NETWORK_TESTS=1.
 """
+import base64
 import contextlib
 import functools
 import http.server
 import io
 import json
 import os
+import struct
 import subprocess
 import sys
 import tempfile
 import threading
 import unittest
+import zlib
 from pathlib import Path
 from typing import Any
 
@@ -176,6 +179,11 @@ class GoogleDocsServerTest(unittest.TestCase):
                   '<template><script type="application/ld+json">{"@type": "Recipe"}</script></template></html>')
         text, _ = self.session.call("check_structured_data", markup=hidden)
         self.assertIn("No <script", text)  # a comment, another type and a <template> hold no JSON-LD
+        for document in (markup, '{"@type":"NewsArticle","headline":"Hi","image":"a.jpg"}'):
+            with self.subTest(document=document):
+                text, is_error = self.session.call("check_structured_data", markup="\ufeff" + document)
+                self.assertFalse(is_error, text)
+                self.assertIn("Item 1: NewsArticle", text)
 
     def test_structured_data_product_offer_missing_required(self) -> None:
         markup = json.dumps({"@context": "https://schema.org", "@graph": [
@@ -291,11 +299,17 @@ class SiteCheckTest(unittest.TestCase):
 
 
 class ImageCheckTest(unittest.TestCase):
-    def test_bad_images_fail_every_check(self) -> None:
-        def png(width: int, height: int, padding: int = 0) -> bytes:
-            return (b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR" + width.to_bytes(4, "big") + height.to_bytes(4, "big") + bytes(9)
-                    + padding.to_bytes(4, "big") + b"IDAT" + bytes(padding + 4) + b"\x00\x00\x00\x00IEND\xaeB`\x82")
+    @staticmethod
+    def png(width: int, height: int, padding: int = 0) -> bytes:
+        def chunk(kind: bytes, body: bytes) -> bytes:
+            return struct.pack(">I", len(body)) + kind + body + struct.pack(">I", zlib.crc32(kind + body))
 
+        header = chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0))
+        text = chunk(b"tEXt", b"Comment\0" + b"x" * padding) if padding else b""
+        pixels = chunk(b"IDAT", zlib.compress(bytes((1 + width * 3) * height)))
+        return b"\x89PNG\r\n\x1a\n" + header + text + pixels + chunk(b"IEND", b"")
+
+    def test_bad_images_fail_every_check(self) -> None:
         def box(kind: bytes, body: bytes) -> bytes:
             return (8 + len(body)).to_bytes(4, "big") + kind + body
 
@@ -321,8 +335,8 @@ class ImageCheckTest(unittest.TestCase):
             root = Path(folder)
             (root / "pages").mkdir()
             (root / "pages" / "index.html").write_text(page)
-            files = {"pages/IMG_1234.jpg": jpeg, "wide.png": png(400, 100, 20_000), "pages/photo.heic": heic,
-                     "pages/icon.png": png(32, 16), "pages/small.png": png(100, 100)}
+            files = {"pages/IMG_1234.jpg": jpeg, "wide.png": self.png(400, 100, 20_000), "pages/photo.heic": heic,
+                     "pages/icon.png": self.png(32, 16), "pages/small.png": self.png(100, 100)}
             for name, data in files.items():
                 (root / name).write_bytes(data)
             results = image_check.run_checks(page, root / "pages" / "index.html")
@@ -356,17 +370,118 @@ class ImageCheckTest(unittest.TestCase):
         self.assertTrue(ic.cut_short("jpeg", b"\xff\xd8\xff\xe1\x00\x06\xff\xd9\x00\x00\xff\xda\x00\x02"))  # end marker only in EXIF
         self.assertTrue(ic.cut_short("ico", b"\x00\x00\x01\x00\x01\x00" + bytes(8) + (0).to_bytes(4, "little") + (22).to_bytes(4, "little")))
         for width, height, natural_width, natural_height, matches in [(320, 181, 1600, 900, True), (1000, 1010, 100, 100, False),
-                                                                      (100, 102, 100, 100, False), (1560, 402, 480, 123, True)]:
+                                                                      (100, 102, 100, 100, False), (400, 185, 20, 10, False)]:
             self.assertEqual(ic.shapes_match(width, height, natural_width, natural_height), matches, (width, height))
+        self.assertTrue(ic.shapes_match(1560, 402, 480, 123, responsive=True))
         parser = ic.ImageParser('<picture><source srcset="a.webp"><template><picture></picture></template><img src="a.png"></picture>')
         self.assertEqual(len(parser.images[0]["sources"]), 1)
         self.assertEqual(ic.srcset_urls("ignored.png 2q), selected.png 1x"), ["selected.png"])
         found, _ = ic.json_ld_images(['{"@type": "ProfilePage", "mainEntity": {"@type": "Person", "image": "me.png"}}',
                                       '{"@type": "ImageObject", "contentUrl": "board.jpg"}'])
         self.assertEqual(found, {"me.png": {"Person", "ProfilePage"}, "board.jpg": {"ImageObject"}})
-        self.assertEqual([ic.name_stem(name) for name in ("image-cedar2024.png", "hero.BRhKKi9a_Z1wcXPz.webp", "hero-DiwrgTda.png")],
-                         ["image-cedar2024", "hero", "hero"])
+        self.assertEqual([ic.name_stem(name) for name in ("image-cedar2024.png", "image.cedar2024.png",
+                                                         "hero.BRhKKi9a_Z1wcXPz.webp", "hero-DiwrgTda.png", "hero.3f2a1b9c.png")],
+                         ["image-cedar2024", "image.cedar2024", "hero", "hero", "hero"])
+        for name, descriptive in (("image.cedar2024.png", True), ("IMG_1234.BRhKKi9a.jpg", False), ("IMG_1234.3f2a1b9c.jpg", False)):
+            passed, detail = ic.check_file_names(ic.ImagePage(f'<img src="{name}">', Path("index.html"), {}))
+            self.assertEqual(passed, descriptive, detail)  # a camera name stays generic behind a build hash
         self.assertIsNone(ic.FILE_NAME_ALT.fullmatch("The sign reads photo.jpg"))
+
+    def test_walks_image_structure_before_accepting_end_markers(self) -> None:
+        ic = image_check
+        gif = (b"GIF89a" + struct.pack("<HHBBB", 64, 64, 0x80, 0, 0) + bytes(6)
+               + b"," + struct.pack("<HHHHB", 0, 0, 64, 64, 0) + b"\x02\x03\x12\x3b\x45\x00\x3b")
+        frame = b"\xff\xc2\x00\x0b\x08\x00\x20\x00\x40\x01\x01\x11\x00"
+        scan = b"\xff\xda\x00\x08\x01\x01\x00\x00\x3f\x00\x12\xff\x00\x34"
+        comment = b"\xff\xfe\x00\x08note\xff\xd9"
+        jpeg = b"\xff\xd8" + frame + scan + comment + scan + b"\xff\xd9"
+        bmp = (struct.pack("<2sIHHI", b"BM", 58, 0, 0, 54)
+               + struct.pack("<IiiHHIIiiII", 40, 1, 1, 1, 24, 0, 4, 0, 0, 0, 0) + bytes(4))
+        png = self.png(64, 64)
+        for kind, intact, cut in (("gif", gif, gif[:-3]), ("jpeg", jpeg, b"\xff\xd8" + frame + scan + comment),
+                                  ("bmp", bmp, bmp[:54]), ("png", png, png[:33] + png[-12:])):
+            with self.subTest(kind=kind):
+                self.assertFalse(ic.cut_short(kind, intact))
+                self.assertTrue(ic.cut_short(kind, cut))
+        self.assertEqual(ic.image_facts(jpeg), ("jpeg", 64, 32))
+        self.assertEqual(ic.image_facts(b'<?xml version="1.0" encoding="x-not-a-codec"?><svg/>')[0], "unknown")
+
+    def test_resolves_bases_and_caches_inline_fragments(self) -> None:
+        ic = image_check
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            docs, assets = root / "docs", root / "assets"
+            docs.mkdir()
+            assets.mkdir()
+            (root / "top.png").touch()
+            (docs / "board.png").touch()
+            (assets / "board.png").touch()
+            for base, src, expected in (('<base href="/">', "top.png", root / "top.png"),
+                                        ('<base href="/assets/?rev=2#x">', "board.png", assets / "board.png"),
+                                        ('<base href=""><base href="/assets/">', "board.png", docs / "board.png")):
+                with self.subTest(base=base):
+                    page = ic.ImagePage(base, docs / "index.html", {})
+                    self.assertEqual(page.locate(src), expected.resolve())
+        page = ic.ImagePage('<base href="javascript:void(0)">', "https://site.invalid/docs/index.html", {})
+        self.assertEqual(page.locate("board.png"), "https://site.invalid/docs/board.png")
+        uri = "DATA:image/png;base64," + base64.b64encode(self.png(1, 1)).decode()
+        self.assertEqual(page.file(uri + "#x")["kind"], "png")
+        self.assertIs(page.file(uri + "#x"), page.file(uri + "#y"))
+        self.assertEqual(len(page.files), 1)
+
+    def test_responsive_source_dimensions_and_format_selection(self) -> None:
+        ic = image_check
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "board.png").write_bytes(self.png(400, 300))
+            (root / "wall.png").write_bytes(self.png(100, 100, 11_000))
+            (root / "board.webp").write_bytes(base64.b64decode(
+                "UklGRjgAAABXRUJQVlA4ICwAAADQAQCdASoCAAIAAgA0JaACdLoB+AADsAD+6zb//OJY6nd6Qf/MEr8g3hYAAA=="))
+            fallback = '<img src="wall.png" width="100" height="100" alt="Wall">'
+            html = '<picture><source srcset="board.png 0480w" width="200">' + fallback + '</picture>'
+            page = ic.ImagePage(html, root / "index.html", {})
+            self.assertEqual(ic.srcset_urls("board.png 0480w"), ["board.png"])
+            passed, detail = ic.check_aspect_ratio(page)
+            self.assertTrue(passed, detail)  # Chrome draws board.png at 200x150: with one side set, the file's shape holds
+            self.assertTrue(detail.startswith("1 "), detail)
+            page = ic.ImagePage('<picture><source srcset="board.png" width="200" height="50">' + fallback + '</picture>',
+                                root / "index.html", {})
+            self.assertIn("board.png is 400x300 but set to 200x50", ic.check_aspect_ratio(page)[1])
+            for sources, expected in (
+                    ('<source media="all" srcset="wall.png"><source srcset="board.webp">', False),
+                    ('<source srcset="wall.png 1x, board.webp 2x">', False),
+                    ('<source media="(min-width: 1000px)" srcset="board.webp">', True)):
+                with self.subTest(sources=sources):
+                    page = ic.ImagePage('<picture>' + sources + fallback + '</picture>', root / "index.html", {})
+                    passed, detail = ic.check_modern_format(page)
+                    self.assertEqual(passed, expected, detail)
+                    if not expected:
+                        self.assertIn("wall.png", detail)
+
+    def test_json_ld_image_context_and_depth(self) -> None:
+        ic = image_check
+        profile = {"@type": "ProfilePage", "mainEntity": {"@id": "#person"}}
+        person = {"@id": "#person", "@type": "Person", "image": "profile.png"}
+        restaurant = {"@type": "Restaurant", "image": "restaurant.png"}
+        scripts = ["[" * 1100 + "0" + "]" * 1100, json.dumps({"@graph": [profile, person, restaurant]})]
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for name in ("profile.png", "restaurant.png"):
+                (root / name).write_bytes(self.png(100, 100))
+
+            def check(scripts: list[str]) -> tuple[bool, str]:
+                html = "".join(f'<script type="application/ld+json">{script}</script>' for script in scripts)
+                return ic.check_structured_data_images(ic.ImagePage(html, root / "index.html", {}))
+
+            passed, detail = check(scripts)
+            self.assertFalse(passed, detail)
+            self.assertIn("JSON-LD block 1", detail)
+            self.assertIn("profile.png (ProfilePage)", detail)
+            self.assertNotIn("restaurant.png", detail)
+            carousel = {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "item": restaurant}]}
+            passed, detail = check([json.dumps(carousel)])
+            self.assertFalse(passed, detail)
+            self.assertIn("restaurant.png", detail)
 
 if __name__ == "__main__":
     unittest.main()

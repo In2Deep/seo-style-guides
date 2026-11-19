@@ -98,16 +98,17 @@ The image checker prints PASS or FAIL for 10 checks, each with the Google quote 
 and height on every `<img>`, a format Google Images supports (and a file extension that matches
 it, and a fallback `src` on every `<img>`), descriptive file names (a build tool's hash is ignored),
 alt text present and not a file name, the first picture of the main content not lazy loaded, every
-file's shape matching its width and height (Lighthouse's rule, with one pixel of rounding allowed
-at the file's own size for a smaller copy; a `<source>` of another shape needs its own width and
-height), files no more than twice as wide as they show, JPEG or PNG of 10 KB or more with no
-readable WebP or AVIF the browser would reach in its `<picture>` (screen size conditions are not
-evaluated), JSON-LD images, standalone `ImageObject` ones included, of at least 50,000 pixels on
-the types whose guides ask for it (Article, Event, ProfilePage, Product, Recipe, Restaurant), and a
-square favicon in a format Google's favicon page lists. It opens every image file, up to 30 MB of
-each, and reads its type and pixel size from its first bytes (PNG, JPEG, GIF, BMP, WebP, AVIF,
-HEIC, TIFF, ICO, PPM, SVG); a file that is cut short, can't be opened or isn't really an image is a
-failure. For a local file, image paths are read from disk, following `<base href>`; a path that
+file's shape matching its width and height (Lighthouse's rule, with subpixel rounding allowed on
+smaller `srcset` candidates), and single-size files no more than twice as wide as they show. It
+flags JPEG or PNG of 10 KB or more without a reachable WebP or AVIF source, including heavy
+JPEG or PNG candidates that are still selectable in a mixed-format `srcset`. A viewport-specific
+source can count as an alternative. The checker checks JSON-LD images, including standalone
+`ImageObject` entries, and applies the 50,000-pixel recommendation where the guides give it,
+including Article, Event, ProfilePage, Product, Recipe, and restaurant carousel markup. It also
+checks for a square favicon in a format Google lists. It reads up to 30 MB per image, checks
+headers and container boundaries, and reports unreadable or structurally incomplete files
+(PNG, JPEG, GIF, BMP, WebP, AVIF, HEIC, TIFF, ICO, PPM, SVG). For a local file, image paths are
+read from disk, following `<base href>`. A path that
 starts with `/` is looked up in the nearest folder above the page that has it. Given a web address,
 it checks every page the way `page_check.py` does and fetches each image once. It reads HTML only,
 not CSS, lists every problem it finds, and changes nothing. Needs Python 3.10 or newer.

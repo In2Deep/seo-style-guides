@@ -1,6 +1,6 @@
 {
   "name": "lx-seo",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Google's SEO, crawling, style, Lighthouse and web.dev guides saved locally, with search, a quote checker, a JSON-LD checker, a page checker and an image checker.",
   "author": {
     "name": "Brandon Hatch"
