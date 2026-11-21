@@ -1,0 +1,69 @@
+# Every Monday, download Google's guides again and commit any changes, so the saved copies stay
+# current without anyone remembering to run sync_google_docs.py. Run it now from the Actions tab
+# with "Run workflow".
+name: Update Google guides
+
+on:
+  schedule:
+    - cron: "17 13 * * 1" # Mondays, about 5 a.m. Pacific in winter and 6 a.m. in summer
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-guides # one run at a time, like the script's own lock
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Download the guides
+        run: python3 -B sync_google_docs.py --guide all --save
+
+      # The script counts a page Google refuses to serve (HTTP 403 or 429, as when a server is
+      # blocked) as gone, and deletes it. A real week removes a page or two, not dozens.
+      - name: Stop if many saved pages would be deleted
+        run: |
+          removed=$(git status --porcelain -- guides | grep -c '^ D' || true)
+          echo "Saved pages that would be deleted: $removed"
+          if [ "$removed" -gt 10 ]; then
+            echo "::error::More than 10 saved pages would be deleted, so Google may have blocked the download. Nothing was committed."
+            exit 1
+          fi
+
+      - name: Run the tests
+        run: python3 -B -m unittest discover -s mcp-server
+
+      # Claude Code updates an installed plugin only when its version changes, so a guide update
+      # raises the last number of the version.
+      - name: Commit and push
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Google's guides have not changed."
+            exit 0
+          fi
+          version=$(python3 - <<'EOF'
+          import json, pathlib
+          path = pathlib.Path(".claude-plugin/plugin.json")
+          text = path.read_text()
+          old = json.loads(text)["version"]
+          major, minor, patch = old.split(".")
+          new = f"{major}.{minor}.{int(patch) + 1}"
+          path.write_text(text.replace(f'"version": "{old}"', f'"version": "{new}"', 1))
+          print(new)
+          EOF
+          )
+          notes=$(git diff -U0 CHANGES.md | grep '^+[^+]' | cut -c2- || true)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Google guides: weekly update, $(date +%Y-%m-%d) ($version)" -m "$notes"
+          git push

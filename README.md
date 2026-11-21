@@ -49,6 +49,12 @@ date, `2` a guide could not be fetched.
 
 After `--save`, `git diff guides` shows exactly what Google changed, and `CHANGES.md` gets an entry.
 
+A GitHub Action (`.github/workflows/update-guides.yml`) does this every Monday: it saves all the
+guides, runs the tests, and commits any changes with the plugin's version raised, so installed
+copies update. It commits nothing if more than 10 saved pages would be deleted, since that
+usually means Google blocked the download. A clone gets the updates with `git pull`; if it uses
+search by meaning, rebuild the vectors after pulling with `python3 vectors.py`.
+
 The script fetches eight pages at a time. A check of all eight guides (about 500 pages) takes about 45 seconds. Only one run can go at a time: a second run started while one is going is refused.
 
 Google's pages are saved byte for byte, so the standard tool also verifies a copy:
