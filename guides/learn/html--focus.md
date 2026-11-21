@@ -1,3 +1,5 @@
+> Documentation index: https://web.dev/learn/llms.txt
+
 Interactive elements, including [form controls](https://web.dev/learn/html/forms.md.txt),
 [links](https://web.dev/learn/html/links.md.txt), and buttons, are by default focusable and tabbable.
 Tabbable elements are part of the document's sequential focus navigation order.
@@ -123,12 +125,14 @@ tabbing order can create bad user experiences and are difficult to maintain.
 
 ### The `contenteditable` attribute
 
-The [`contenteditable`](https://web.dev/learn/html/attributes.md.txt#contenteditable) attribute was
-discussed earlier. Setting `contenteditable="true"` on any element makes it
+The [`contenteditable`](https://web.dev/learn/html/attributes.md.txt#contenteditable) is a global
+attribute. Setting `contenteditable="true"` on any element makes it
 editable, focusable, and part of the tab order. The focus behavior is similar to
-setting `tabindex="0"`, but not the same. Nested `contenteditable` elements are
-focusable but not tabbable. To make a nested `contenteditable` element tabbable,
-add `tabindex="0"`, which adds it to the sequential focus navigation order.
+setting `tabindex="0"`, but not the same.
+
+Nested `contenteditable` elements are focusable but not tabbable. To make a
+nested `contenteditable` element tabbable, add `tabindex="0"`, which adds the
+element to the sequential focus navigation order.
 
 ## Give `autofocus` to interactive elements
 
@@ -239,7 +243,7 @@ such as offscreen or otherwise hidden content.
 When applying `disabled` to form controls, the browser provides default styling
 and can be styled using the [`:disabled`](https://developer.mozilla.org/docs/Web/CSS/:disabled)
 pseudo class. The `inert` attribute provides no visual indicators and has no
-matching pseudoclass (though the `[inert]`
+matching pseudo class (though the `[inert]`
 [attribute selector](https://web.dev/learn/css/selectors.md.txt#attribute_selector) matches).
 
 Using `inert` on visible content without styles indicating the inertness can
@@ -259,5 +263,5 @@ it does not need to be made inert.
 
 Test your knowledge of focus.
 If an element cannot be focused it is described as what?
-Empty. Try again. Inert. Correct! Hidden. Try again. What will be true if the element has a `disabled` attribute?
-It will be unfocusable. Correct! It will not be displayed. Try again. If it is a form element it will not be submitted. Correct!
+Empty. Try again. Inert. Correct! Hidden. Try again. What is true if the element has a `disabled` attribute?
+It is unfocusable. Correct! It is not displayed. Try again. If it is a form element, it is not submitted. Correct!

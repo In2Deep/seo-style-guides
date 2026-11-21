@@ -11,14 +11,42 @@ or add the feed URL directly:
 
 ## November 2026
 
+November 18
+:
+
+    ### Removed the Data Feed validation tool from the book actions documentation
+
+
+    **What** : Replaced the "Test your feed with the Data Feed validation tool" section of the
+    [book actions documentation](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt)
+    with a [Check your feed for common errors](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#check-your-feed-for-common-errors)
+    section, and removed the link to the Data Feed validation tool.
+
+
+    **Why**: The Data Feed validation tool has been turned down and is no longer available.
+
+November 12
+:
+
+    ### Added documentation on identifying traffic from Google Search
+
+
+    **What** : Added a new page about
+    [identifying traffic from Google Search](https://developers.google.com/search/docs/monitor-debug/identify-google-search-traffic.md.txt)
+    using HTTP `Referer` headers.
+
+
+    **Why**: To document how site owners can identify and track traffic from Google Search
+    in their web analytics systems.
+
 November 9
 :
 
     ### Added "things to do" query support to the aggregator and supplier units
 
 
-    **What** : Updated the [aggregator unit](https://developers.google.com/search/docs/appearance/aggregator-unit) and
-    [supplier unit](https://developers.google.com/search/docs/appearance/supplier-unit)
+    **What** : Updated the [aggregator unit](https://developers.google.com/search/docs/appearance/aggregator-unit.md.txt) and
+    [supplier unit](https://developers.google.com/search/docs/appearance/supplier-unit.md.txt)
     documentation to include support for "things to do" queries.
 
 
@@ -33,7 +61,7 @@ October 26
 
 
     **What** : Updated the
-    [user-generated spam prevention guide](https://developers.google.com/search/docs/monitor-debug/prevent-abuse)
+    [user-generated spam prevention guide](https://developers.google.com/search/docs/monitor-debug/prevent-abuse.md.txt)
     with guidance on blocking indexing of link-shared content and monitoring abuse in Search
     Console.
 
@@ -47,7 +75,7 @@ October 23
     ### Updated guidance on crawlable URL structures
 
 
-    **What** : Updated the [URL structure best practices](https://developers.google.com/search/docs/crawling-indexing/url-structure) to clarify word separation guidelines using hyphens versus underscores.
+    **What** : Updated the [URL structure best practices](https://developers.google.com/search/docs/crawling-indexing/url-structure.md.txt) to clarify word separation guidelines using hyphens versus underscores.
 
 
     **Why**: To synchronize the documentation with the episodes of "The Non-Canonical Cabinet" video series.
@@ -59,7 +87,7 @@ October 21
 
 
     **What** : Updated the
-    [control what you share with Google Search documentation](https://developers.google.com/search/docs/crawling-indexing/control-what-you-share)
+    [control what you share with Google Search documentation](https://developers.google.com/search/docs/crawling-indexing/control-what-you-share.md.txt)
     to include existing options such as the robots `meta` tag,
     `data-nosnippet`, `X-Robots-Tag`, and the Search generative AI control,
     along with minor clarifications that the page applies to Google Search.
@@ -73,7 +101,7 @@ October 16
     ### Updating the Indexing API quota page
 
 
-    **What** : Updated the [Indexing API quota page](https://developers.google.com/search/apis/indexing-api/v3/quota-pricing)
+    **What** : Updated the [Indexing API quota page](https://developers.google.com/search/apis/indexing-api/v3/quota-pricing.md.txt)
     to reflect the current quota limits and process.
 
 
@@ -86,7 +114,7 @@ October 8
 
 
     **What** : Added a new page about the
-    [UGC Fresh Data Program](https://developers.google.com/search/docs/appearance/ugc-fresh-data-program).
+    [UGC Fresh Data Program](https://developers.google.com/search/docs/appearance/ugc-fresh-data-program.md.txt).
 
 
     **Why**: To explain the purpose of the program and help prospective applicants
@@ -99,7 +127,7 @@ October 1
 
 
     **What** : Updated the
-    [using generative AI content guide](https://developers.google.com/search/docs/fundamentals/using-gen-ai-content)
+    [using generative AI content guide](https://developers.google.com/search/docs/fundamentals/using-gen-ai-content.md.txt)
     with information from the Search Quality Raters guidelines.
 
 
@@ -113,7 +141,7 @@ September 24
     ### Added `creator` property and updated `interactionStatistic` in `VideoObject` structured data
 
 
-    **What** : Added the `creator` property (noting support for `author`) and updated `interactionStatistic` to document supported interaction types in the [VideoObject structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/video).
+    **What** : Added the `creator` property (noting support for `author`) and updated `interactionStatistic` to document supported interaction types in the [VideoObject structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt).
 
 
     **Why** : To document support for the `creator` and `author` properties, and clarify supported interaction types for `interactionStatistic` in VideoObject structured data.
@@ -124,8 +152,8 @@ September 18
     ### Added local business query support to the aggregator and supplier units
 
 
-    **What** : Updated the [aggregator unit](https://developers.google.com/search/docs/appearance/aggregator-unit) and
-    [supplier unit](https://developers.google.com/search/docs/appearance/supplier-unit)
+    **What** : Updated the [aggregator unit](https://developers.google.com/search/docs/appearance/aggregator-unit.md.txt) and
+    [supplier unit](https://developers.google.com/search/docs/appearance/supplier-unit.md.txt)
     documentation to include support for local business queries.
 
 
@@ -138,7 +166,7 @@ September 16
 
 
     **What** : Added a new guide on how to
-    [add a Search profile badge to your website](https://developers.google.com/search/docs/appearance/search-profiles).
+    [add a Search profile badge to your website](https://developers.google.com/search/docs/appearance/search-profiles.md.txt).
 
 
     **Why**: To help site owners point their audience to their Search profile.
@@ -150,7 +178,7 @@ September 8
 
 
     **What** : Added documentation about
-    [regional differences in Search experience](https://developers.google.com/search/docs/appearance/aggregator-features),
+    [regional differences in Search experience](https://developers.google.com/search/docs/appearance/aggregator-features.md.txt),
     which includes information about search experiences available in
     certain countries, such as aggregator units, supplier units, and carousels.
 
@@ -167,7 +195,7 @@ August 31
     ### Updated the European Search Dataset Licensing Program page
 
 
-    **What** : Updated the [Google European Search Dataset Licensing Program page](https://developers.google.com/search/help/about-search-data-program).
+    **What** : Updated the [Google European Search Dataset Licensing Program page](https://developers.google.com/search/help/about-search-data-program.md.txt).
 
 
     **Why**: Refreshed the program overview, eligibility criteria, and application details.
@@ -178,7 +206,7 @@ August 28
     ### Updated the favicon documentation
 
 
-    **What** : Updated the [favicon documentation](https://developers.google.com/search/docs/appearance/favicon-in-search)
+    **What** : Updated the [favicon documentation](https://developers.google.com/search/docs/appearance/favicon-in-search.md.txt)
     to specifically list out the supported favicon file formats.
 
 
@@ -191,12 +219,12 @@ August 28
     ### Updated the site reputation policy
 
 
-    **What** : Updated the [site reputation policy](https://developers.google.com/search/docs/essentials/spam-policies#site-reputation).
+    **What** : Updated the [site reputation policy](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#site-reputation).
 
 
     **Why** : We've adjusted our enforcement approach within the
     [European Economic Area](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:European_Economic_Area_(EEA))
-    (EEA). For more information, see our [blog post](https://developers.google.com/search/blog/2026/08/update-site-reputation-policy).
+    (EEA). For more information, see our [blog post](https://developers.google.com/search/blog/2026/08/update-site-reputation-policy.md.txt).
 
 August 20
 :
@@ -204,7 +232,7 @@ August 20
     ### New custom button for preferred sources
 
 
-    **What** : Updated the [preferred sources documentation](https://developers.google.com/search/docs/appearance/preferred-sources)
+    **What** : Updated the [preferred sources documentation](https://developers.google.com/search/docs/appearance/preferred-sources.md.txt)
     to include instructions on how to add the new custom, interactive button to your site.
 
 
@@ -221,7 +249,7 @@ July 29
 
 
     **What** : Added a new guide on how to
-    [analyze your social and video platform content performance in Search Console](https://developers.google.com/search/docs/monitor-debug/analyze-social-video-content).
+    [analyze your social and video platform content performance in Search Console](https://developers.google.com/search/docs/monitor-debug/analyze-social-video-content.md.txt).
 
 
     **Why**: To help content creators, social media managers, and SEO professionals
@@ -233,7 +261,7 @@ July 24
     ### Added a new review snippet guideline
 
 
-    **What** : Added a new guideline to the [review snippet documentation](https://developers.google.com/search/docs/appearance/structured-data/review-snippet#guidelines)
+    **What** : Added a new guideline to the [review snippet documentation](https://developers.google.com/search/docs/appearance/structured-data/review-snippet.md.txt#guidelines)
     about fake and undisclosed incentivized reviews.
 
 
@@ -246,7 +274,7 @@ July 14
 
 
     **What** : Updated the feature availability and eligibility requirements sections
-    [package tracking early adopters program documentation](https://developers.google.com/search/docs/appearance/package-tracking).
+    [package tracking early adopters program documentation](https://developers.google.com/search/docs/appearance/package-tracking.md.txt).
 
 
     **Why**: The package tracking early adopters program is no longer accepting new partners.
@@ -258,7 +286,7 @@ July 10
 
 
     **What** : Updated the
-    [canonicalization troubleshooting guide](https://developers.google.com/search/docs/crawling-indexing/canonicalization-troubleshooting)
+    [canonicalization troubleshooting guide](https://developers.google.com/search/docs/crawling-indexing/canonicalization-troubleshooting.md.txt)
     with clarifications on re-evaluation time.
 
 
@@ -271,7 +299,7 @@ July 7
     ### Added `category` to merchant listing structured data
 
 
-    **What** : Updated the [Merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing)
+    **What** : Updated the [Merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt)
     documentation to detail how the `Product.category` property can be used with both
     `Text` and `CategoryCode` types. This aligns with the Google Merchant Center feed
     specifications for the
@@ -286,7 +314,7 @@ July 7
     ### Clarified how to specify sale price effective dates in Product structured data
 
 
-    **What** : Added a new section on "Sale duration" to the [Merchant listing guide](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#sale-duration). This explains how to use the `validFrom`, `validThrough`, and `priceValidUntil`
+    **What** : Added a new section on "Sale duration" to the [Merchant listing guide](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt#sale-duration). This explains how to use the `validFrom`, `validThrough`, and `priceValidUntil`
     schema.org properties to set the effective range for sale prices, including best practices and examples for placement on either `Offer` or `PriceSpecification` nodes.
 
 
@@ -300,7 +328,7 @@ July 1
     ### Updating our AMP documentation
 
 
-    **What** : Simplified our [AMP documentation](https://developers.google.com/search/docs/crawling-indexing/amp) by removing outdated references to the AMP viewer, AMP Cache, and signed exchange.
+    **What** : Simplified our [AMP documentation](https://developers.google.com/search/docs/crawling-indexing/amp.md.txt) by removing outdated references to the AMP viewer, AMP Cache, and signed exchange.
 
 
     **Why**: Starting today, Google Search is updating how it connects users to AMP pages,
@@ -317,7 +345,7 @@ June 17
     ### Site move guidance now includes information on domain variants
 
 
-    **What** : The [site move guide](https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes)
+    **What** : The [site move guide](https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes.md.txt)
     now includes information on using the Change of Address tool for all subdomain variants
     (including www and non-www) during domain migrations.
 
@@ -330,7 +358,7 @@ June 15
     ### Clarifying guidance on llms.txt files
 
 
-    **What** : Added a note to the [AI optimization guide](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide#mythbusting) clarifying Google Search's usage of llms.txt files.
+    **What** : Added a note to the [AI optimization guide](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide.md.txt#mythbusting) clarifying Google Search's usage of llms.txt files.
 
 
     **Why**: To address questions from the community and clarify that while these files
@@ -344,7 +372,7 @@ June 15
     **What** : Removed documentation for the [FAQ rich result feature](https://developers.google.com/search/docs/appearance/structured-data/faqpage).
 
 
-    **Why** : The FAQ rich result feature is no longer shown in Google Search results, as announced in the [changelog entry in May 2026](https://developers.google.com/search/updates#faq-deprecation).
+    **Why** : The FAQ rich result feature is no longer shown in Google Search results, as announced in the [changelog entry in May 2026](https://developers.google.com/search/updates.md.txt#faq-deprecation).
 
 June 12
 :
@@ -352,7 +380,7 @@ June 12
     ### New article for small business owners in Tennessee
 
 
-    **What** : Created a new article explaining [how small business owners in Tennessee can receive notifications from Google Search](https://developers.google.com/search/help/small-business-notifications).
+    **What** : Created a new article explaining [how small business owners in Tennessee can receive notifications from Google Search](https://developers.google.com/search/help/small-business-notifications.md.txt).
 
 
     **Why**: To help small businesses in Tennessee learn how they can get notified if their web content is removed or restricted on Google Search (for example, signing up for Search Console, Business Profile, or Merchant Center).
@@ -363,8 +391,8 @@ June 5
     ### Guidance on third-party SEO tools, services, and advice
 
 
-    **What** : Added [Google Search's guidance on using third-party SEO tools, services, and advice](https://developers.google.com/search/docs/fundamentals/third-party-seo).
-    Also added guidance to the [Do you need an SEO?](https://developers.google.com/search/docs/fundamentals/do-i-need-seo) page on
+    **What** : Added [Google Search's guidance on using third-party SEO tools, services, and advice](https://developers.google.com/search/docs/fundamentals/third-party-seo.md.txt).
+    Also added guidance to the [Do you need an SEO?](https://developers.google.com/search/docs/fundamentals/do-i-need-seo.md.txt) page on
     evaluating your SEO's recommendations and tools, along with other minor updates to the
     page to simplify and modernize the content.
 
@@ -382,7 +410,7 @@ May 27
 
 
     **What** : Updated the feature availability section of the
-    [preferred sources documentation](https://developers.google.com/search/docs/appearance/preferred-sources) to
+    [preferred sources documentation](https://developers.google.com/search/docs/appearance/preferred-sources.md.txt) to
     include AI Overviews and AI Mode.
 
 
@@ -395,8 +423,8 @@ May 20
 
 
     **What** : Added the `hasAdultConsideration` property to the
-    [Merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing) and
-    [Product variant](https://developers.google.com/search/docs/appearance/structured-data/product-variants)
+    [Merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt) and
+    [Product variant](https://developers.google.com/search/docs/appearance/structured-data/product-variants.md.txt)
     documentation.
 
 
@@ -409,7 +437,7 @@ May 15
     ### Adding a new guide on optimizing for generative AI features
 
 
-    **What** : Added a new guide on [optimizing for generative AI features](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
+    **What** : Added a new guide on [optimizing for generative AI features](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide.md.txt)
     on Search. Notable new sections include guidance on the importance of providing non-commodity content,
     tips about providing local, shopping, image, and video content, mythbusting common "AEO/GEO"
     misconceptions, initial guidance on AI agents, and more information on why SEO best practices
@@ -422,7 +450,7 @@ May 15
     ### Clarifying that spam policies apply to generative AI responses in Google Search
 
 
-    **What** : Clarified that our [spam policies](https://developers.google.com/search/docs/essentials/spam-policies)
+    **What** : Clarified that our [spam policies](https://developers.google.com/search/docs/essentials/spam-policies.md.txt)
     also apply to generative AI responses in Google Search.
 
 
@@ -448,7 +476,7 @@ April 30
     ### Expanding preferred sources to all languages where Google Search is available
 
 
-    **What** : Added that the [preferred sources feature](https://developers.google.com/search/docs/appearance/preferred-sources)
+    **What** : Added that the [preferred sources feature](https://developers.google.com/search/docs/appearance/preferred-sources.md.txt)
     is now available in all languages where Google Search is available,
     including new translated downloadable button assets.
 
@@ -461,7 +489,7 @@ April 23
     ### Clarifying when and why we may take manual action based on spam reports
 
 
-    **What** : Further clarified [when and why we may take manual action based on spam reports](https://developers.google.com/search/help/report-quality-issues).
+    **What** : Further clarified [when and why we may take manual action based on spam reports](https://developers.google.com/search/help/report-quality-issues.md.txt).
 
 
     **Why**: To address feedback we received about the change on using spam reports to take
@@ -473,7 +501,7 @@ April 20
     ### Added a section about "read more" deep links
 
 
-    **What** : Added a new section on ["read more" deep links](https://developers.google.com/search/docs/appearance/snippet#read-more-deep-links)
+    **What** : Added a new section on ["read more" deep links](https://developers.google.com/search/docs/appearance/snippet.md.txt#read-more-deep-links)
     to the snippet documentation.
 
 
@@ -486,7 +514,7 @@ April 14
     ### Clarifying the use of spam reports
 
 
-    **What** : Clarified that [Google may use spam report submissions](https://developers.google.com/search/help/report-quality-issues)
+    **What** : Clarified that [Google may use spam report submissions](https://developers.google.com/search/help/report-quality-issues.md.txt)
     to take manual action against violations.
 
 
@@ -498,11 +526,11 @@ April 13
     ### Introducing a new spam policy for "back button hijacking"
 
 
-    **What** : Added a new section to the [malicious practices spam policy](https://developers.google.com/search/docs/essentials/spam-policies#malicious-practices)
+    **What** : Added a new section to the [malicious practices spam policy](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#malicious-practices)
     to address a deceptive practice known as "back button hijacking".
 
 
-    **Why** : Learn more about this update in our [blog post on back button hijacking](https://developers.google.com/search/blog/2026/04/back-button-hijacking).
+    **Why** : Learn more about this update in our [blog post on back button hijacking](https://developers.google.com/search/blog/2026/04/back-button-hijacking.md.txt).
 
 ## March 2026
 
@@ -513,8 +541,8 @@ March 24
 
 
     **What** : Added more supported properties
-    for [Discussion Forum](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum)
-    and [QA Page](https://developers.google.com/search/docs/appearance/structured-data/qapage) markup.
+    for [Discussion Forum](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum.md.txt)
+    and [QA Page](https://developers.google.com/search/docs/appearance/structured-data/qapage.md.txt) markup.
 
 
     **Why**: For providing more clarity on comment thread structure to Google ingestion systems.
@@ -525,7 +553,7 @@ March 24
     ### Added a note on the robots meta tags documentation
 
 
-    **What** : Added a note to the [robots meta tags documentation](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) on the way Google Search processes robots meta tags outside the HTML head.
+    **What** : Added a note to the [robots meta tags documentation](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag.md.txt) on the way Google Search processes robots meta tags outside the HTML head.
 
 
     **Why**: The behavior didn't change but was previously undocumented.
@@ -536,7 +564,7 @@ March 4
     ### Removed outdated information about JavaScript and accessibility
 
 
-    **What** : Removed a section on accessibility from [the JavaScript SEO basics documentation](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics).
+    **What** : Removed a section on accessibility from [the JavaScript SEO basics documentation](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt).
 
 
     **Why**: The information was out of date and not as helpful as it used to be. Google Search has been rendering JavaScript for multiple years now, so using JavaScript to load content is not "making it harder for Google Search".
@@ -548,8 +576,8 @@ March 2
     ### Added preferred image best practices
 
 
-    **What** : Added a new section on [specifying a preferred image with metadata](https://developers.google.com/search/docs/appearance/google-images#specify-preferred-image)
-    to the image SEO best practices and [Discover documentation](https://developers.google.com/search/docs/appearance/google-discover#images).
+    **What** : Added a new section on [specifying a preferred image with metadata](https://developers.google.com/search/docs/appearance/google-images.md.txt#specify-preferred-image)
+    to the image SEO best practices and [Discover documentation](https://developers.google.com/search/docs/appearance/google-discover.md.txt#images).
 
 
     **Why** : Based on feedback, we're clarifying that Google uses both schema.org markup and the `og:image`
@@ -565,10 +593,10 @@ February 5
 
 
     **What** : Added more information on how sites can increase the likelihood of their
-    content [appearing in Discover](https://developers.google.com/search/docs/appearance/google-discover).
+    content [appearing in Discover](https://developers.google.com/search/docs/appearance/google-discover.md.txt).
 
 
-    **Why** : We're rolling out the [February 2026 Discover Core Update](https://developers.google.com/search/blog/2026/02/discover-core-update).
+    **Why** : We're rolling out the [February 2026 Discover Core Update](https://developers.google.com/search/blog/2026/02/discover-core-update.md.txt).
 
 February 3
 :
@@ -578,9 +606,9 @@ February 3
 
     **What** : While moving over the information about the default file size limits of
     Google's crawlers and fetchers to the
-    [crawler documentation](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers#file-size-limits),
+    [crawler documentation](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers.md.txt#file-size-limits),
     we also updated the
-    [Googlebot documentation](https://developers.google.com/search/docs/crawling-indexing/googlebot)
+    [Googlebot documentation](https://developers.google.com/search/docs/crawling-indexing/googlebot.md.txt)
     about its own file size limits.
 
 
@@ -596,7 +624,7 @@ January 30
     ### Adding preferred sources documentation
 
 
-    **What** : Added [preferred sources documentation](https://developers.google.com/search/docs/appearance/preferred-sources)
+    **What** : Added [preferred sources documentation](https://developers.google.com/search/docs/appearance/preferred-sources.md.txt)
     for website owners.
 
 
@@ -608,8 +636,8 @@ January 21
     ### Adding more supported query types to South African carousel documentation
 
 
-    **What** : Updated the [structured data carousels (beta)](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta)
-    documentation and the [South African badges and refinement chips blog post](https://developers.google.com/search/blog/2024/09/search-experiences-in-sa)
+    **What** : Updated the [structured data carousels (beta)](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta.md.txt)
+    documentation and the [South African badges and refinement chips blog post](https://developers.google.com/search/blog/2024/09/search-experiences-in-sa.md.txt)
     to include additional query types.
 
 
@@ -627,7 +655,7 @@ January 6
 
 
     **Why** : The practice problem structured data type is no longer shown in Google Search results.
-    Learn more about this change in our [blog post](https://developers.google.com/search/blog/2025/06/simplifying-search-results) and [changelog entry](https://developers.google.com/search/updates#simplification-nov) announced in November 2025.
+    Learn more about this change in our [blog post](https://developers.google.com/search/blog/2025/06/simplifying-search-results.md.txt) and [changelog entry](https://developers.google.com/search/updates.md.txt#simplification-nov) announced in November 2025.
 
 ## 2025 updates
 
@@ -639,7 +667,7 @@ December 18
     ### Clarifying JavaScript execution on non-200 HTTP status codes
 
 
-    **What** : We added a note on [how Googlebot processes JavaScript](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics#how-googlebot-processes-javascript).
+    **What** : We added a note on [how Googlebot processes JavaScript](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt#how-googlebot-processes-javascript).
 
 
     **Why** : While pages with a `200` HTTP status code are sent to rendering, this might not be the case for pages with a non-`200` HTTP status code.
@@ -654,10 +682,10 @@ December 18
     only the location of the documentation and some minor wording changes to clarify that some
     guidance applies to both Google Search and other Google products.
 
-    - [Managing crawling of faceted navigation URLs](https://developers.google.com/crawling/docs/faceted-navigation)
-    - [Optimize your crawl budget](https://developers.google.com/crawling/docs/crawl-budget)
-    - [How HTTP status codes affect Google's crawlers](https://developers.google.com/crawling/docs/troubleshooting/http-status-codes)
-    - [Debug DNS and network errors](https://developers.google.com/crawling/docs/troubleshooting/dns-network-errors)
+    - [Managing crawling of faceted navigation URLs](https://developers.google.com/crawling/docs/faceted-navigation.md.txt)
+    - [Optimize your crawl budget](https://developers.google.com/crawling/docs/crawl-budget.md.txt)
+    - [How HTTP status codes affect Google's crawlers](https://developers.google.com/crawling/docs/troubleshooting/http-status-codes.md.txt)
+    - [Debug DNS and network errors](https://developers.google.com/crawling/docs/troubleshooting/dns-network-errors.md.txt)
 
 
     **Why**: This documentation is more relevant to many Google products that use Google's crawlers,
@@ -669,8 +697,8 @@ December 17
     ### Clarifying canonicalization best practices for JavaScript
 
 
-    **What** : We added a section on [canonicalization best practices for JavaScript](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics#canonicalization)
-    to our [JavaScript documentation](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics) and the [best practices for consolidation of duplicate URLs](https://developers.google.com/search/docs/crawling-indexing/consolidation-of-duplicate-urls#best-practices).
+    **What** : We added a section on [canonicalization best practices for JavaScript](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt#canonicalization)
+    to our [JavaScript documentation](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt) and the [best practices for consolidation of duplicate URLs](https://developers.google.com/search/docs/crawling-indexing/consolidation-of-duplicate-urls#best-practices).
 
 
     **Why**: Canonicalization happens before and after rendering, so it's important to make the canonical URL as clear as possible. With JavaScript, this means setting the canonical URL to the same URL as in the original HTML or if that isn't possible, to leave the canonical URL out of the original HTML.
@@ -681,7 +709,7 @@ December 15
     ### Clarifying noindex and JavaScript
 
 
-    **What** : Clarified in our [JavaScript documentation](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics)
+    **What** : Clarified in our [JavaScript documentation](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt)
     how Google's crawler handles `noindex` tags in pages that use JavaScript.
 
 
@@ -695,7 +723,7 @@ December 9
     ### Adding a section on smaller core updates
 
 
-    **What** : Added information to the [core updates documentation](https://developers.google.com/search/docs/appearance/core-updates#how-long)
+    **What** : Added information to the [core updates documentation](https://developers.google.com/search/docs/appearance/core-updates.md.txt#how-long)
     about how Google continually makes updates to our search algorithms (including smaller core updates),
     and how that can affect your website.
 
@@ -715,15 +743,15 @@ November 20
     [Google's crawling infrastructure documentation](https://developers.google.com/crawling)
     (the content hasn't changed, only the location). Notable moves include:
 
-    - [Overview of Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers)
-    - [Verify requests from Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests)
-    - [Reduce the Google crawl rate](https://developers.google.com/crawling/docs/crawlers-fetchers/reduce-crawl-rate)
-    - [Google common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers)
-    - [How Google interprets the robots.txt specification](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec)
+    - [Overview of Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers.md.txt)
+    - [Verify requests from Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests.md.txt)
+    - [Reduce the Google crawl rate](https://developers.google.com/crawling/docs/crawlers-fetchers/reduce-crawl-rate.md.txt)
+    - [Google common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers.md.txt)
+    - [How Google interprets the robots.txt specification](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec.md.txt)
 
 
     To subscribe to updates about Google's crawling infrastructure,
-    add the [URL of the new changelog page](https://developers.google.com/crawling/docs/changelog) to your
+    add the [URL of the new changelog page](https://developers.google.com/crawling/docs/changelog.md.txt) to your
     [feed reader](https://en.wikipedia.org/wiki/Comparison_of_feed_aggregators),
     or add the feed URL directly:
     `https://developers.google.com/crawling/docs/changelog/crawling_docs_updates.rss`.
@@ -741,7 +769,7 @@ November 19
 
 
     **What** : Removed guidance on the [Follow feature](https://blog.chromium.org/2021/05/an-experiment-in-helping-users-and-web.html)
-    from [Google Discover documentation](https://developers.google.com/search/docs/appearance/google-discover).
+    from [Google Discover documentation](https://developers.google.com/search/docs/appearance/google-discover.md.txt).
 
 
     **Why**: The Follow feature is no longer shown in Google Discover.
@@ -752,7 +780,7 @@ November 12
     ### Clarifying nesting in reviews and aggregate ratings
 
 
-    **What** : Clarified the [review snippet documentation](https://developers.google.com/search/docs/appearance/structured-data/review-snippet#technical-guidelines) to explain that site owners
+    **What** : Clarified the [review snippet documentation](https://developers.google.com/search/docs/appearance/structured-data/review-snippet.md.txt#technical-guidelines) to explain that site owners
     should avoid using multiple ways of indicating what's being reviewed.
 
 
@@ -775,7 +803,7 @@ November 12
     ### Launching new merchant shipping policies documentation
 
 
-    **What** : Added documentation for [shipping policies](https://developers.google.com/search/docs/appearance/structured-data/shipping-policy).
+    **What** : Added documentation for [shipping policies](https://developers.google.com/search/docs/appearance/structured-data/shipping-policy.md.txt).
 
 
     **Why**: We now support merchant-level shipping policy markup in Search.
@@ -794,14 +822,14 @@ November 5
     practice problem type through January 2026.
 
 
-    Clarified that [Dataset structured data](https://developers.google.com/search/docs/appearance/structured-data/dataset)
+    Clarified that [Dataset structured data](https://developers.google.com/search/docs/appearance/structured-data/dataset.md.txt)
     is only used by [Dataset Search](https://toolbox.google.com/datasetsearch/),
     and not Google Search. Removed the deprecation banner from
-    [Book actions documentation](https://developers.google.com/search/docs/appearance/structured-data/book),
+    [Book actions documentation](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt),
     as there's still a feature using the markup in Google Search.
 
 
-    **Why** : As part of our [ongoing efforts to simplify the search results page](https://developers.google.com/search/blog/2025/11/update-on-our-efforts),
+    **Why** : As part of our [ongoing efforts to simplify the search results page](https://developers.google.com/search/blog/2025/11/update-on-our-efforts.md.txt),
     we are phasing out the practice problem and dataset structured data types from Google
     Search results.
 
@@ -856,7 +884,7 @@ September 9
 
 
     **Why** : These structured data types are no longer shown in Google Search results. Learn
-    more about this change in our [blog post](https://developers.google.com/search/blog/2025/06/simplifying-search-results).
+    more about this change in our [blog post](https://developers.google.com/search/blog/2025/06/simplifying-search-results.md.txt).
 
 ### August 2025
 
@@ -866,7 +894,7 @@ August 28
     ### Adding guidance for JavaScript-based paywalls
 
 
-    **What** : Added new guidance on [JavaScript-based paywall considerations](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript#paywall).
+    **What** : Added new guidance on [JavaScript-based paywall considerations](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript.md.txt#paywall).
 
 
     **Why**: To help sites understand challenges with the JavaScript-based paywall design
@@ -876,7 +904,7 @@ August 28
     ### Expanding the structured data carousels (beta) feature to South Africa
 
 
-    **What** : Updated the [structured data carousels (beta) documentation](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta#availability)
+    **What** : Updated the [structured data carousels (beta) documentation](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta.md.txt#availability)
     to include South Africa.
 
 
@@ -890,14 +918,14 @@ July 11
     ### Updated documentation related to merchant return policies and loyalty programs
 
 
-    **What** : Updated [merchant return policy](https://developers.google.com/search/docs/appearance/structured-data/return-policy) documentation and
-    [merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#returns) documentation to
+    **What** : Updated [merchant return policy](https://developers.google.com/search/docs/appearance/structured-data/return-policy.md.txt) documentation and
+    [merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt#returns) documentation to
     clarify that (1) offer-level return policies only support a subset of organization-level return policies, and (2)
     merchant-level return policies must be defined under `Organization` markup.
 
 
-    Updated [loyalty program](https://developers.google.com/search/docs/appearance/structured-data/loyalty-program) documentation and
-    [merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#unit-price-specification-properties) documentation
+    Updated [loyalty program](https://developers.google.com/search/docs/appearance/structured-data/loyalty-program.md.txt) documentation and
+    [merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt#unit-price-specification-properties) documentation
     to clarify that (1) loyalty program information needs to be defined separately from offer-level loyalty benefits (price and points)
     under `Organization` markup on a separate page or on Merchant Center, and (2) shipping and returns loyalty benefits are
     not supported by Google at the moment.
@@ -925,7 +953,7 @@ June 18
     ### Revamped the URL structure documentation
 
 
-    **What** : Reorganized the [URL structure documentation](https://developers.google.com/search/docs/crawling-indexing/url-structure)
+    **What** : Reorganized the [URL structure documentation](https://developers.google.com/search/docs/crawling-indexing/url-structure.md.txt)
     so it has a clearer flow and is easier to navigate, with added examples based on real-world URLs we've encountered.
 
 
@@ -939,7 +967,7 @@ June 17
 
 
     **What** : Added a section on feature availability to the
-    [loyalty program documentation](https://developers.google.com/search/docs/appearance/structured-data/loyalty-program#feature-availability).
+    [loyalty program documentation](https://developers.google.com/search/docs/appearance/structured-data/loyalty-program.md.txt#feature-availability).
 
 
     **Why**: The feature is available in Australia, Brazil, Canada,
@@ -951,7 +979,7 @@ June 16
     ### AI Mode is now counting towards totals in Search Console
 
 
-    **What** : Updated the [AI feature documentation](https://developers.google.com/search/docs/appearance/ai-features)
+    **What** : Updated the [AI feature documentation](https://developers.google.com/search/docs/appearance/ai-features.md.txt)
     to point to the [section about how AI Mode is counted](https://support.google.com/webmasters/answer/7042828#ai-mode&zippy=%2Ct%2Cai-mode)
     towards the overall search traffic in Search Console.
 
@@ -965,10 +993,10 @@ June 12
     ### Retiring a few structured data features
 
 
-    **What** : Added banners to a few structured data features to indicate upcoming changes: [book actions](https://developers.google.com/search/docs/appearance/structured-data/book),
+    **What** : Added banners to a few structured data features to indicate upcoming changes: [book actions](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt),
     [course info](https://developers.google.com/search/docs/appearance/structured-data/course-info),
     [estimated salary](https://developers.google.com/search/docs/appearance/structured-data/estimated-salary),
-    [`ClaimReview`](https://developers.google.com/search/docs/appearance/structured-data/factcheck),
+    [`ClaimReview`](https://developers.google.com/search/docs/appearance/structured-data/factcheck.md.txt),
     [learning video](https://developers.google.com/search/docs/appearance/structured-data/learning-video),
     [special announcement](https://developers.google.com/search/docs/appearance/structured-data/special-announcement),
     and
@@ -977,7 +1005,7 @@ June 12
 
     **Why** : As part of our ongoing efforts to simplify the Google Search results page, we
     will be phasing out support for a few structured data features in Search. Learn more in our
-    [blog post](https://developers.google.com/search/blog/2025/06/simplifying-search-results).
+    [blog post](https://developers.google.com/search/blog/2025/06/simplifying-search-results.md.txt).
 
 June 11
 :
@@ -985,11 +1013,11 @@ June 11
     ### Spring cleaning in our multilingual documentation
 
 
-    **What** : Removed a section from our [multilingual documentation](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites)
+    **What** : Removed a section from our [multilingual documentation](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites.md.txt)
     about using robots.txt to block all automatically translated pages.
 
 
-    **Why** : To align with our [spam policy update in March 2024](https://developers.google.com/search/blog/2024/03/core-update-spam-policies#scaled-content).
+    **Why** : To align with our [spam policy update in March 2024](https://developers.google.com/search/blog/2024/03/core-update-spam-policies.md.txt#scaled-content).
     This is a docs-only change, no change in behavior.
 
 June 10
@@ -998,14 +1026,14 @@ June 10
     ### Launching new merchant return policies and loyalty program documentation
 
 
-    **What** : Added documentation for [loyalty programs](https://developers.google.com/search/docs/appearance/structured-data/loyalty-program)
-    and migrated the [merchant return policy documentation](https://developers.google.com/search/docs/appearance/structured-data/return-policy)
+    **What** : Added documentation for [loyalty programs](https://developers.google.com/search/docs/appearance/structured-data/loyalty-program.md.txt)
+    and migrated the [merchant return policy documentation](https://developers.google.com/search/docs/appearance/structured-data/return-policy.md.txt)
     to a separate page.
 
 
     **Why** : We now support loyalty program markup in Search. We migrated merchant return
-    policies from the [`Organization`](https://developers.google.com/search/docs/appearance/structured-data/organization) documentation
-    to a [new dedicated document](https://developers.google.com/search/docs/appearance/structured-data/return-policy)
+    policies from the [`Organization`](https://developers.google.com/search/docs/appearance/structured-data/organization.md.txt) documentation
+    to a [new dedicated document](https://developers.google.com/search/docs/appearance/structured-data/return-policy.md.txt)
     to make it easier to find return policy guidance.
 
 June 5
@@ -1015,7 +1043,7 @@ June 5
 
 
     **What** : Added more examples of eliglible and illegible events to the
-    [events documentation](https://developers.google.com/search/docs/appearance/structured-data/event#content-guidelines).
+    [events documentation](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#content-guidelines).
     Also removed the online event properties.
 
 
@@ -1027,8 +1055,8 @@ June 5
     ### Clarifying the use of the `image` property for recipes
 
 
-    **What** : Clarified that the [`image` property in `Recipe` structured data](https://developers.google.com/search/docs/appearance/structured-data/recipe#image)
-    doesn't influence the image that's chosen as a [text result image](https://developers.google.com/search/docs/appearance/visual-elements-gallery#text-result-image).
+    **What** : Clarified that the [`image` property in `Recipe` structured data](https://developers.google.com/search/docs/appearance/structured-data/recipe.md.txt#image)
+    doesn't influence the image that's chosen as a [text result image](https://developers.google.com/search/docs/appearance/visual-elements-gallery.md.txt#text-result-image).
 
 
     **Why** : The `image` property in `Recipe` markup is only used for recipe rich
@@ -1040,19 +1068,19 @@ June 4
     ### Revamping our SafeSearch documentation
 
 
-    **What** : Revamped our [documentation for sites with explicit content](https://developers.google.com/search/docs/specialty/explicit/guidelines)
+    **What** : Revamped our [documentation for sites with explicit content](https://developers.google.com/search/docs/specialty/explicit/guidelines.md.txt)
     to make sure our guidance is up-to-date with Google Search policies and algorithmic protections.
-    Among other updates, we introduced best practices for [moderating content and eliminating CSAM and non-consensual content](https://developers.google.com/search/docs/specialty/explicit/guidelines#prevent-user-generated-harmful-content),
-    expanded documentation for [sharing video bytes](https://developers.google.com/search/docs/specialty/explicit/guidelines#allow-googlebot-to-crawl),
+    Among other updates, we introduced best practices for [moderating content and eliminating CSAM and non-consensual content](https://developers.google.com/search/docs/specialty/explicit/guidelines.md.txt#prevent-user-generated-harmful-content),
+    expanded documentation for [sharing video bytes](https://developers.google.com/search/docs/specialty/explicit/guidelines.md.txt#allow-googlebot-to-crawl),
     and added more guidance on
-    [what to do if your site is incorrectly flagged as explicit](https://developers.google.com/search/docs/specialty/explicit/troubleshooting).
+    [what to do if your site is incorrectly flagged as explicit](https://developers.google.com/search/docs/specialty/explicit/troubleshooting.md.txt).
 
 
     **Why** : To better help site owners reach their target audience while respecting user
     preferences around explicit content and minimizing access to violative explicit content. Also, the
     troubleshooting section has been separated for more clarity. Finally, Google Search is updating
     the ranking algorithms to more strongly affect the sites that host explicit videos but don't
-    [allow Googlebot to fetch those video files](https://developers.google.com/search/docs/specialty/explicit/guidelines#allow-googlebot-to-crawl)
+    [allow Googlebot to fetch those video files](https://developers.google.com/search/docs/specialty/explicit/guidelines.md.txt#allow-googlebot-to-crawl)
     (these sites may experience a significant drop in ranking, especially in Video mode).
 
 ### May 2025
@@ -1063,17 +1091,17 @@ May 21
     ### Adding documentation on AI features and using generative AI on your site
 
 
-    **What** : Added new documentation on [AI features and your site](https://developers.google.com/search/docs/appearance/ai-features)
-    and [Google Search's guidance on using generative AI content on your website](https://developers.google.com/search/docs/fundamentals/using-gen-ai-content).
+    **What** : Added new documentation on [AI features and your site](https://developers.google.com/search/docs/appearance/ai-features.md.txt)
+    and [Google Search's guidance on using generative AI content on your website](https://developers.google.com/search/docs/fundamentals/using-gen-ai-content.md.txt).
     Learn more in our
-    [blog post on succeeding in Google's AI experiences on Search](https://developers.google.com/search/blog/2025/05/succeeding-in-ai-search).
+    [blog post on succeeding in Google's AI experiences on Search](https://developers.google.com/search/blog/2025/05/succeeding-in-ai-search.md.txt).
 
 :
 
     ### Expanding the structured data carousels (beta) feature to Turkey
 
 
-    **What** : Updated the [structured data carousels (beta) documentation](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta#feature-availability)
+    **What** : Updated the [structured data carousels (beta) documentation](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta.md.txt#feature-availability)
     to include Turkey.
 
 
@@ -1086,7 +1114,7 @@ May 12
 
 
     **What** : We updated the
-    [Google Image SEO best practices](https://developers.google.com/search/docs/appearance/google-images)
+    [Google Image SEO best practices](https://developers.google.com/search/docs/appearance/google-images.md.txt)
     to clarify that URLs for images should be referenced consistently for easier crawling on larger websites.
 
 ### April 2025
@@ -1120,14 +1148,14 @@ April 24
     ### Updating the merchant listing documentation on energy efficiency
 
 
-    **What** : Updated the [merchant listing documentation](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing)
+    **What** : Updated the [merchant listing documentation](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt)
     on energy efficiency. Specifically, removed the `EnergyConsumptionDetails`
     properties, added a note on backwards compatibility for developers that implemented the
     original markup, and added an alternative solution to the `certificationIdentification`
     property for merchants that don't have EPREL codes.
 
 
-    **Why** : As [announced in October 2024](https://developers.google.com/search/updates#certifications), the `EnergyConsumptionDetails`
+    **Why** : As [announced in October 2024](https://developers.google.com/search/updates.md.txt#certifications), the `EnergyConsumptionDetails`
     type has been replaced with the more robust `Certification` type.
 
 April 23
@@ -1147,7 +1175,7 @@ April 11
     ### Updating the interest forms for structured data carousels (beta)
 
 
-    **What** : Updated the [structured data carousels (beta) documentation](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta#feature-availability)
+    **What** : Updated the [structured data carousels (beta) documentation](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta.md.txt#feature-availability)
     to include the current interest forms and supported query types.
 
 
@@ -1159,7 +1187,7 @@ April 1
     ### Expanding the education Q\&A carousel to Portuguese
 
 
-    **What** : Updated the [education Q\&A documentation](https://developers.google.com/search/docs/appearance/structured-data/education-qa#feature-availability)
+    **What** : Updated the [education Q\&A documentation](https://developers.google.com/search/docs/appearance/structured-data/education-qa.md.txt#feature-availability)
     to include Portuguese.
 
 
@@ -1174,7 +1202,7 @@ March 27
 
 
     **What** : Removed the AI while browsing feature from the
-    [paywall documentation](https://developers.google.com/search/docs/appearance/structured-data/paywalled-content).
+    [paywall documentation](https://developers.google.com/search/docs/appearance/structured-data/paywalled-content.md.txt).
 
 
     **Why**: The AI while browsing feature is no longer available.
@@ -1185,7 +1213,7 @@ March 17
     ### Expanding the education Q\&A carousel to more languages
 
 
-    **What** : Updated the [education Q\&A documentation](https://developers.google.com/search/docs/appearance/structured-data/education-qa#feature-availability)
+    **What** : Updated the [education Q\&A documentation](https://developers.google.com/search/docs/appearance/structured-data/education-qa.md.txt#feature-availability)
     to include Spanish and Vietnamese.
 
 
@@ -1197,7 +1225,7 @@ March 14
     ### Updating the return policy examples
 
 
-    **What** : Added `returnPolicyCountry` to the return policy [examples](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing).
+    **What** : Added `returnPolicyCountry` to the return policy [examples](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt).
 
 
     **Why** : `returnPolicyCountry` is required for `MerchantReturnPolicy`.
@@ -1209,7 +1237,7 @@ March 7
 
 
     **What** : Removed the Page Annotations feature from the
-    [control what you share with Google documentation](https://developers.google.com/search/docs/crawling-indexing/control-what-you-share).
+    [control what you share with Google documentation](https://developers.google.com/search/docs/crawling-indexing/control-what-you-share.md.txt).
 
 
     **Why**: The Page Annotations feature is no longer available.
@@ -1221,7 +1249,7 @@ March 5
 
 
     **What** : Added information about AI Mode to the
-    [robots `meta` tags, `data-nosnippet`, and X-Robots-Tag specifications page](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag).
+    [robots `meta` tags, `data-nosnippet`, and X-Robots-Tag specifications page](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag.md.txt).
 
 
     **Why**: AI Mode is now available in Search Labs.
@@ -1237,7 +1265,7 @@ February 13
     **What** : Added examples and instructions for using the `priceType` property
     and new beta `validForMemberTier` property to encode active prices, sale prices,
     strikethrough prices, and member prices in JSON-LD to the
-    [Merchant listing structured data](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing)
+    [Merchant listing structured data](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt)
     guidelines.
 
 
@@ -1250,7 +1278,7 @@ February 6
     ### Adding documentation for using Google Analytics and Search Console data together
 
 
-    **What** : Added new documentation about [using Search Console and Google Analytics data for SEO](https://developers.google.com/search/docs/monitor-debug/google-analytics-search-console).
+    **What** : Added new documentation about [using Search Console and Google Analytics data for SEO](https://developers.google.com/search/docs/monitor-debug/google-analytics-search-console.md.txt).
 
 
     **Why**: Using Google Analytics and Search Console together can help you understand
@@ -1265,14 +1293,14 @@ January 22
     ### Updating feature availability of breadcrumb markup
 
 
-    **What** : Added a [feature availability](https://developers.google.com/search/docs/appearance/structured-data/breadcrumb#availability)
+    **What** : Added a [feature availability](https://developers.google.com/search/docs/appearance/structured-data/breadcrumb.md.txt#availability)
     section to the breadcrumb documentation to state that they only appear on desktop search
     results, not mobile.
 
 
     **Why** : Because of how breadcrumbs get truncated on smaller screens, we've found this
     feature isn't as useful to people who are searching on mobile. Breadcrumbs will continue
-    to appear on desktop search results. Learn more in our [blog post](https://developers.google.com/search/blog/2025/01/simplifying-breadcrumbs).
+    to appear on desktop search results. Learn more in our [blog post](https://developers.google.com/search/blog/2025/01/simplifying-breadcrumbs.md.txt).
 
 January 21
 :
@@ -1280,8 +1308,8 @@ January 21
     ### Clarifying the site reputation abuse policy
 
 
-    **What** : Updated the [site reputation abuse policy](https://developers.google.com/search/docs/essentials/spam-policies#site-reputation)
-    to include guidance from our [blog post's FAQ on site reputation abuse](https://developers.google.com/search/blog/2024/11/site-reputation-abuse#faq).
+    **What** : Updated the [site reputation abuse policy](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#site-reputation)
+    to include guidance from our [blog post's FAQ on site reputation abuse](https://developers.google.com/search/blog/2024/11/site-reputation-abuse.md.txt#faq).
 
 
     **Why**: To make it easier to find this guidance. These are editiorial changes only,
@@ -1294,7 +1322,7 @@ January 15
 
 
     **What** : Added a recommendation to our
-    [review snippet documentation](https://developers.google.com/search/docs/appearance/structured-data/review-snippet#technical-guidelines).
+    [review snippet documentation](https://developers.google.com/search/docs/appearance/structured-data/review-snippet.md.txt#technical-guidelines).
 
 
     **Why**: We recommend implementing a setup that only accepts ratings and reviews that
@@ -1332,7 +1360,7 @@ December 17
 
 
     **Why** : While the information was already
-    [public in form of a blog post](https://developers.google.com/search/blog/2014/02/faceted-navigation-best-and-5-of-worst),
+    [public in form of a blog post](https://developers.google.com/search/blog/2014/02/faceted-navigation-best-and-5-of-worst.md.txt),
     it was never officially made into documentation.
 
 December 9
@@ -1358,7 +1386,7 @@ November 29
 
 
     **What** : Removed the sitelinks search box documentation and
-    [archived the `nositelinkssearchbox` rule](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag#nositelinkssearchbox).
+    [archived the `nositelinkssearchbox` rule](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag.md.txt#nositelinkssearchbox).
 
 
     **Why** : The sitelinks search box feature is [no longer available in Google Search
@@ -1370,7 +1398,7 @@ November 20
     ### Added information about opting out of the Page Annotations feature.
 
 
-    **What** : Added information about [opting out of the Page Annotations feature](https://developers.google.com/search/docs/crawling-indexing/control-what-you-share#page-insights)
+    **What** : Added information about [opting out of the Page Annotations feature](https://developers.google.com/search/docs/crawling-indexing/control-what-you-share.md.txt#page-insights)
     that's available on the iOS Google App.
 
 
@@ -1388,7 +1416,7 @@ November 19
     regardless of whether there is first-party involvement or oversight of the content.
 
 
-    **Why** : See our [blog post](https://developers.google.com/search/blog/2024/11/site-reputation-abuse)
+    **Why** : See our [blog post](https://developers.google.com/search/blog/2024/11/site-reputation-abuse.md.txt)
     for more details on what changed and why.
 
 :
@@ -1442,7 +1470,7 @@ October 24
 
 
     **What** : Added a page explaining
-    [how to get started with Google Trends](https://developers.google.com/search/docs/monitor-debug/trends-start).
+    [how to get started with Google Trends](https://developers.google.com/search/docs/monitor-debug/trends-start.md.txt).
 
 
     **Why**: Google Trends can help you better understand how people find information on Google
@@ -1453,7 +1481,7 @@ October 24
     ### Updating favicon size and aspect ratio requirements
 
 
-    **What** : Updated the [favicon guidelines](https://developers.google.com/search/docs/appearance/favicon-in-search#guidelines)
+    **What** : Updated the [favicon guidelines](https://developers.google.com/search/docs/appearance/favicon-in-search.md.txt#guidelines)
     to state that favicons must have a 1:1 aspect ratio and be at least 8x8px in
     size, with a strong recommendation for using a higher resolution favicon of at least 48x48px.
 
@@ -1467,11 +1495,11 @@ October 23
 
 
     **What** : Added a URL parameters best practice to the
-    [URL structure documentation](https://developers.google.com/search/docs/crawling-indexing/url-structure).
+    [URL structure documentation](https://developers.google.com/search/docs/crawling-indexing/url-structure.md.txt).
 
 
     **Why** : To make it easier to find guidance about URL parameters, as it was
-    previously only mentioned in the [faceted navigation blog post](https://developers.google.com/search/blog/2014/02/faceted-navigation-best-and-5-of-worst#worst-practices).
+    previously only mentioned in the [faceted navigation blog post](https://developers.google.com/search/blog/2014/02/faceted-navigation-best-and-5-of-worst.md.txt#worst-practices).
 
 October 7
 :
@@ -1492,7 +1520,7 @@ October 3
     ### Adding support for certifications
 
 
-    **What** : Added `Certification` markup support for merchant listings in the [product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#certification-example).
+    **What** : Added `Certification` markup support for merchant listings in the [product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt#certification-example).
 
 
     **Why** : Starting in April 2025, we're replacing the `EnergyConsumptionDetails` type with the more robust `Certification` type, as the new type supports more countries and a broader scope of certifications.
@@ -1503,7 +1531,7 @@ October 2
     ### Removing `noarchive`
 
 
-    **What** : Moved the `noarchive` rule to a [historical reference section](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag#history-corner)
+    **What** : Moved the `noarchive` rule to a [historical reference section](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag.md.txt#history-corner)
     in the robots `meta` tag documentation.
 
 
@@ -1517,8 +1545,8 @@ October 1
 
 
     **What** : Added two best practices for handling structured data when optimizing for
-    shopping results in our documentation on [product markup](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#technical-guidelines)
-    and [generating structured data with JavaScript](https://developers.google.com/search/docs/appearance/structured-data/generate-structured-data-with-javascript).
+    shopping results in our documentation on [product markup](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt#technical-guidelines)
+    and [generating structured data with JavaScript](https://developers.google.com/search/docs/appearance/structured-data/generate-structured-data-with-javascript.md.txt).
     We recommend putting `Product` markup in the initial HTML for best results, and
     making sure that your server can handle increased traffic if you're generating `Product`
     markup with JavaScript.
@@ -1535,9 +1563,9 @@ September 25
     ### Spam policy clarifications
 
 
-    **What** : Clarified some wording in our [spam policies for Google web search](https://developers.google.com/search/docs/essentials/spam-policies)
+    **What** : Clarified some wording in our [spam policies for Google web search](https://developers.google.com/search/docs/essentials/spam-policies.md.txt)
     to focus more on what web spam is and the tactics involved. Also integrated an
-    [explanation of close involvement](https://developers.google.com/search/blog/2024/03/core-update-spam-policies#coupons)
+    [explanation of close involvement](https://developers.google.com/search/blog/2024/03/core-update-spam-policies.md.txt#coupons)
     from our blog post for easier reference, and clarified that trying to circumvent our
     policies can also result in ranking lower or not at all.
 
@@ -1563,8 +1591,8 @@ September 23
 
 
     **What** : Added the `priceType` property to the
-    [merchant listing documentation](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#pricetype).
-    Also added new [sale pricing examples](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#sale-pricing-example).
+    [merchant listing documentation](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt#pricetype).
+    Also added new [sale pricing examples](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt#sale-pricing-example).
 
 
     **Why** : To make it easier for merchants to specify sale pricing through structured
@@ -1577,7 +1605,7 @@ September 17
 
 
     **What** : Migrated guidance from the blog post on infinite scroll to our
-    [documentation for infinite scroll](https://developers.google.com/search/docs/crawling-indexing/javascript/lazy-loading#paginated-infinite-scroll).
+    [documentation for infinite scroll](https://developers.google.com/search/docs/crawling-indexing/javascript/lazy-loading.md.txt#paginated-infinite-scroll).
     There is no change in the guidance.
 
 
@@ -1611,7 +1639,7 @@ September 16
 
     **Why** : We realized we never actually documented the content encodings Google's
     crawlers support, even though we
-    [blogged about it in the past](https://developers.google.com/search/blog/2008/03/first-date-with-googlebot-headers-and).
+    [blogged about it in the past](https://developers.google.com/search/blog/2008/03/first-date-with-googlebot-headers-and.md.txt).
 
 :
 
@@ -1634,7 +1662,7 @@ September 11
     ### Clarifying Indexing API usage guidelines
 
 
-    **What** : Clarified that [submissions to the Indexing API](https://developers.google.com/search/apis/indexing-api/v3/quickstart#get-started) are subject to spam detection.
+    **What** : Clarified that [submissions to the Indexing API](https://developers.google.com/search/apis/indexing-api/v3/quickstart.md.txt#get-started) are subject to spam detection.
 
 
     **Why**: Usage of the Indexing API is subject to spam detection, and attempts to exceed
@@ -1646,12 +1674,12 @@ September 10
     ### Video markup accepts `ineligibleRegion`
 
 
-    **What** : Added the [`ineligibleRegion` property](https://developers.google.com/search/docs/appearance/structured-data/video#ineligible-region)
+    **What** : Added the [`ineligibleRegion` property](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt#ineligible-region)
     to the video structured data documentation.
 
 
     **Why** : Google accepts the `ineligibleRegion` property as another way to
-    [restrict a video](https://developers.google.com/search/docs/appearance/video#restrict-structured-data).
+    [restrict a video](https://developers.google.com/search/docs/appearance/video.md.txt#restrict-structured-data).
 
 September 4
 :
@@ -1659,10 +1687,10 @@ September 4
     ### Clarifying quota and usage of the Indexing API
 
 
-    **What** : Clarified that the [default quota](https://developers.google.com/search/apis/indexing-api/v3/quota-pricing#quota)
+    **What** : Clarified that the [default quota](https://developers.google.com/search/apis/indexing-api/v3/quota-pricing.md.txt#quota)
     is for setting up the Indexing API, and how to
-    [request approval and quota](https://developers.google.com/search/apis/indexing-api/v3/quota-pricing#request-more-quota).
-    Also corrected a documentation error for [DefaultRequestsPerMinutePerProject quota](https://developers.google.com/search/apis/indexing-api/v3/quota-pricing#quota)
+    [request approval and quota](https://developers.google.com/search/apis/indexing-api/v3/quota-pricing.md.txt#request-more-quota).
+    Also corrected a documentation error for [DefaultRequestsPerMinutePerProject quota](https://developers.google.com/search/apis/indexing-api/v3/quota-pricing.md.txt#quota)
     (it's always been a 380 quota).
 
 
@@ -1677,10 +1705,10 @@ August 30
     ### Adding support for AVIF
 
 
-    **What** : Added AVIF to the list of [supported image formats](https://developers.google.com/search/docs/appearance/google-images#supported-image-formats).
+    **What** : Added AVIF to the list of [supported image formats](https://developers.google.com/search/docs/appearance/google-images.md.txt#supported-image-formats).
 
 
-    **Why** : [Google Search now supports AVIF](https://developers.google.com/search/blog/2024/08/happy-avifriday).
+    **Why** : [Google Search now supports AVIF](https://developers.google.com/search/blog/2024/08/happy-avifriday.md.txt).
 
 August 26
 :
@@ -1688,7 +1716,7 @@ August 26
     ### Clarifying how organization markup is used
 
 
-    **What** : Updated the [introduction for organization markup](https://developers.google.com/search/docs/appearance/structured-data/organization)
+    **What** : Updated the [introduction for organization markup](https://developers.google.com/search/docs/appearance/structured-data/organization.md.txt)
     to clarify how the markup is used in Google Search.
 
 
@@ -1700,7 +1728,7 @@ August 26
     ### Adding `og:title` to the list of title link sources
 
 
-    **What** : Added `og:title` to the [list of title link sources](https://developers.google.com/search/docs/appearance/title-link#sources).
+    **What** : Added `og:title` to the [list of title link sources](https://developers.google.com/search/docs/appearance/title-link.md.txt#sources).
 
 
     **Why** : Google Search can use content within `og:title` `meta`
@@ -1712,10 +1740,10 @@ August 23
     ### Improving the Video SEO documentation
 
 
-    **What** : Overhauled the [video SEO best practices](https://developers.google.com/search/docs/appearance/video).
-    Notably, we clarified the [video indexing criteria](https://developers.google.com/search/docs/appearance/video#indexing-criteria)
-    and [technical requirements](https://developers.google.com/search/docs/appearance/video#help-google-find),
-    added a new [watch page](https://developers.google.com/search/docs/appearance/video#watch-page) section, and
+    **What** : Overhauled the [video SEO best practices](https://developers.google.com/search/docs/appearance/video.md.txt).
+    Notably, we clarified the [video indexing criteria](https://developers.google.com/search/docs/appearance/video.md.txt#indexing-criteria)
+    and [technical requirements](https://developers.google.com/search/docs/appearance/video.md.txt#help-google-find),
+    added a new [watch page](https://developers.google.com/search/docs/appearance/video.md.txt#watch-page) section, and
     expanded our examples.
 
 
@@ -1728,8 +1756,8 @@ August 23
     ### Clarifying how profile page and discussion forum markup is used
 
 
-    **What** : Updated how [profile page](https://developers.google.com/search/docs/appearance/structured-data/profile-page)
-    and [discussion forum](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum)
+    **What** : Updated how [profile page](https://developers.google.com/search/docs/appearance/structured-data/profile-page.md.txt)
+    and [discussion forum](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum.md.txt)
     markup is used in Google Search.
 
 
@@ -1756,15 +1784,15 @@ August 15
 
 
     **What** : Restructured the [core updates documentation](https://developers.google.com/search/updates/core-updates)
-    so it has clearer sections and includes information from other docs (such as [traffic drops](https://developers.google.com/search/docs/monitor-debug/debugging-search-traffic-drops)
-    and the [self-assessment](https://developers.google.com/search/docs/fundamentals/creating-helpful-content) guidance).
+    so it has clearer sections and includes information from other docs (such as [traffic drops](https://developers.google.com/search/docs/monitor-debug/debugging-search-traffic-drops.md.txt)
+    and the [self-assessment](https://developers.google.com/search/docs/fundamentals/creating-helpful-content.md.txt) guidance).
     Reduced duplication with the [helpful content FAQ](https://developers.google.com/search/help/helpful-content-faq)
-    and redirected that page. Moved the [helpful content system section](https://developers.google.com/search/docs/appearance/ranking-systems-guide#helpful-content)
+    and redirected that page. Moved the [helpful content system section](https://developers.google.com/search/docs/appearance/ranking-systems-guide.md.txt#helpful-content)
     to the archived section of the ranking systems guide.
 
 
     **Why** : To better help site owners assess a traffic drop and make improvements to their
-    site. Also, the [helpful content system became part of core ranking systems](https://developers.google.com/search/blog/2024/03/core-update-spam-policies)
+    site. Also, the [helpful content system became part of core ranking systems](https://developers.google.com/search/blog/2024/03/core-update-spam-policies.md.txt)
     (as we previously shared in March 2024).
 
 :
@@ -1803,7 +1831,7 @@ July 31
     ### Geo Data Upload string and URL update
 
 
-    **What** : Replaced the Geo Data Upload tool references in the [Get on Google documentation](https://developers.google.com/search/docs/fundamentals/get-on-google)
+    **What** : Replaced the Geo Data Upload tool references in the [Get on Google documentation](https://developers.google.com/search/docs/fundamentals/get-on-google.md.txt)
     with the Google Maps Content Partners resource.
 
 
@@ -1817,8 +1845,8 @@ July 31
 
     **What** : Clarified how Google handles sites with a high proportion of
     sexually explicit non-consensual, fake imagery in our
-    [spam policies](https://developers.google.com/search/docs/essentials/spam-policies#legal-removals) and
-    [ranking systems guide](https://developers.google.com/search/docs/appearance/ranking-systems-guide#online-harassment-removals).
+    [spam policies](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#legal-removals) and
+    [ranking systems guide](https://developers.google.com/search/docs/appearance/ranking-systems-guide.md.txt#online-harassment-removals).
 
 July 24
 :
@@ -1856,12 +1884,12 @@ July 11
 
     **What** : Added Search Console shipping and return settings as an option and expanded on
     how precedence works in the
-    [organization](https://developers.google.com/search/docs/appearance/structured-data/organization#precedence)
-    and [merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#precedence)
+    [organization](https://developers.google.com/search/docs/appearance/structured-data/organization.md.txt#precedence)
+    and [merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt#precedence)
     documentation.
 
 
-    **Why** : [Search Console now supports shipping and return settings](https://developers.google.com/search/blog/2024/07/configure-shipping-and-returns-search-console),
+    **Why** : [Search Console now supports shipping and return settings](https://developers.google.com/search/blog/2024/07/configure-shipping-and-returns-search-console.md.txt),
     and we want to make it clearer how overriding works when combining various configurations.
 
 July 10
@@ -1870,7 +1898,7 @@ July 10
     ### Expanding translated results to more languages
 
 
-    **What** : Updated the [translated results documentation](https://developers.google.com/search/docs/appearance/translated-results)
+    **What** : Updated the [translated results documentation](https://developers.google.com/search/docs/appearance/translated-results.md.txt)
     to include the following languages: Arabic, Gujarati, Korean, Persian, Thai, Turkish, Urdu, Vietnamese.
 
 
@@ -1883,7 +1911,7 @@ July 9
 
 
     **What** : Added [`compositeWithTrainedAlgorithmicMedia`](https://cv.iptc.org/newscodes/digitalsourcetype/compositeWithTrainedAlgorithmicMedia)
-    to the [IPTC photo metadata documentation](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata#iptc-photo-metadata).
+    to the [IPTC photo metadata documentation](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata.md.txt#iptc-photo-metadata).
 
 
     **Why** : Google can now extract the `compositeWithTrainedAlgorithmicMedia` IPTC NewsCode.
@@ -1895,7 +1923,7 @@ July 5
 
 
     **What** : Clarified our guidance about fragment URLs in the
-    [URL structure documentation](https://developers.google.com/search/docs/crawling-indexing/url-structure).
+    [URL structure documentation](https://developers.google.com/search/docs/crawling-indexing/url-structure.md.txt).
 
 
     **Why**: To make it easier to find the guideline about fragment URLs, as it was
@@ -1909,7 +1937,7 @@ June 21
     ### Clarifying return policy precedence
 
 
-    **What** : Clarified in the [organization-level return policy documentation](https://developers.google.com/search/docs/appearance/structured-data/organization#merchant-return-policy-properties)
+    **What** : Clarified in the [organization-level return policy documentation](https://developers.google.com/search/docs/appearance/structured-data/organization.md.txt#merchant-return-policy-properties)
     that product-level return policy markup takes precedence over organization-level return policy markup.
     If you choose to use both markup (whether it's at the product- or organization-level, or both)
     and settings in Merchant Center, the Merchant Center return policy information
@@ -1925,7 +1953,7 @@ June 20
 
 
     **What** : Added guidance on how to mark up categories with many items to the
-    [structured data carousels (beta)](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta#guidelines).
+    [structured data carousels (beta)](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta.md.txt#guidelines).
 
 
     **Why**: We received a question through our feedback button about how to implement this
@@ -1938,7 +1966,7 @@ June 12
 
 
     **What** : Clarified in our
-    [`hreflang` documentation](https://developers.google.com/search/docs/specialty/international/localized-versions)
+    [`hreflang` documentation](https://developers.google.com/search/docs/specialty/international/localized-versions.md.txt)
     that `link` tags for denoting alternate versions of a page must not be combined
     in a single `link` tag.
 
@@ -1953,7 +1981,7 @@ June 11
 
 
     **What** : Added documentation on how to specify a general
-    [return policy for an `Organization`](https://developers.google.com/search/docs/appearance/structured-data/organization#merchant-return-policy-properties)
+    [return policy for an `Organization`](https://developers.google.com/search/docs/appearance/structured-data/organization.md.txt#merchant-return-policy-properties)
     as a whole.
 
     **Why**: This makes it easier to define and maintain general return policies for an entire site.
@@ -1975,7 +2003,7 @@ June 4
 
 
     **What** : Added a new case study about how
-    [Vidio brought more locally relevant video-on-demand (VOD) content for Indonesian users through Google Search](https://developers.google.com/search/case-studies/vidio-case-study).
+    [Vidio brought more locally relevant video-on-demand (VOD) content for Indonesian users through Google Search](https://developers.google.com/search/case-studies/vidio-case-study.md.txt).
 
 
     **Why**: To show how adding video structured data and following best practices
@@ -1986,8 +2014,8 @@ June 4
     ### Updating Discussion Forum guidelines
 
 
-    **What** : Confirm that [`SocialMediaPosting` markup is also supported](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum#content-guidelines) and allow
-    [only image or video in comments without text](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum#comment-content).
+    **What** : Confirm that [`SocialMediaPosting` markup is also supported](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum.md.txt#content-guidelines) and allow
+    [only image or video in comments without text](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum.md.txt#comment-content).
 
     **Why**: To more accurately reflect how the data ingestion
     for these features work and to remove noise in validation reports.
@@ -1998,7 +2026,7 @@ June 4
 
 
     **What** : Removed the warning about the issue that was preventing new
-    [site names](https://developers.google.com/search/docs/appearance/site-names)
+    [site names](https://developers.google.com/search/docs/appearance/site-names.md.txt)
     from propagating to internal pages.
 
     **Why**: The issue has been resolved. Keep in mind that it takes time for
@@ -2012,7 +2040,7 @@ May 23
     ### Adding `epub` to indexable file types
 
 
-    **What** : Added EPUB to [the list of indexable file types](https://developers.google.com/search/docs/crawling-indexing/indexable-file-types).
+    **What** : Added EPUB to [the list of indexable file types](https://developers.google.com/search/docs/crawling-indexing/indexable-file-types.md.txt).
 
     **Why**: Google Search now supports epub.
 
@@ -2043,7 +2071,7 @@ May 14
     [AI
     Overviews and your website](https://developers.google.com/search/docs/appearance/ai-overviews),
     and updated the existing pages for
-    [robots meta tags](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) and
+    [robots meta tags](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag.md.txt) and
     [subscription and
     paywalled content](https://developers.google.com/search/docs/appearance/structured-data/paywalled-content) accordingly.
 
@@ -2056,11 +2084,11 @@ May 1
 
 
     **What** : Reorganized the `Product` structured data documentation into three pages:
-    [intro to product markup](https://developers.google.com/search/docs/appearance/structured-data/product),
-    [product snippet](https://developers.google.com/search/docs/appearance/structured-data/product-snippet), and
-    [merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing).
+    [intro to product markup](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt),
+    [product snippet](https://developers.google.com/search/docs/appearance/structured-data/product-snippet.md.txt), and
+    [merchant listing](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt).
     Added a new section about
-    [deciding which markup to use](https://developers.google.com/search/docs/appearance/structured-data/product#decide).
+    [deciding which markup to use](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt#decide).
 
     **Why**: The previous tabbed structure was difficult to navigate and find the property you
     were looking for.
@@ -2073,7 +2101,7 @@ April 26
     ### Improvements to the debugging traffic drops documentation
 
 
-    **What** : Expanded on the effects of [algorithmic updates](https://developers.google.com/search/docs/monitor-debug/debugging-search-traffic-drops#algo)
+    **What** : Expanded on the effects of [algorithmic updates](https://developers.google.com/search/docs/monitor-debug/debugging-search-traffic-drops.md.txt#algo)
     and how to identify them. Simplified the section on policy and manual actions to be about
     spam issues.
 
@@ -2112,7 +2140,7 @@ April 24
 
 
     **What** : Added definitions for each supported `rel` attribute value in the
-    [favicon documentation](https://developers.google.com/search/docs/appearance/favicon-in-search#implementation).
+    [favicon documentation](https://developers.google.com/search/docs/appearance/favicon-in-search.md.txt#implementation).
 
     **Why**: We got a question about which value to use for a favicon and if there's a difference.
 
@@ -2123,7 +2151,7 @@ April 17
 
 
     **What** : Removed video carousel guidance from the
-    [video structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/video).
+    [video structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt).
 
     **Why**: We initially tested video carousel markup with a group of site owners, and ultimately
     found that it wasn't useful for the ecosystem at scale. You can leave the markup on your
@@ -2135,7 +2163,7 @@ April 16
     ### Clarifying image extraction source
 
 
-    **What** : [Clarified](https://developers.google.com/search/docs/appearance/google-images) that images are
+    **What** : [Clarified](https://developers.google.com/search/docs/appearance/google-images.md.txt) that images are
     only extracted from the `src` attribute of `img` tags.
 
     **Why**: While not a new change, we occasionally get questions about what HTML
@@ -2147,7 +2175,7 @@ April 11
     ### Clarifying the beta carousels feature
 
 
-    **What** : Clarified that the [beta carousel feature](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta)
+    **What** : Clarified that the [beta carousel feature](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta.md.txt)
     is for sites that have a summary page that links out to other detail pages on their website.
     The markup must be on the summary page, and you don't need to add markup to the detail
     pages in order to be eligible for this feature.
@@ -2164,7 +2192,7 @@ March 28
     ### Clarified our changelog entry regarding availability of Web Stories
 
 
-    **What** : Clarified our [February 8 changelog entry](https://developers.google.com/search/updates#web-stories-availability)
+    **What** : Clarified our [February 8 changelog entry](https://developers.google.com/search/updates.md.txt#web-stories-availability)
     regarding the feature availability of Web Stories in Google Images.
 
 
@@ -2179,7 +2207,7 @@ March 25
     ### Added 3D models for products
 
 
-    **What** : We added new `3DModel` markup support for merchant listings in the [product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing#3d-model-example).
+    **What** : We added new `3DModel` markup support for merchant listings in the [product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing.md.txt#3d-model-example).
 
 
     **Why**: Sometimes 3D models appear on pages with multiple products and are not clearly connected with any of them. This markup lets site owners link a 3D model to a specific product.
@@ -2191,9 +2219,9 @@ March 12
 
 
     **What** : Clarified how we talk about page experience and Core Web Vitals in our documentation on
-    [page experience](https://developers.google.com/search/docs/appearance/page-experience),
+    [page experience](https://developers.google.com/search/docs/appearance/page-experience.md.txt),
     [signed exchanges](https://developers.google.com/search/docs/appearance/signed-exchange)
-    and [ecommerce pagination](https://developers.google.com/search/docs/specialty/ecommerce/pagination-and-incremental-page-loading).
+    and [ecommerce pagination](https://developers.google.com/search/docs/specialty/ecommerce/pagination-and-incremental-page-loading.md.txt).
     Additionally updated to reflect that [INP](https://web.dev/articles/inp) is now a Core Web Vital.
 
 
@@ -2206,7 +2234,7 @@ March 6
 
 
     **What** : Removed guided recipes from the
-    [recipe structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta).
+    [recipe structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta.md.txt).
 
 
     **Why** : As this [Google Assistant feature was removed](https://blog.google/products/assistant/google-assistant-update-january-2024/),
@@ -2220,12 +2248,12 @@ March 5
 
 
     We added 3 new spam policies:
-    [expired domain abuse](https://developers.google.com/search/docs/essentials/spam-policies#expired-domains),
-    [scaled content abuse](https://developers.google.com/search/docs/essentials/spam-policies#scaled-content),
+    [expired domain abuse](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#expired-domains),
+    [scaled content abuse](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#scaled-content),
     and
-    [site reputation abuse](https://developers.google.com/search/docs/essentials/spam-policies#site-reputation).
+    [site reputation abuse](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#site-reputation).
     Also added a new [FAQ on helpful content](https://developers.google.com/search/help/helpful-content-faq).
-    Check out [our blog post](https://developers.google.com/search/blog/2024/03/core-update-spam-policies) for
+    Check out [our blog post](https://developers.google.com/search/blog/2024/03/core-update-spam-policies.md.txt) for
     more details on what changed and why.
 
 :
@@ -2248,7 +2276,7 @@ February 29
     ### Adding new carousel documentation (beta)
 
 
-    **What** : Added documentation for [structured data carousels (beta)](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta).
+    **What** : Added documentation for [structured data carousels (beta)](https://developers.google.com/search/docs/appearance/structured-data/carousels-beta.md.txt).
 
 
     **Why**: To make it easier for site owners to add carousel markup for new query types,
@@ -2259,7 +2287,7 @@ February 29
     ### Added opt out information for place entities in Page Insights
 
 
-    **What** : Added information about how site owners can [opt out of display in the Place Entity feature](https://developers.google.com/search/docs/crawling-indexing/control-what-you-share#page-insights)
+    **What** : Added information about how site owners can [opt out of display in the Place Entity feature](https://developers.google.com/search/docs/crawling-indexing/control-what-you-share.md.txt#page-insights)
     in Page Insights.
 
 
@@ -2272,10 +2300,10 @@ February 20
     ### Added support for product variants
 
 
-    **What** : Added new [product variant structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product-variants).
+    **What** : Added new [product variant structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product-variants.md.txt).
     Also added a new `isVariantOf` property to the
-    [product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product)
-    and clarified that Google [support product variants with distinct URLs](https://developers.google.com/search/docs/specialty/ecommerce/designing-a-url-structure-for-ecommerce-sites#how-google-understands-urls-for-product-variants).
+    [product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt)
+    and clarified that Google [support product variants with distinct URLs](https://developers.google.com/search/docs/specialty/ecommerce/designing-a-url-structure-for-ecommerce-sites.md.txt#how-google-understands-urls-for-product-variants).
 
 
     **Why**: To better support product variant scenarios for ecommerce sites. Since product
@@ -2290,8 +2318,8 @@ February 20
 
     **What** : Clarified when to use `FreeReturn` versus
     `ReturnShippingFees` as value for
-    `https://schema.org/returnfees`
-    for product returns in the [product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product).
+    `returnFees`
+    for product returns in the [product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt).
 
 
     **Why**: To better support more granular shipping and return fee scenarios.
@@ -2303,7 +2331,7 @@ February 15
 
 
     **What** : Clarified that
-    [`rel="canonical"` annotations](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls#use-rel=canonical-link-annotations)
+    [`rel="canonical"` annotations](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls.md.txt#use-rel=canonical-link-annotations)
     with certain attributes are not used for canonicalization.
 
 
@@ -2320,7 +2348,7 @@ February 9
 
 
     **What** : Clarified what characters are allowed in product SKUs in
-    the [Product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product#merchant-listings_product).
+    the [Product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt#merchant-listings_product).
 
 
     **Why** : To better explain why a `sku` value might be invalid in the Rich
@@ -2330,7 +2358,7 @@ February 9
 
 
     **What** : Part of our ongoing efforts to keep our documentation accurate, we updated
-    the documentation for [image removals](https://developers.google.com/search/docs/crawling-indexing/prevent-images-on-your-page)
+    the documentation for [image removals](https://developers.google.com/search/docs/crawling-indexing/prevent-images-on-your-page.md.txt)
     with more precise language, and addressed some documentation feedback.
 
 
@@ -2344,7 +2372,7 @@ February 8
     ### Updated the availability of Web Stories
 
 
-    **What** : Updated the [feature availability](https://developers.google.com/search/docs/appearance/enable-web-stories#feature-availability)
+    **What** : Updated the [feature availability](https://developers.google.com/search/docs/appearance/enable-web-stories.md.txt#feature-availability)
     of Web Stories.
 
 
@@ -2379,7 +2407,7 @@ February 6
     ### Revisited JavaScript documentation
 
 
-    **What** : Reviewed our guidance on [JavaScript SEO basics](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [fixing Search-related JavaScript problems](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript), [lazy-loading content](https://developers.google.com/search/docs/crawling-indexing/javascript/lazy-loading) to remove outdated or unnecessary information. We updated our documentation on [dynamic rendering](https://developers.google.com/search/docs/crawling-indexing/javascript/dynamic-rendering) to clarify it's a deprecated workaround.
+    **What** : Reviewed our guidance on [JavaScript SEO basics](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt), [fixing Search-related JavaScript problems](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript.md.txt), [lazy-loading content](https://developers.google.com/search/docs/crawling-indexing/javascript/lazy-loading.md.txt) to remove outdated or unnecessary information. We updated our documentation on [dynamic rendering](https://developers.google.com/search/docs/crawling-indexing/javascript/dynamic-rendering.md.txt) to clarify it's a deprecated workaround.
 
     **Why**: Feedback from you showed us there are opportunities to improve and clarify a few aspects. A few things, like dynamic rendering, have evolved in the past few years and our documentation now reflects these developments.
 
@@ -2391,7 +2419,7 @@ February 5
 
 
     **What** : Added a new case study about how
-    [How Wix generated value for their users by integrating Google APIs](https://developers.google.com/search/case-studies/wix-case-study).
+    [How Wix generated value for their users by integrating Google APIs](https://developers.google.com/search/case-studies/wix-case-study.md.txt).
 
 
     **Why**: To explain how a CMS platform can integrate Google APIs directly into their UI,
@@ -2404,9 +2432,9 @@ February 2
     ### Revamping the SEO Starter Guide
 
 
-    The [SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide) got a
+    The [SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide.md.txt) got a
     refresh: we removed outdated content, streamlined and simplified other parts, and added a few
-    sections. Check out our [blog post](https://developers.google.com/search/blog/2024/02/ssg-gets-a-makeover)
+    sections. Check out our [blog post](https://developers.google.com/search/blog/2024/02/ssg-gets-a-makeover.md.txt)
     for more in-depth explanation on what we changed and why.
 
 ### January 2024
@@ -2451,7 +2479,7 @@ January 9
 
     **What** : Switch all structured data code examples that use in-page
     `@id` references to use hashtags instead. For example, the
-    [clips example in our recipe documentation](https://developers.google.com/search/docs/appearance/structured-data/recipe#video-with-clips).
+    [clips example in our recipe documentation](https://developers.google.com/search/docs/appearance/structured-data/recipe.md.txt#video-with-clips).
 
 
     **Why**: It's a schema best practice to use hashtags as resolvable in-page node identifiers in RDF, and
@@ -2464,7 +2492,7 @@ January 9
     **What** : Added support for the `suggestedAge` property as an alternative
     to `suggestedMaxAge` and `suggestedMinAge`. Clarified the
     list of possible values for age ranges in our
-    [Product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product).
+    [Product structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt).
 
 
     **Why**: We want to make it easier and more flexible for people to specify age ranges
@@ -2479,7 +2507,7 @@ January 5
 
 
     **What** : Clarified in our
-    [documentation about snippets](https://developers.google.com/search/docs/appearance/snippet) that the
+    [documentation about snippets](https://developers.google.com/search/docs/appearance/snippet.md.txt) that the
     primary source of the snippet is the page content itself.
 
 
@@ -2490,186 +2518,186 @@ January 5
 
 ### December 2023
 
-- **December 19** : Further clarified how Google handles sites with a high proportion of non-consensual explicit imagery in our [spam policies](https://developers.google.com/search/docs/essentials/spam-policies) and [ranking systems guide](https://developers.google.com/search/docs/appearance/ranking-systems-guide).
-- **December 18** : Added transcript of [December 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/december).
-- **December 14** : Updated the [Discussion Forum](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum) and [Q\&A page](https://developers.google.com/search/docs/appearance/structured-data/qapage) documentation to explicitly clarify that author URLs are recommended.
-- **December 13** : Updated the [Organization](https://developers.google.com/search/docs/appearance/structured-data/organization) documentation to explain that `telephone` and `email` can be specified at the Organization level besides `contactPoint`.
+- **December 19** : Further clarified how Google handles sites with a high proportion of non-consensual explicit imagery in our [spam policies](https://developers.google.com/search/docs/essentials/spam-policies.md.txt) and [ranking systems guide](https://developers.google.com/search/docs/appearance/ranking-systems-guide.md.txt).
+- **December 18** : Added transcript of [December 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/december.md.txt).
+- **December 14** : Updated the [Discussion Forum](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum.md.txt) and [Q\&A page](https://developers.google.com/search/docs/appearance/structured-data/qapage.md.txt) documentation to explicitly clarify that author URLs are recommended.
+- **December 13** : Updated the [Organization](https://developers.google.com/search/docs/appearance/structured-data/organization.md.txt) documentation to explain that `telephone` and `email` can be specified at the Organization level besides `contactPoint`.
 - **December 12** : Added information about [course info](https://developers.google.com/search/docs/appearance/structured-data/course-info#feature-availability) availability.
-- **December 4** : Added [vacation rental structured data](https://developers.google.com/search/docs/appearance/structured-data/vacation-rental) documentation.
-- **December 1** : Removed mentions of the Mobile Friendly Test and the Mobile Usability report throughout our documentation, [as they are going away](https://developers.google.com/search/blog/2023/04/page-experience-in-search#search-console-reports).
+- **December 4** : Added [vacation rental structured data](https://developers.google.com/search/docs/appearance/structured-data/vacation-rental.md.txt) documentation.
+- **December 1** : Removed mentions of the Mobile Friendly Test and the Mobile Usability report throughout our documentation, [as they are going away](https://developers.google.com/search/blog/2023/04/page-experience-in-search.md.txt#search-console-reports).
 
 ### November 2023
 
-- **November 29** : Add new [Organization](https://developers.google.com/search/docs/appearance/structured-data/organization) documentation, which merges the Logo documentation and includes more organizational information (such as contact info, legal name, and business identifiers).
-- **November 27** : Added [profile page structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/profile-page), [discussion forum structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum), and expanded recommendations for [Q\&A page structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/qapage).
+- **November 29** : Add new [Organization](https://developers.google.com/search/docs/appearance/structured-data/organization.md.txt) documentation, which merges the Logo documentation and includes more organizational information (such as contact info, legal name, and business identifiers).
+- **November 27** : Added [profile page structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/profile-page.md.txt), [discussion forum structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/discussion-forum.md.txt), and expanded recommendations for [Q\&A page structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/qapage.md.txt).
 - **November 15** :
   - Added documentation for [Notes and your website](https://developers.google.com/search/docs/appearance/notes-and-your-website).
   - Added [course info structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/course-info).
-  - Added a best practice about [avoiding flight prices in title links](https://developers.google.com/search/docs/appearance/title-link#flight-pages), as Google is less likely to show this information when generating title links for flight pages.
+  - Added a best practice about [avoiding flight prices in title links](https://developers.google.com/search/docs/appearance/title-link.md.txt#flight-pages), as Google is less likely to show this information when generating title links for flight pages.
 - **November 14** : Since we received many questions about the Google Safety crawler over the past year, added it to the [list of Google crawlers](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers#special-case-crawlers).
-- **November 8** : Updated the [reviews system documentation](https://developers.google.com/search/docs/appearance/reviews-system) to explain that this system is being improved at a regular and ongoing pace.
-- **November 1** : Added a recommendation to include time and timezone information in [Video structured data](https://developers.google.com/search/docs/appearance/structured-data/video).
+- **November 8** : Updated the [reviews system documentation](https://developers.google.com/search/docs/appearance/reviews-system.md.txt) to explain that this system is being improved at a regular and ongoing pace.
+- **November 1** : Added a recommendation to include time and timezone information in [Video structured data](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt).
 
 ### October 2023
 
 - **October 18** :
-  - Added a reference to the Rich Results Test in the [Subscription and paywalled structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/paywalled-content#example), as this data type is now supported in the testing tool. Also added a [Generative AI in Search considerations](https://developers.google.com/search/docs/appearance/structured-data/paywalled-content#gen-ai) section. Added information about SGE (Search Generative Experience) to the [Robots meta tag, `data-nosnippet`, and X-Robots-Tag specifications page](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) for the [`nosnippet`](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag#nosnippet) and [`max-snippet`](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag#max-snippet) rules.
-  - Clarified in the [favicon documentation](https://developers.google.com/search/docs/appearance/favicon-in-search) that both the favicon file and the home page of the site must be allowed for crawling by Googlebot-Image and Googlebot respectively. Also removed information about the Google Favicon HTTP `user-agent` string throughout our documentation, as this is no longer used. The removal of the HTTP `user-agent` string means no changes for site owners. Google Favicon depended on the `Googlebot-Image` and `Googlebot` robots.txt user agent tokens, which remain supported.
+  - Added a reference to the Rich Results Test in the [Subscription and paywalled structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/paywalled-content.md.txt#example), as this data type is now supported in the testing tool. Also added a [Generative AI in Search considerations](https://developers.google.com/search/docs/appearance/structured-data/paywalled-content.md.txt#gen-ai) section. Added information about SGE (Search Generative Experience) to the [Robots meta tag, `data-nosnippet`, and X-Robots-Tag specifications page](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag.md.txt) for the [`nosnippet`](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag.md.txt#nosnippet) and [`max-snippet`](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag.md.txt#max-snippet) rules.
+  - Clarified in the [favicon documentation](https://developers.google.com/search/docs/appearance/favicon-in-search.md.txt) that both the favicon file and the home page of the site must be allowed for crawling by Googlebot-Image and Googlebot respectively. Also removed information about the Google Favicon HTTP `user-agent` string throughout our documentation, as this is no longer used. The removal of the HTTP `user-agent` string means no changes for site owners. Google Favicon depended on the `Googlebot-Image` and `Googlebot` robots.txt user agent tokens, which remain supported.
 - **October 17** :
-  - Added a reminder to provide the timezone in [Article structured data](https://developers.google.com/search/docs/appearance/structured-data/article) and clarified what happens if a timezone isn't provided.
-  - Added mention about [Googlebot's timezone, which is PST](https://developers.google.com/search/docs/crawling-indexing/googlebot).
+  - Added a reminder to provide the timezone in [Article structured data](https://developers.google.com/search/docs/appearance/structured-data/article.md.txt) and clarified what happens if a timezone isn't provided.
+  - Added mention about [Googlebot's timezone, which is PST](https://developers.google.com/search/docs/crawling-indexing/googlebot.md.txt).
 - **October 16** : Added [vehicle listing structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/vehicle-listing).
-- **October 13** : Removed the host group visual element from the [Visual Elements gallery](https://developers.google.com/search/docs/appearance/visual-elements-gallery), as it no longer appears in Google Search results.
+- **October 13** : Removed the host group visual element from the [Visual Elements gallery](https://developers.google.com/search/docs/appearance/visual-elements-gallery.md.txt), as it no longer appears in Google Search results.
 
 ### September 2023
 
-- **September 29** : Added more explanation about [why Discover traffic may change over time](https://developers.google.com/search/docs/appearance/google-discover#traffic-changes).
+- **September 29** : Added more explanation about [why Discover traffic may change over time](https://developers.google.com/search/docs/appearance/google-discover.md.txt#traffic-changes).
 - **September 28** : Added a new user agent token, [`Google-Extended`](https://developers.google.com/search/docs/crawling-indexing/google-common-crawlers#google-extended), which acts as a new control that web publishers can use to manage whether their sites help improve Bard and Vertex AI generative APIs, including future generations of models that power those products.
-- **September 27** : Clarified how Google handles sites with a high proportion of CSAM content in our [spam policies](https://developers.google.com/search/docs/essentials/spam-policies#legal-removals) and [ranking systems guide](https://developers.google.com/search/docs/appearance/ranking-systems-guide#removals).
+- **September 27** : Clarified how Google handles sites with a high proportion of CSAM content in our [spam policies](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#legal-removals) and [ranking systems guide](https://developers.google.com/search/docs/appearance/ranking-systems-guide.md.txt#removals).
 - **September 26** :
-  - Revamped two previously published blog posts into new documentation pages with tips to [debug drops in search traffic](https://developers.google.com/search/docs/monitor-debug/debugging-search-traffic-drops) and [improve SEO with a Search Console bubble chart](https://developers.google.com/search/docs/monitor-debug/bubble-chart-analysis).
-  - Merged two introductory Search Console articles into [one starter guide](https://developers.google.com/search/docs/monitor-debug/search-console-start).
-- **September 22** : Clarified in the [developer's guide](https://developers.google.com/search/docs/fundamentals/get-started-developers) that Google Search currently may not index content inside CSS content properties as that isn't part of the DOM.
+  - Revamped two previously published blog posts into new documentation pages with tips to [debug drops in search traffic](https://developers.google.com/search/docs/monitor-debug/debugging-search-traffic-drops.md.txt) and [improve SEO with a Search Console bubble chart](https://developers.google.com/search/docs/monitor-debug/bubble-chart-analysis.md.txt).
+  - Merged two introductory Search Console articles into [one starter guide](https://developers.google.com/search/docs/monitor-debug/search-console-start.md.txt).
+- **September 22** : Clarified in the [developer's guide](https://developers.google.com/search/docs/fundamentals/get-started-developers.md.txt) that Google Search currently may not index content inside CSS content properties as that isn't part of the DOM.
 - **September 14** :
   - Added new guidance about [hosting third-party content](https://developers.google.com/search/updates/helpful-content-update#hosting-third-party-content) and more explanation on [what to do after a helpful content system update](https://developers.google.com/search/updates/helpful-content-update#what-to-do) (perhaps you don't need to do anything, or perhaps self-assess your content).
-  - Added new points about [removing content or changing dates](https://developers.google.com/search/docs/fundamentals/creating-helpful-content#changing-dates) to the help page on how to create helpful, reliable people-first content.
-  - Removed the [How-to rich result case study](https://developers.google.com/search/case-studies/stylecraze-case-study), as [this feature is deprecated](https://developers.google.com/search/blog/2023/08/howto-faq-changes).
-  - Removed the [How-to structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/how-to), as this rich result is no longer shown in search results, on both desktop and mobile devices. [Read more in the blog post](https://developers.google.com/search/blog/2023/08/howto-faq-changes).
+  - Added new points about [removing content or changing dates](https://developers.google.com/search/docs/fundamentals/creating-helpful-content.md.txt#changing-dates) to the help page on how to create helpful, reliable people-first content.
+  - Removed the [How-to rich result case study](https://developers.google.com/search/case-studies/stylecraze-case-study), as [this feature is deprecated](https://developers.google.com/search/blog/2023/08/howto-faq-changes.md.txt).
+  - Removed the [How-to structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/how-to), as this rich result is no longer shown in search results, on both desktop and mobile devices. [Read more in the blog post](https://developers.google.com/search/blog/2023/08/howto-faq-changes.md.txt).
   - Updated the [FAQ structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/faqpage) to state that the feature is only shown for well-known, authoritative government and health websites.
 - **September 11** : Fixed a typo in the user-agent string of the [Google-InspectionTool](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers#google-inspectiontool) common crawler.
-- **September 7** : Updated the [feature availability section](https://developers.google.com/search/docs/appearance/site-names#availability) in the site names documentation, as [site names are now available](https://developers.google.com/search/blog/2023/09/site-names-global-rollout) in all languages where Google Search is available.
-- **September 6** : Added transcript of [September 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/september).
+- **September 7** : Updated the [feature availability section](https://developers.google.com/search/docs/appearance/site-names.md.txt#availability) in the site names documentation, as [site names are now available](https://developers.google.com/search/blog/2023/09/site-names-global-rollout.md.txt) in all languages where Google Search is available.
+- **September 6** : Added transcript of [September 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/september.md.txt).
 
 ### August 2023
 
-- **August 24** : Added CSV to [the list of indexable file types](https://developers.google.com/search/docs/crawling-indexing/indexable-file-types).
-- **August 15** : Clarified that we only support standard schema.org enumeration values for [local business opening hours](https://developers.google.com/search/docs/appearance/structured-data/local-business#dayofweek), and these values must be in English per the schema.org specification.
-- **August 9** : Added transcript of [August 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/august).
+- **August 24** : Added CSV to [the list of indexable file types](https://developers.google.com/search/docs/crawling-indexing/indexable-file-types.md.txt).
+- **August 15** : Clarified that we only support standard schema.org enumeration values for [local business opening hours](https://developers.google.com/search/docs/appearance/structured-data/local-business.md.txt#dayofweek), and these values must be in English per the schema.org specification.
+- **August 9** : Added transcript of [August 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/august.md.txt).
 - **August 2** :
-  - Removed unneeded mention of `"@id"` in the [site names](https://developers.google.com/search/docs/appearance/site-names) documentation.
-  - Clarified in the [local business structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/local-business) that the `review` and `aggregateRating` properties are only recommended for sites that capture reviews about other local businesses. This is not new information; see the [guidelines about self-serving reviews](https://developers.google.com/search/docs/advanced/structured-data/review-snippet#self-serving) and [the update on our blog post from 2019](https://developers.google.com/search/blog/2019/09/making-review-rich-results-more-helpful#updated).
+  - Removed unneeded mention of `"@id"` in the [site names](https://developers.google.com/search/docs/appearance/site-names.md.txt) documentation.
+  - Clarified in the [local business structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/local-business.md.txt) that the `review` and `aggregateRating` properties are only recommended for sites that capture reviews about other local businesses. This is not new information; see the [guidelines about self-serving reviews](https://developers.google.com/search/docs/advanced/structured-data/review-snippet#self-serving) and [the update on our blog post from 2019](https://developers.google.com/search/blog/2019/09/making-review-rich-results-more-helpful.md.txt#updated).
 
 ### July 2023
 
-- **July 28** : Added new sections to the site name documentation: [what to do if your preferred site name isn't selected](https://developers.google.com/search/docs/appearance/site-names#troubleshooting), guidance around [choosing an alternative name](https://developers.google.com/search/docs/appearance/site-names#choosing-site-name), and information about a [known issue](https://developers.google.com/search/docs/appearance/site-names#known-issue). Site names are now available on both desktop and mobile devices.
-- **July 20** : Based on user feedback, we clarified [what characters Google Search supports in URLs](https://developers.google.com/search/docs/crawling-indexing/url-structure).
-- **July 19** : Added a new case study about [how video SEO features helped three global publishers reach their audiences](https://developers.google.com/search/case-studies/cross-regional-video-seo-case-study).
-- **July 18** : Removed the `related:` operator from the [search operators documentation](https://developers.google.com/search/docs/monitor-debug/search-operators), as it's no longer supported.
-- **July 11** : Added transcript of [July 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/july).
+- **July 28** : Added new sections to the site name documentation: [what to do if your preferred site name isn't selected](https://developers.google.com/search/docs/appearance/site-names.md.txt#troubleshooting), guidance around [choosing an alternative name](https://developers.google.com/search/docs/appearance/site-names.md.txt#choosing-site-name), and information about a [known issue](https://developers.google.com/search/docs/appearance/site-names.md.txt#known-issue). Site names are now available on both desktop and mobile devices.
+- **July 20** : Based on user feedback, we clarified [what characters Google Search supports in URLs](https://developers.google.com/search/docs/crawling-indexing/url-structure.md.txt).
+- **July 19** : Added a new case study about [how video SEO features helped three global publishers reach their audiences](https://developers.google.com/search/case-studies/cross-regional-video-seo-case-study.md.txt).
+- **July 18** : Removed the `related:` operator from the [search operators documentation](https://developers.google.com/search/docs/monitor-debug/search-operators.md.txt), as it's no longer supported.
+- **July 11** : Added transcript of [July 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/july.md.txt).
 
 ### June 2023
 
-- **June 13** : Added examples of how to handle derivatives, integrals, and limits in the `potentialAction.mathExpression-input` field in the [`MathSolver` documentation](https://developers.google.com/search/docs/appearance/structured-data/math-solvers#math-expression-input).
-- **June 7** : Added transcript of [June 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/june).
+- **June 13** : Added examples of how to handle derivatives, integrals, and limits in the `potentialAction.mathExpression-input` field in the [`MathSolver` documentation](https://developers.google.com/search/docs/appearance/structured-data/math-solvers.md.txt#math-expression-input).
+- **June 7** : Added transcript of [June 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/june.md.txt).
 
 ### May 2023
 
-- **May 30** : Added `.ai` to the [list of TLDs that Google Search treats as a global TLD (gTLD)](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites#generic-domains).
+- **May 30** : Added `.ai` to the [list of TLDs that Google Search treats as a global TLD (gTLD)](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites.md.txt#generic-domains).
 - **May 26** : Added a [recommendation for adult sites with age gate interstitials](https://developers.google.com/search/docs/crawling-indexing/safesearch#agegates).
 - **May 24** :
-  - Updated the [list of countries](https://developers.google.com/search/docs/appearance/structured-data/event#region-availability) where the events search experience is launched to only include those where users can see that experience. The previous list also included regions where users could see events in Knowledge Panels.
+  - Updated the [list of countries](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#region-availability) where the events search experience is launched to only include those where users can see that experience. The previous list also included regions where users could see events in Knowledge Panels.
   - In November 2020 we accidentally updated the [Google Read Aloud user agent string](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers#google-read-aloud) in our documentation, replacing the `+https://support.google.com/webmasters/answer/1061943` crawler documentation URL with `+https://developers.google.com/search/docs/advanced/crawling/overview-google-crawlers`. We reverted that change.
-- **May 22** : Updated our documentation on [site names](https://developers.google.com/search/docs/appearance/site-names) to mention subdomains.
+- **May 22** : Updated our documentation on [site names](https://developers.google.com/search/docs/appearance/site-names.md.txt) to mention subdomains.
 - **May 17** :
-  - Updated the [translated results documentation](https://developers.google.com/search/docs/appearance/translated-results) to include the following languages: Bengali, English, French, German, Marathi, Portuguese, Spanish, Tamil, Telugu.
+  - Updated the [translated results documentation](https://developers.google.com/search/docs/appearance/translated-results.md.txt) to include the following languages: Bengali, English, French, German, Marathi, Portuguese, Spanish, Tamil, Telugu.
   - Added a new crawler, [Google-InspectionTool](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers#google-inspectiontool) to the list of Google crawlers.
 - **May 10** :
-  - Added a new recommendation for [Digital Source Type](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata#digital-source-type) to the Image Metadata documentation.
-  - Added a banner to pages about Core Web Vitals for informing about [Interaction to Next Paint (INP)](https://developers.google.com/search/blog/2023/05/introducing-inp) as a replacement for FID in March 2024.
+  - Added a new recommendation for [Digital Source Type](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata.md.txt#digital-source-type) to the Image Metadata documentation.
+  - Added a banner to pages about Core Web Vitals for informing about [Interaction to Next Paint (INP)](https://developers.google.com/search/blog/2023/05/introducing-inp.md.txt) as a replacement for FID in March 2024.
 - **May 4** :
-  - Moved the [video `description` property](https://developers.google.com/search/docs/appearance/structured-data/video#description-property) to the recommended table, as [it's no longer required](https://support.google.com/webmasters/answer/6211453#rich_result_reports).
-  - Added transcript of [May 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/may).
-- **May 2** : Updated our [documentation about canonicalization](https://developers.google.com/search/docs/crawling-indexing/canonicalization-troubleshooting#syndicated-content) with explicit recommendations for syndicated content.
+  - Moved the [video `description` property](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt#description-property) to the recommended table, as [it's no longer required](https://support.google.com/webmasters/answer/6211453#rich_result_reports).
+  - Added transcript of [May 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/may.md.txt).
+- **May 2** : Updated our [documentation about canonicalization](https://developers.google.com/search/docs/crawling-indexing/canonicalization-troubleshooting.md.txt#syndicated-content) with explicit recommendations for syndicated content.
 
 ### April 2023
 
-- **April 28** : Removed the opt out section from [Education Q\&A](https://developers.google.com/search/docs/appearance/structured-data/education-qa) structured data documentation.
-- **April 26** : Increased the maximum number of return countries (`applicableCountry`) from 25 to 50 in the [return policy information](https://developers.google.com/search/docs/appearance/structured-data/product#merchant-listings_merchant-return-policy) in the Product structured data documentation.
+- **April 28** : Removed the opt out section from [Education Q\&A](https://developers.google.com/search/docs/appearance/structured-data/education-qa.md.txt) structured data documentation.
+- **April 26** : Increased the maximum number of return countries (`applicableCountry`) from 25 to 50 in the [return policy information](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt#merchant-listings_merchant-return-policy) in the Product structured data documentation.
 - **April 24** : Reorganized the page about [Google's crawlers](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers) so the user agents are now in logical clusters based on their capabilities and triggers.
 - **April 21** : Added more information about the [different crawlers Google uses](https://developers.google.com/search/docs/crawling-indexing/verifying-googlebot), along with the JSON formatted list of IP addresses the different crawlers use.
 - **April 20** : Added a new generic crawler, `GoogleOther`, to the [list of Google crawlers](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers#googleother).
 - **April 19** : Updated the [guidance on
   creating helpful content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content) to include page experience, revised the [page
-  experience help page](https://developers.google.com/search/docs/appearance/page-experience), partially moving content to a new [Core Web Vitals page](https://developers.google.com/search/docs/appearance/core-web-vitals).
-- **April 17** : Added [return policy information](https://developers.google.com/search/docs/appearance/structured-data/product#merchant-listings_merchant-return-policy) to the Product structured data documentation.
-- **April 12** : Added transcript of [April 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/april).
-- **April 3** : Updated the eligibility criteria for the [package tracking documentation](https://developers.google.com/search/docs/appearance/package-tracking) Early Adoption Program to focus on India, Japan, and Brazil.
+  experience help page](https://developers.google.com/search/docs/appearance/page-experience), partially moving content to a new [Core Web Vitals page](https://developers.google.com/search/docs/appearance/core-web-vitals.md.txt).
+- **April 17** : Added [return policy information](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt#merchant-listings_merchant-return-policy) to the Product structured data documentation.
+- **April 12** : Added transcript of [April 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/april.md.txt).
+- **April 3** : Updated the eligibility criteria for the [package tracking documentation](https://developers.google.com/search/docs/appearance/package-tracking.md.txt) Early Adoption Program to focus on India, Japan, and Brazil.
 
 ### March 2023
 
-- **March 17** : We further clarified that the [15MB fetch size limit](https://developers.google.com/search/docs/crawling-indexing/googlebot) applies to each fetch of the individual subresources referenced in the HTML as well (in particular, JavaScript and CSS files).
+- **March 17** : We further clarified that the [15MB fetch size limit](https://developers.google.com/search/docs/crawling-indexing/googlebot.md.txt) applies to each fetch of the individual subresources referenced in the HTML as well (in particular, JavaScript and CSS files).
 - **March 13** :
   - Updated the User Agent string for [AdsBot Mobile Web Android](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers). If you hardcoded the old value in your code, update the string to avoid potential bugs.
-  - Added an overview page for the [Google SEO Office Hours](https://developers.google.com/search/help/office-hours).
-- **March 9** : Added transcript of [March 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/march).
-- **March 2** : Removed South Korea from the [available regions](https://developers.google.com/search/docs/appearance/structured-data/job-posting#region-availability) for the job search experience on Google.
+  - Added an overview page for the [Google SEO Office Hours](https://developers.google.com/search/help/office-hours.md.txt).
+- **March 9** : Added transcript of [March 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/march.md.txt).
+- **March 2** : Removed South Korea from the [available regions](https://developers.google.com/search/docs/appearance/structured-data/job-posting.md.txt#region-availability) for the job search experience on Google.
 
 ### February 2023
 
-- **February 23** : Removed the hosting location requirement from the [favicon documentation](https://developers.google.com/search/docs/appearance/favicon-in-search); you don't need to host the favicon in the same domain in order to be eligible for a favicon in Google Search results.
-- **February 22** : Clarified that Discover uses many of the same signals as Search, in both the [Discover documentation](https://developers.google.com/search/docs/appearance/google-discover) and the [helpful content system page](https://developers.google.com/search/updates/helpful-content-update).
-- **February 15** : Added new [best practices for links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable).
+- **February 23** : Removed the hosting location requirement from the [favicon documentation](https://developers.google.com/search/docs/appearance/favicon-in-search.md.txt); you don't need to host the favicon in the same domain in order to be eligible for a favicon in Google Search results.
+- **February 22** : Clarified that Discover uses many of the same signals as Search, in both the [Discover documentation](https://developers.google.com/search/docs/appearance/google-discover.md.txt) and the [helpful content system page](https://developers.google.com/search/updates/helpful-content-update).
+- **February 15** : Added new [best practices for links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable.md.txt).
 - **February 13** :
-  - Simplified the wording in the [Policy circumvention section](https://developers.google.com/search/docs/essentials/spam-policies#policy-circumvention) of our spam policies based on user feedback.
-  - Based on user feedback, we revamped our [documentation about sitemaps](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap). Notably, we reduced duplication between [the sitemaps protocol](https://sitemaps.org/) and our documentation, added more examples to our documentation about sitemap extensions, and added a new document about how to [combine sitemap extensions](https://developers.google.com/search/docs/crawling-indexing/sitemaps/combine-sitemap-extensions).
+  - Simplified the wording in the [Policy circumvention section](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#policy-circumvention) of our spam policies based on user feedback.
+  - Based on user feedback, we revamped our [documentation about sitemaps](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap.md.txt). Notably, we reduced duplication between [the sitemaps protocol](https://sitemaps.org/) and our documentation, added more examples to our documentation about sitemap extensions, and added a new document about how to [combine sitemap extensions](https://developers.google.com/search/docs/crawling-indexing/sitemaps/combine-sitemap-extensions.md.txt).
 - **February 10** : Added the [`GoogleProducer` user agent](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers#googleproducer) to the list of Google crawlers (this is not a new user agent; this is a documentation update only).
-- **February 8** : Added new guidance about [thinking in terms of "Who, How, and Why"](https://developers.google.com/search/docs/fundamentals/creating-helpful-content#ask-who-how-why) in relation to how content is produced.
-- **February 3** : Clarified why [JSON-LD is recommended for structured data](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data#supported-formats): it's because it's generally the easiest for website owners to implement and maintain. All 3 supported formats are equally fine for Google, as long as they are valid and implemented properly per the feature's documentation.
+- **February 8** : Added new guidance about [thinking in terms of "Who, How, and Why"](https://developers.google.com/search/docs/fundamentals/creating-helpful-content.md.txt#ask-who-how-why) in relation to how content is produced.
+- **February 3** : Clarified why [JSON-LD is recommended for structured data](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data.md.txt#supported-formats): it's because it's generally the easiest for website owners to implement and maintain. All 3 supported formats are equally fine for Google, as long as they are valid and implemented properly per the feature's documentation.
 - **February 2** : Refreshed our documentation about canonicalization. To better help site owners, the original documentation is split in three distinct sections:
-  1. [What is URL canonicalization](https://developers.google.com/search/docs/crawling-indexing/canonicalization).
-  2. [How to specify a canonical with `rel="canonical"` and other methods](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls).
-  3. [Fix canonicalization issues](https://developers.google.com/search/docs/crawling-indexing/canonicalization-troubleshooting).
+  1. [What is URL canonicalization](https://developers.google.com/search/docs/crawling-indexing/canonicalization.md.txt).
+  2. [How to specify a canonical with `rel="canonical"` and other methods](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls.md.txt).
+  3. [Fix canonicalization issues](https://developers.google.com/search/docs/crawling-indexing/canonicalization-troubleshooting.md.txt).
 - **February 1** : Added a new section for [Authors on the Google Search Central Blog](https://developers.google.com/search/blog/authors).
 
 ### January 2023
 
-- **January 31** : Added transcript of [January 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/january).
-- **January 25** : Added a new case study about [how Vimeo improved Video SEO at scale for their customers](https://developers.google.com/search/case-studies/vimeo-case-study) by using the `indexifembedded` rule combined with `noindex` and adding structured data.
+- **January 31** : Added transcript of [January 2023 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2023/january.md.txt).
+- **January 25** : Added a new case study about [how Vimeo improved Video SEO at scale for their customers](https://developers.google.com/search/case-studies/vimeo-case-study.md.txt) by using the `indexifembedded` rule combined with `noindex` and adding structured data.
 - **January 23** :
-  - Added guidance about what to include in the [RSS feed for the Follow feature in Google Discover](https://developers.google.com/search/docs/appearance/google-discover#feed-guidelines): the `<title>` element and your per item `<link>` elements.
-  - Updated the [Images best practices](https://developers.google.com/search/docs/appearance/google-images) to clarify that [Google parses `<img>` elements](https://developers.google.com/search/docs/appearance/google-images#semantic-html) (even when they're enclosed in other elements such as `<picture>` elements) when indexing images. Also updated the alt text and filenames in the examples to be more descriptive.
-- **January 6** : Clarified that `www` and `m` prefixes for domain names are generally considered as root domain names for [Site Names in Google Search](https://developers.google.com/search/docs/appearance/site-names).
-- **January 5** : Added information about the `If-Modified-Since` request header to our [documentation about managing crawl budget](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#if-modified-since).
-- **January 3** : Removed the 110 character limit for the `headline` property in the [Article structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/article#article-types). There's no hard character limit; instead, we recommend that you write concise titles as long titles may be truncated on some devices.
+  - Added guidance about what to include in the [RSS feed for the Follow feature in Google Discover](https://developers.google.com/search/docs/appearance/google-discover.md.txt#feed-guidelines): the `<title>` element and your per item `<link>` elements.
+  - Updated the [Images best practices](https://developers.google.com/search/docs/appearance/google-images.md.txt) to clarify that [Google parses `<img>` elements](https://developers.google.com/search/docs/appearance/google-images.md.txt#semantic-html) (even when they're enclosed in other elements such as `<picture>` elements) when indexing images. Also updated the alt text and filenames in the examples to be more descriptive.
+- **January 6** : Clarified that `www` and `m` prefixes for domain names are generally considered as root domain names for [Site Names in Google Search](https://developers.google.com/search/docs/appearance/site-names.md.txt).
+- **January 5** : Added information about the `If-Modified-Since` request header to our [documentation about managing crawl budget](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#if-modified-since).
+- **January 3** : Removed the 110 character limit for the `headline` property in the [Article structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/article.md.txt#article-types). There's no hard character limit; instead, we recommend that you write concise titles as long titles may be truncated on some devices.
 
 ## 2022 updates
 
 ### December 2022
 
-- **December 29** : Added transcript of [December 2022 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2022/december).
+- **December 29** : Added transcript of [December 2022 Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2022/december.md.txt).
 - **December 19** : Removed the [Web Light documentation](https://developers.google.com/search/docs/crawling-indexing/mobile/web-light) and retired the [Web Light user agent](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers#retired). We introduced Web Light to enable us to serve faster, lighter pages to people searching on entry-level devices. While this feature has worked as intended and enabled broader access to the richness of the web, increased affordability of more powerful smartphones has diminished the need for such functionality. We remain committed to evolving and refining the Search experience to meet the changing needs of our users.
 - **December 14** :
   - Added link spam specific information to the [spam updates](https://developers.google.com/search/updates/spam-updates) documentation.
-  - Added a new page on [how to use the Google Search Status Dashboard](https://developers.google.com/search/help/status-dashboard).
+  - Added a new page on [how to use the Google Search Status Dashboard](https://developers.google.com/search/help/status-dashboard.md.txt).
   - Updated [Learning Video structured data](https://developers.google.com/search/docs/appearance/structured-data/learning-video) to state that the `text` field is recommended instead of required for Problem walkthrough videos and clips.
 - **December 13** :
-  - Added a section for [transcripts from the Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2022/november).
-  - Added the new [Visual Elements Gallery of Google Search](https://developers.google.com/search/docs/appearance/visual-elements-gallery).
+  - Added a section for [transcripts from the Google SEO Office Hours](https://developers.google.com/search/help/office-hours/2022/november.md.txt).
+  - Added the new [Visual Elements Gallery of Google Search](https://developers.google.com/search/docs/appearance/visual-elements-gallery.md.txt).
   - Cleaned up and consolidated our [mobile site and mobile-first indexing](https://developers.google.com/search/docs/crawling-indexing/mobile) related documentation. Unsurprisingly, there's no additions.
 - **December 6** : Updated the [Helpful content system page](https://developers.google.com/search/updates/helpful-content-update) to state that the classifier works globally across all languages.
-- **December 2** : Added two new myths to the [crawl budget documentation](https://developers.google.com/crawling/docs/myths-about-crawling). `noindex` isn't a good way to control crawl budget (but can be a method to indirectly free up crawl budget in the long run), and pages that serve `4xx` status codes (except `429`) don't waste crawl budget.
+- **December 2** : Added two new myths to the [crawl budget documentation](https://developers.google.com/crawling/docs/myths-about-crawling.md.txt). `noindex` isn't a good way to control crawl budget (but can be a method to indirectly free up crawl budget in the long run), and pages that serve `4xx` status codes (except `429`) don't waste crawl budget.
 - **December 1** : Retired the [Duplex on the web user agent](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers#retired).
 
 ### November 2022
 
-- **November 23** : Added descriptions to enumerated properties, such as availability, in [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product) to support page translation to non-English languages.
+- **November 23** : Added descriptions to enumerated properties, such as availability, in [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt) to support page translation to non-English languages.
 - **November 22** :
-  - Added a list of currently supported languages for [video key moments](https://developers.google.com/search/docs/appearance/video#key-moments).
-  - Clarified the eligibility criteria for rich result appearance in the [General structured data guidelines](https://developers.google.com/search/docs/appearance/structured-data/sd-policies).
+  - Added a list of currently supported languages for [video key moments](https://developers.google.com/search/docs/appearance/video.md.txt#key-moments).
+  - Clarified the eligibility criteria for rich result appearance in the [General structured data guidelines](https://developers.google.com/search/docs/appearance/structured-data/sd-policies.md.txt).
 - **November 21** :
-  - Added a new section on [Policy circumvention](https://developers.google.com/search/docs/essentials/spam-policies#policy-circumvention) and clarified our phrasing in the [Legal](https://developers.google.com/search/docs/essentials/spam-policies#copyright-removal-requests) and [personal information removals](https://developers.google.com/search/docs/essentials/spam-policies#online-harassment-removals) sections to align with definitions of those systems in the new [Guide to Google Search ranking systems](https://developers.google.com/search/docs/appearance/ranking-systems-guide).
-  - Added a new [Guide to Google Search ranking systems](https://developers.google.com/search/docs/appearance/ranking-systems-guide).
+  - Added a new section on [Policy circumvention](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#policy-circumvention) and clarified our phrasing in the [Legal](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#copyright-removal-requests) and [personal information removals](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#online-harassment-removals) sections to align with definitions of those systems in the new [Guide to Google Search ranking systems](https://developers.google.com/search/docs/appearance/ranking-systems-guide.md.txt).
+  - Added a new [Guide to Google Search ranking systems](https://developers.google.com/search/docs/appearance/ranking-systems-guide.md.txt).
 - **November 15** : Removed the [Mobile recharge Early Adoptors Program signup page](https://developers.google.com/search/docs/appearance/mobile-recharge), as we received enough signups.
-- **November 14** : Updated [Review Snippet structured data](https://developers.google.com/search/docs/appearance/structured-data/review-snippet) to recommend using dot separators for decimal ratings. If you're currently using comma separators for decimal ratings in your markup, you'll still be eligible for review snippets. However, we recommend that you update your markup for a more accurate interpretation.
-- **November 9** : Clarified that it's fine to use JavaScript to insert [crawlable links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable) into pages.
+- **November 14** : Updated [Review Snippet structured data](https://developers.google.com/search/docs/appearance/structured-data/review-snippet.md.txt) to recommend using dot separators for decimal ratings. If you're currently using comma separators for decimal ratings in your markup, you'll still be eligible for review snippets. However, we recommend that you update your markup for a more accurate interpretation.
+- **November 9** : Clarified that it's fine to use JavaScript to insert [crawlable links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable.md.txt) into pages.
 - **November 8** :
-  - Clarified in the [sitemap documentation for localized versions](https://developers.google.com/search/docs/specialty/international/localized-versions#sitemap) that child elements don't count towards the total number of URLs in a sitemap file.
+  - Clarified in the [sitemap documentation for localized versions](https://developers.google.com/search/docs/specialty/international/localized-versions.md.txt#sitemap) that child elements don't count towards the total number of URLs in a sitemap file.
   - Added notes to the [AdsBot](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers) user agents that they ignore the global (`*`) `user-agent` rules in robots.txt. This was documented already in our [robots.txt documentation](https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt); we added the notes for consistency.
 
 ### October 2022
 
-- **October 24** : Clarified that [site names are supported](https://developers.google.com/search/docs/appearance/site-names#technical-guidelines) at the domain level, and not at the subdomain or subdirectory level. [Favicons are supported](https://developers.google.com/search/docs/appearance/favicon-in-search#guidelines) at the domain and subdomain level, and not at the subdirectory level.
-- **October 14** : Added the [site name documentation](https://developers.google.com/search/docs/appearance/site-names).
+- **October 24** : Clarified that [site names are supported](https://developers.google.com/search/docs/appearance/site-names.md.txt#technical-guidelines) at the domain level, and not at the subdomain or subdirectory level. [Favicons are supported](https://developers.google.com/search/docs/appearance/favicon-in-search.md.txt#guidelines) at the domain and subdomain level, and not at the subdirectory level.
+- **October 14** : Added the [site name documentation](https://developers.google.com/search/docs/appearance/site-names.md.txt).
 - **October 13** :
   - Added new pages for the following Google ranking updates. The information itself isn't new; the pages contain consolidated information from previous blog posts about each of these updates.
     - [Google Search's core updates and your website](https://developers.google.com/search/updates/core-updates)
@@ -2677,95 +2705,95 @@ January 5
     - [Google Search's product reviews update and your website](https://developers.google.com/search/updates/product-reviews-update)
     - [Google Search's spam updates and your website](https://developers.google.com/search/updates/spam-updates)
   - Refreshed and renamed the Webmaster Guidelines. Notable changes include:
-    - [Google Search Essentials](https://developers.google.com/search/docs/essentials): Replaces the Webmaster Guidelines overview page. It includes new sections: technical requirements, spam policies, and key best practices.
-    - [Google Search technical requirements](https://developers.google.com/search/docs/essentials/technical): Covers what Google needs from a web page to show it in Google Search.
-    - [Spam policies for Google web search](https://developers.google.com/search/docs/essentials/spam-policies): Replaces the Quality Guidelines section of the Webmaster Guidelines. It's been rewritten to cover more relevant examples and use more precise language. Notable updates include:
-      - [Link spam](https://developers.google.com/search/docs/essentials/spam-policies#link-spam): Consolidates previous pages on Paid links and Link schemes.
-      - [Malware and malicious behaviors](https://developers.google.com/search/docs/essentials/spam-policies#malware-and-malicious-behaviors): Consolidates information that was previously in the Security section on our site.
-      - [Hacked content](https://developers.google.com/search/docs/essentials/spam-policies#hacked-content): Consolidates information that was previously in the Security section on our site.
-      - [Thin affliliate pages](https://developers.google.com/search/docs/essentials/spam-policies#thin-affiliate-pages): Consolidates previous pages on Thin content and Affiliate programs.
+    - [Google Search Essentials](https://developers.google.com/search/docs/essentials.md.txt): Replaces the Webmaster Guidelines overview page. It includes new sections: technical requirements, spam policies, and key best practices.
+    - [Google Search technical requirements](https://developers.google.com/search/docs/essentials/technical.md.txt): Covers what Google needs from a web page to show it in Google Search.
+    - [Spam policies for Google web search](https://developers.google.com/search/docs/essentials/spam-policies.md.txt): Replaces the Quality Guidelines section of the Webmaster Guidelines. It's been rewritten to cover more relevant examples and use more precise language. Notable updates include:
+      - [Link spam](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#link-spam): Consolidates previous pages on Paid links and Link schemes.
+      - [Malware and malicious behaviors](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#malware-and-malicious-behaviors): Consolidates information that was previously in the Security section on our site.
+      - [Hacked content](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#hacked-content): Consolidates information that was previously in the Security section on our site.
+      - [Thin affliliate pages](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#thin-affiliate-pages): Consolidates previous pages on Thin content and Affiliate programs.
 
 
       New sections include:
-      - [Misleading functionality](https://developers.google.com/search/docs/essentials/spam-policies#misleading-functionality)
-      - [Copyright-removal requests](https://developers.google.com/search/docs/essentials/spam-policies#copyright-removal-requests)
-      - [Online harassment removals](https://developers.google.com/search/docs/essentials/spam-policies#online-harassment-removals)
-      - [Scam and fraud](https://developers.google.com/search/docs/essentials/spam-policies#scam-and-fraud)
-    - [Creating helpful, reliable, people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content): This document consolidates advice from the [helpful content blog post](https://developers.google.com/search/blog/2022/08/helpful-content-update) and the [core updates post](https://developers.google.com/search/blog/2019/08/core-updates); none of the content is new.
-- **October 12** : Added support for image credits to the [Image Metadata structured data](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata) documentation. Previously, you could only provide image credit information with IPTC photo metadata.
-- **October 7** : Added examples of product review pages to [Write high quality product reviews](https://developers.google.com/search/docs/specialty/ecommerce/write-high-quality-reviews).
+      - [Misleading functionality](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#misleading-functionality)
+      - [Copyright-removal requests](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#copyright-removal-requests)
+      - [Online harassment removals](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#online-harassment-removals)
+      - [Scam and fraud](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#scam-and-fraud)
+    - [Creating helpful, reliable, people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content.md.txt): This document consolidates advice from the [helpful content blog post](https://developers.google.com/search/blog/2022/08/helpful-content-update.md.txt) and the [core updates post](https://developers.google.com/search/blog/2019/08/core-updates.md.txt); none of the content is new.
+- **October 12** : Added support for image credits to the [Image Metadata structured data](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata.md.txt) documentation. Previously, you could only provide image credit information with IPTC photo metadata.
+- **October 7** : Added examples of product review pages to [Write high quality product reviews](https://developers.google.com/search/docs/specialty/ecommerce/write-high-quality-reviews.md.txt).
 
 ### September 2022
 
 - **September 20** : Added the [Google Site Verifier](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers#google_site_verifier) user agent.
 - **September 13** :
-  - Major update to [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product) documentation to document requirements for eligibility to Merchant Listings experiences based on structured data. See the blog [New Search Console Merchant Listings report: expanding eligibility with Product structured data](https://developers.google.com/search/blog/2022/09/merchant-listings) for details.
-  - Re-added the `itemReviewed.datePublished` property. This was removed accidentally as part of the previous update to the [Fact Check structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/factcheck#structured-data-type-definitions).
-- **September 9** : Removed the `datePublished` property from the [Fact Check structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/factcheck#structured-data-type-definitions). Currently, the `ClaimReview` publish date isn't used in the Fact Check rich result.
-- **September 2** : Migrated the documentation about the [file types Google can index](https://developers.google.com/search/docs/crawling-indexing/indexable-file-types) from the Search Console Help Center (the content hasn't changed).
-- **September 1** : Added more examples to show [how meta descriptions could be improved](https://developers.google.com/search/docs/appearance/snippet#use-quality-descriptions).
+  - Major update to [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt) documentation to document requirements for eligibility to Merchant Listings experiences based on structured data. See the blog [New Search Console Merchant Listings report: expanding eligibility with Product structured data](https://developers.google.com/search/blog/2022/09/merchant-listings.md.txt) for details.
+  - Re-added the `itemReviewed.datePublished` property. This was removed accidentally as part of the previous update to the [Fact Check structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/factcheck.md.txt#structured-data-type-definitions).
+- **September 9** : Removed the `datePublished` property from the [Fact Check structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/factcheck.md.txt#structured-data-type-definitions). Currently, the `ClaimReview` publish date isn't used in the Fact Check rich result.
+- **September 2** : Migrated the documentation about the [file types Google can index](https://developers.google.com/search/docs/crawling-indexing/indexable-file-types.md.txt) from the Search Console Help Center (the content hasn't changed).
+- **September 1** : Added more examples to show [how meta descriptions could be improved](https://developers.google.com/search/docs/appearance/snippet.md.txt#use-quality-descriptions).
 
 ### August 2022
 
 - **August 31** : Added a note on the use of JavaScript to add, change, or remove `meta` tags on a page to [the list of meta and inline tags Google Search understands](https://developers.google.com/search/docs/advanced/crawling/special-tags).
 - **August 29** :
   - Added the [full list of supported academic values for `educationalLevel`](https://developers.google.com/search/docs/appearance/structured-data/learning-video#educational-level) in the Learning video structured data documentation.
-  - Clarified how to specify multiple types in [Local Business structured data](https://developers.google.com/search/docs/appearance/structured-data/local-business#local-business-properties). If you have multiple types, specify them in an array (`additionalType` isn't supported).
+  - Clarified how to specify multiple types in [Local Business structured data](https://developers.google.com/search/docs/appearance/structured-data/local-business.md.txt#local-business-properties). If you have multiple types, specify them in an array (`additionalType` isn't supported).
 - **August 24** :
-  - Added [content guidelines](https://developers.google.com/search/docs/appearance/structured-data/education-qa#content-guidelines) to the Education Q\&A structured data documentation.
-  - Removed references to the [deprecated International Targeting report](https://support.google.com/webmasters/answer/12474899) in Search Console. The recommendations described in our documentation about [managing multiregional sites](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites) and [localized versions of your pages](https://developers.google.com/search/docs/specialty/international/localized-versions) remain relevant.
-- **August 22** : Updated the [Article structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/article) to reflect that `Article` markup is open to all types of pages (as [announced in 2020 with the page experience update](https://developers.google.com/search/blog/2020/05/evaluating-page-experience#page-experience-and-the-mobile-top-stories-feature)).
+  - Added [content guidelines](https://developers.google.com/search/docs/appearance/structured-data/education-qa.md.txt#content-guidelines) to the Education Q\&A structured data documentation.
+  - Removed references to the [deprecated International Targeting report](https://support.google.com/webmasters/answer/12474899) in Search Console. The recommendations described in our documentation about [managing multiregional sites](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites.md.txt) and [localized versions of your pages](https://developers.google.com/search/docs/specialty/international/localized-versions.md.txt) remain relevant.
+- **August 22** : Updated the [Article structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/article.md.txt) to reflect that `Article` markup is open to all types of pages (as [announced in 2020 with the page experience update](https://developers.google.com/search/blog/2020/05/evaluating-page-experience.md.txt#page-experience-and-the-mobile-top-stories-feature)).
 - **August 11**: Removed our documentation about rich-media files, such as Silverlight and Flash. Turns out it's not 2005 anymore.
 - **August 10** :
-  - Added the `gtin12` property to the [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product) documentation. This has been supported; it's a documentation change only. Clarified that you can use the generic `gtin` property for all GTINs, but we recommend that you use the most specific one if possible.
-  - Updated the [dynamic rendering](https://developers.google.com/search/docs/crawling-indexing/javascript/dynamic-rendering) documentation to explain that this isn't a recommended solution, and is a workaround if you have no other choice. Instead we recommend server-side rendering, static rendering, or client-side rendering with hydration.
+  - Added the `gtin12` property to the [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt) documentation. This has been supported; it's a documentation change only. Clarified that you can use the generic `gtin` property for all GTINs, but we recommend that you use the most specific one if possible.
+  - Updated the [dynamic rendering](https://developers.google.com/search/docs/crawling-indexing/javascript/dynamic-rendering.md.txt) documentation to explain that this isn't a recommended solution, and is a workaround if you have no other choice. Instead we recommend server-side rendering, static rendering, or client-side rendering with hydration.
 - **August 9** : Added best practices for feeds to the [Follow feature documentation](https://developers.google.com/search/docs/advanced/mobile/google-discover#follow). We recommend that you:
   - Use a descriptive title for your RSS feed, just like you would for a web page.
   - For multiple feeds, we recommend that you use a single feed. Both methods are still supported, but we clarified that a single feed is easier for you to maintain and for users to subscribe to your feed.
-- **August 8** : Clarified that we don't support the URL form for GTINs in [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product). Make sure to use the numerical GTIN form.
-- **August 5** : Added documentation about the [pros and cons](https://developers.google.com/search/docs/appearance/structured-data/product#pros-cons) enhancement for editorial product review pages.
+- **August 8** : Clarified that we don't support the URL form for GTINs in [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt). Make sure to use the numerical GTIN form.
+- **August 5** : Added documentation about the [pros and cons](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt#pros-cons) enhancement for editorial product review pages.
 
 ### July 2022
 
-- **July 19** : Standardized how we refer to [headings and title text](https://developers.google.com/search/docs/appearance/title-link) on the page. Previously we used the word headline, but that can be confusing in other languages.
+- **July 19** : Standardized how we refer to [headings and title text](https://developers.google.com/search/docs/appearance/title-link.md.txt) on the page. Previously we used the word headline, but that can be confusing in other languages.
 - **July 13** : Updated the User Agent string for [AdsBot Mobile Web](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers). If you hardcoded the old value in your code, update the string to avoid potential bugs.
 - **July 7** : Added a new page for [Google Search ranking updates](https://status.search.google.com/products/rGHU1u87FJnkP6W2GwMi/history). This is not new information; it's a compiled list of things we've previously confirmed on [our blog](https://developers.google.com/search/blog) or on [Twitter](https://twitter.com/googlesearchc).
-- **July 6** : Reorganized the navigational structure to be based on topic instead of level. Removed duplicate guides that were aimed at basic or beginner level, as these documents were duplicating guidance already explained in the [SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide).
+- **July 6** : Reorganized the navigational structure to be based on topic instead of level. Removed duplicate guides that were aimed at basic or beginner level, as these documents were duplicating guidance already explained in the [SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide.md.txt).
 - **July 4** : Clarified that you must add three courses to be eligible for the [`Course`
-  rich result](https://developers.google.com/search/docs/appearance/structured-data/course). This is not a new requirement; it was previously only documented in the [Carousel documentation](https://developers.google.com/search/docs/appearance/structured-data/carousel).
+  rich result](https://developers.google.com/search/docs/appearance/structured-data/course). This is not a new requirement; it was previously only documented in the [Carousel documentation](https://developers.google.com/search/docs/appearance/structured-data/carousel.md.txt).
 
 ### June 2022
 
-- **June 30** : Added information about using JavaScript to [inject canonical link tags](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics#properly-inject-canonical-links).
-- **June 23** : Added information about how many bytes of textual content, such as HTML, [Googlebot](https://developers.google.com/search/docs/crawling-indexing/googlebot) will crawl. For [FAQs on the matter, check out our blog post](https://developers.google.com/search/blog/2022/06/googlebot-15mb).
-- **June 22** : Updated the [Job Posting](https://developers.google.com/search/docs/appearance/structured-data/job-posting) documentation to specify that when you use the `jobLocation` property, you must also include the `addressCountry` property.
-- **June 17** : Clarified that [product rich results](https://developers.google.com/search/docs/appearance/structured-data/product#guidelines) support pages that focus on a single product, and that includes product variants where each product variant has a distinct URL.
+- **June 30** : Added information about using JavaScript to [inject canonical link tags](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt#properly-inject-canonical-links).
+- **June 23** : Added information about how many bytes of textual content, such as HTML, [Googlebot](https://developers.google.com/search/docs/crawling-indexing/googlebot.md.txt) will crawl. For [FAQs on the matter, check out our blog post](https://developers.google.com/search/blog/2022/06/googlebot-15mb.md.txt).
+- **June 22** : Updated the [Job Posting](https://developers.google.com/search/docs/appearance/structured-data/job-posting.md.txt) documentation to specify that when you use the `jobLocation` property, you must also include the `addressCountry` property.
+- **June 17** : Clarified that [product rich results](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt#guidelines) support pages that focus on a single product, and that includes product variants where each product variant has a distinct URL.
 - **June 10** : Documented new `Vary: Cookie` support for [signed exchanges](https://developers.google.com/search/docs/appearance/signed-exchange).
-- **June 3** : Added a best practice for [script or language mismatches in titles](https://developers.google.com/search/docs/appearance/title-link#mismatch-of-script-or-language-used-in-title-elements). For `<title>` elements, use the same script and language as the page's primary content.
+- **June 3** : Added a best practice for [script or language mismatches in titles](https://developers.google.com/search/docs/appearance/title-link.md.txt#mismatch-of-script-or-language-used-in-title-elements). For `<title>` elements, use the same script and language as the page's primary content.
 - **June 1** :
-  - Added new [author markup best practices](https://developers.google.com/search/docs/appearance/structured-data/article#author-bp) to the Article structured data documentation.
+  - Added new [author markup best practices](https://developers.google.com/search/docs/appearance/structured-data/article.md.txt#author-bp) to the Article structured data documentation.
   - Added new documentation about [Learning Video structured data](https://developers.google.com/search/docs/appearance/structured-data/learning-video).
 
 ### May 2022
 
 - **May 31** : Removed the [Job training structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/job-training). We initially tested this markup with a group of site owners, and ultimately found that it wasn't useful for the ecosystem at scale. This change doesn't affect any other features that may use Job training markup. You can leave the markup on your site so that search engines can better understand your web page.
-- **May 22** : Added [transparency guidelines for video thumbnails](https://developers.google.com/search/docs/appearance/video#provide-a-high-quality-thumbnail). Ensure that at least 80% of your thumbnail pixels have little or no transparency to enable video indexing.
+- **May 22** : Added [transparency guidelines for video thumbnails](https://developers.google.com/search/docs/appearance/video.md.txt#provide-a-high-quality-thumbnail). Ensure that at least 80% of your thumbnail pixels have little or no transparency to enable video indexing.
 
 <!-- -->
 
 - **May 10** :
-  - Added new [Education Q\&A](https://developers.google.com/search/docs/appearance/structured-data/education-qa) documentation.
+  - Added new [Education Q\&A](https://developers.google.com/search/docs/appearance/structured-data/education-qa.md.txt) documentation.
   - Added new documentation about [using valid page metadata](https://developers.google.com/search/docs/advanced/guidelines/valid-html).
-  - Added new [troubleshooting tip about headlines](https://developers.google.com/search/docs/appearance/title-link#no-clear-main-headline) in the title link documentation.
-- **May 6** : Removed the deprecated tags and attributes from the [Image](https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps#deprecated-tags-and-attributes) and [Video](https://developers.google.com/search/docs/crawling-indexing/sitemaps/video-sitemaps#deprecated-tags-and-attributes) sitemaps documentation. For more information, refer to our [announcement about the deprecation](https://developers.google.com/search/blog/2022/05/spring-cleaning-sitemap-extensions).
+  - Added new [troubleshooting tip about headlines](https://developers.google.com/search/docs/appearance/title-link.md.txt#no-clear-main-headline) in the title link documentation.
+- **May 6** : Removed the deprecated tags and attributes from the [Image](https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps.md.txt#deprecated-tags-and-attributes) and [Video](https://developers.google.com/search/docs/crawling-indexing/sitemaps/video-sitemaps.md.txt#deprecated-tags-and-attributes) sitemaps documentation. For more information, refer to our [announcement about the deprecation](https://developers.google.com/search/blog/2022/05/spring-cleaning-sitemap-extensions.md.txt).
 
 ### April 2022
 
-- **April 14** : Consolidated our [How Search Works documentation for site owners](https://developers.google.com/search/docs/fundamentals/how-search-works) by merging the basic, beginner, and advanced versions into one central document. While we cleaned up the language slightly, we haven't added anything new to the How Search Works documentation.
+- **April 14** : Consolidated our [How Search Works documentation for site owners](https://developers.google.com/search/docs/fundamentals/how-search-works.md.txt) by merging the basic, beginner, and advanced versions into one central document. While we cleaned up the language slightly, we haven't added anything new to the How Search Works documentation.
 
 ### March 2022
 
-- **March 23** : Added two more best practices when [writing high quality product reviews](https://developers.google.com/search/docs/specialty/ecommerce/write-high-quality-reviews) for reviews comparing multiple products.
+- **March 23** : Added two more best practices when [writing high quality product reviews](https://developers.google.com/search/docs/specialty/ecommerce/write-high-quality-reviews.md.txt) for reviews comparing multiple products.
 - **March 17** : Added a section to the SafeSearch documentation about [allowing Google to fetch your video content files](https://developers.google.com/search/docs/crawling-indexing/safesearch#allow-fetch).
 
 ### February 2022
@@ -2779,16 +2807,16 @@ January 5
 ### January 2022
 
 - **January 28** : Merged our SafeSearch documentation into [one new document](https://developers.google.com/search/docs/crawling-indexing/safesearch). We expanded on how SafeSearch works and added a troubleshooting section. The guidance remains the same: [add the `rating` `meta` tag to explicit pages](https://developers.google.com/search/docs/crawling-indexing/safesearch#add-metadata) and [group explicit content in a separate location on your site](https://developers.google.com/search/docs/crawling-indexing/safesearch#group-content).
-- **January 21** : Added a new robots `meta` tag, [`indexifembedded`](https://developers.google.com/search/docs/advanced/robots/robots_meta_tag#indexifembedded), to the robots `meta` tag documentation. [Learn more about the new tag in our blog post](https://developers.google.com/search/blog/2022/01/robots-meta-tag-indexifembedded).
-- **January 20** : Added a note describing how to specify [`Car`](https://schema.org/Car) markup and still have [Product review snippet](https://developers.google.com/search/docs/appearance/structured-data/product) feature eligibility.
-- **January 18** : Removed guidance about specifying a range for the `cookTime`, `prepTime`, and `totalTime` properties in the [Recipe documentation](https://developers.google.com/search/docs/appearance/structured-data/recipe). Currently, the only supported method is an exact time; time ranges aren't supported. If you're currently specifying a time range and you'd like Google to better understand your time values, we recommend updating that value in your structured data to a single value (for example, `"cookTime": "PT30M"`).
+- **January 21** : Added a new robots `meta` tag, [`indexifembedded`](https://developers.google.com/search/docs/advanced/robots/robots_meta_tag#indexifembedded), to the robots `meta` tag documentation. [Learn more about the new tag in our blog post](https://developers.google.com/search/blog/2022/01/robots-meta-tag-indexifembedded.md.txt).
+- **January 20** : Added a note describing how to specify [`Car`](https://schema.org/Car) markup and still have [Product review snippet](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt) feature eligibility.
+- **January 18** : Removed guidance about specifying a range for the `cookTime`, `prepTime`, and `totalTime` properties in the [Recipe documentation](https://developers.google.com/search/docs/appearance/structured-data/recipe.md.txt). Currently, the only supported method is an exact time; time ranges aren't supported. If you're currently specifying a time range and you'd like Google to better understand your time values, we recommend updating that value in your structured data to a single value (for example, `"cookTime": "PT30M"`).
 
 ## 2021 updates
 
 ### December 2021
 
-- **December 16** : Converted our old [blog post](https://developers.google.com/search/blog/2016/08/helping-users-easily-access-content-on) about intrusive interstitials into [guidelines](https://developers.google.com/search/docs/appearance/avoid-intrusive-interstitials). There are no substantial changes compared to what we have in the blog post.
-- **December 1** : Added [Write high quality product reviews](https://developers.google.com/search/docs/specialty/ecommerce/write-high-quality-reviews) to bring together advice from several blog posts.
+- **December 16** : Converted our old [blog post](https://developers.google.com/search/blog/2016/08/helping-users-easily-access-content-on.md.txt) about intrusive interstitials into [guidelines](https://developers.google.com/search/docs/appearance/avoid-intrusive-interstitials.md.txt). There are no substantial changes compared to what we have in the blog post.
+- **December 1** : Added [Write high quality product reviews](https://developers.google.com/search/docs/specialty/ecommerce/write-high-quality-reviews.md.txt) to bring together advice from several blog posts.
 
 ### November 2021
 
@@ -2803,8 +2831,8 @@ January 5
   - Updated [Logo](https://developers.google.com/search/docs/appearance/structured-data/logo) documentation to support new flexibility in using the [`ImageObject`](https://schema.org/ImageObject) type to specify an organization logo.
   - [Published the list of Googlebot IP addresses](https://developers.google.com/search/docs/crawling-indexing/verifying-googlebot).
 - **November 4** : Removed the recommendation to verify that SXGs are well-formed from the [signed exchange documentation](https://developers.google.com/search/docs/appearance/signed-exchange). Added a note that Google will automatically retry without an SXG `Accept` header in these cases.
-- **November 4** : Updated the [page experience documentation](https://developers.google.com/search/docs/appearance/page-experience) to include the [upcoming desktop rollout](https://developers.google.com/search/blog/2021/11/bringing-page-experience-to-desktop).
-- **November 2** : Added a recommendation about creating a dedicated page for each video to the [Video best practices](https://developers.google.com/search/docs/appearance/video#help-google-find).
+- **November 4** : Updated the [page experience documentation](https://developers.google.com/search/docs/appearance/page-experience.md.txt) to include the [upcoming desktop rollout](https://developers.google.com/search/blog/2021/11/bringing-page-experience-to-desktop.md.txt).
+- **November 2** : Added a recommendation about creating a dedicated page for each video to the [Video best practices](https://developers.google.com/search/docs/appearance/video.md.txt#help-google-find).
 
 ### October 2021
 
@@ -2813,19 +2841,19 @@ January 5
   - `QAPage`: `mainEntity.suggestedAnswer.author`, `mainEntity.dateCreated`, `mainEntity.suggestedAnswer.dateCreated`, `mainEntity.acceptedAnswer.author`, `mainEntity.acceptedAnswer.dateCreated`, and `mainEntity.author
     `.
   - `SpecialAnnouncement`: `provider`, `audience`, `serviceType`, `address`, and `category`.
-- **October 15** : Added a requirement that the `author.name` field in [Review snippets](https://developers.google.com/search/docs/appearance/structured-data/review-snippet) must be less than 100 characters to be eligible for use in Search features.
-- **October 13** : Clarified that `VideoGame` is not a valid node type for [Software Apps](https://developers.google.com/search/docs/appearance/structured-data/software-app#extended-properties-for-app-subtypes). To make sure that your Software App is still eligible for a rich result appearance, co-type the `VideoGame` type with another supported type.
+- **October 15** : Added a requirement that the `author.name` field in [Review snippets](https://developers.google.com/search/docs/appearance/structured-data/review-snippet.md.txt) must be less than 100 characters to be eligible for use in Search features.
+- **October 13** : Clarified that `VideoGame` is not a valid node type for [Software Apps](https://developers.google.com/search/docs/appearance/structured-data/software-app.md.txt#extended-properties-for-app-subtypes). To make sure that your Software App is still eligible for a rich result appearance, co-type the `VideoGame` type with another supported type.
 - **October 8** : Updated our documentation about titles and snippets in Google Search results. There are now two separate documents that explain each of these search result features:
   - **[Control your title
     links in search results](https://developers.google.com/search/docs/appearance/title-link)** : Created a new page to describe how to control title links in search results. Introduced a new term, *title link* , for the title of a search result on Google Search and other properties to help clarify when we mean the title link in search results versus a `<title>` element on a web page. Added examples of [how
     Google may adjust title links](https://developers.google.com/search/docs/appearance/title-link#examples). There aren't any changes to the [best practices
     for writing descriptive `<title>` elements](https://developers.google.com/search/docs/appearance/title-link#page-titles).
   - **[Control your
-    snippets in search results](https://developers.google.com/search/docs/appearance/snippet)** : Created a new page to describe how to control snippets in search results. The updates were minimal structural updates; there aren't any changes to the [guidelines](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) themselves.
+    snippets in search results](https://developers.google.com/search/docs/appearance/snippet)** : Created a new page to describe how to control snippets in search results. The updates were minimal structural updates; there aren't any changes to the [guidelines](https://developers.google.com/search/docs/appearance/snippet.md.txt#meta-descriptions) themselves.
 
 ### September 2021
 
-- **September 27** : Added new documentation on [Best practices for ecommerce sites in Google Search](https://developers.google.com/search/docs/specialty/ecommerce).
+- **September 27** : Added new documentation on [Best practices for ecommerce sites in Google Search](https://developers.google.com/search/docs/specialty/ecommerce.md.txt).
 - **September 1** : Added documentation about the [beta
   Follow feature and your website](https://developers.google.com/search/docs/advanced/mobile/google-discover#follow).
 
@@ -2835,14 +2863,14 @@ January 5
   images in Discover improve CTR and increase visits to publisher sites](https://developers.google.com/search/case-studies/large-images-case-study).
 - **August 9** : The [Schema
   Markup Validator](https://validator.schema.org/) has stabilized, and Google now redirects the Structured Data Testing Tool to a [landing page](https://developers.google.com/search/docs/advanced/structured-data) to help you select the right tool.
-- **August 6** : Added a new recommended `author.url` property to the [`Article` structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/article). The `url` property helps Google disambiguate the correct author of the article.
+- **August 6** : Added a new recommended `author.url` property to the [`Article` structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/article.md.txt). The `url` property helps Google disambiguate the correct author of the article.
 
 ### July 2021
 
-- **July 30** : Added technical, content, and quality guidelines to the [Math solver guidelines](https://developers.google.com/search/docs/appearance/structured-data/math-solvers#guidelines) and removed solution page markup instructions to make it easier for site owners to get their math solver site on Search. It is fine to remove any existing solution page markup.
-- **July 29** : Added a new case study about how [MX Player boosted organic traffic 3x by maximizing video discoverability on Google](https://developers.google.com/search/case-studies/mx-case-study).
+- **July 30** : Added technical, content, and quality guidelines to the [Math solver guidelines](https://developers.google.com/search/docs/appearance/structured-data/math-solvers.md.txt#guidelines) and removed solution page markup instructions to make it easier for site owners to get their math solver site on Search. It is fine to remove any existing solution page markup.
+- **July 29** : Added a new case study about how [MX Player boosted organic traffic 3x by maximizing video discoverability on Google](https://developers.google.com/search/case-studies/mx-case-study.md.txt).
 - **July 28** :
-  - Removed [guidance](https://developers.google.com/search/docs/appearance/structured-data/factcheck#technical-guidelines) about hosting multiple factchecks per page. To be eligible for the single fact check rich result, a page must only have one `ClaimReview` element.
+  - Removed [guidance](https://developers.google.com/search/docs/appearance/structured-data/factcheck.md.txt#technical-guidelines) about hosting multiple factchecks per page. To be eligible for the single fact check rich result, a page must only have one `ClaimReview` element.
   - Added details about [signed exchange](https://developers.google.com/search/docs/appearance/signed-exchange) cache lifetime.
 - **July 26** : Added a requirement that `priceRange` fields in [Local
   business](https://developers.google.com/search/docs/appearance/structured-data/local-business) must be less than 100 characters to be eligible for use in Search features.
@@ -2851,44 +2879,44 @@ January 5
     guideline](https://developers.google.com/search/docs/appearance/structured-data/faqpage#content-guidelines) about hidden content on the page. The user must be able to access the answer on the page, and clicking an expandable section to view the answer is a valid use case.
   - Removed the `@id` property from the [Local
     business documentation](https://developers.google.com/search/docs/appearance/structured-data/local-business). The `url` property alone is a sufficient identifier to understand the local business.
-- **July 21** : Added a set of new documentation about the [search operators](https://developers.google.com/search/docs/monitor-debug/search-operators) available in Google Search.
+- **July 21** : Added a set of new documentation about the [search operators](https://developers.google.com/search/docs/monitor-debug/search-operators.md.txt) available in Google Search.
 - **July 13** : Added a new [editorial
-  guideline](https://developers.google.com/search/docs/appearance/structured-data/job-posting#editorial) to the `JobPosting` documentation. Added a new optional property for [`directApply`](https://developers.google.com/search/docs/appearance/structured-data/job-posting#direct-apply).
+  guideline](https://developers.google.com/search/docs/appearance/structured-data/job-posting#editorial) to the `JobPosting` documentation. Added a new optional property for [`directApply`](https://developers.google.com/search/docs/appearance/structured-data/job-posting.md.txt#direct-apply).
 
 ### June 2021
 
-- **June 29** : Significantly expanded our [redirects guide](https://developers.google.com/search/docs/crawling-indexing/301-redirects) with the different kinds of redirects and their effects on Google Search.
+- **June 29** : Significantly expanded our [redirects guide](https://developers.google.com/search/docs/crawling-indexing/301-redirects.md.txt) with the different kinds of redirects and their effects on Google Search.
 - **June 25** : Added a page that details [how different HTTP status codes, and network and DNS errors affect crawling and indexing](https://developers.google.com/search/docs/crawling-indexing/http-network-errors).
 - **June 18** : Based on feedback we've received from Search Central Product Experts and through the feedback tool, we've made several updates to our documentation:
-  - Simplified the [introduction page](https://developers.google.com/search/docs/crawling-indexing/robots/intro) to make it clearer what is robots.txt and what is its intended use.
+  - Simplified the [introduction page](https://developers.google.com/search/docs/crawling-indexing/robots/intro.md.txt) to make it clearer what is robots.txt and what is its intended use.
   - Expanded the instructions about [creating](https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt) and [updating](https://developers.google.com/search/docs/crawling-indexing/robots/submit-updated-robots-txt) robots.txt files.
   - Removed redundant sections from our documentation about [how Google handles robots.txt](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt).
   - Simplified sentences across all robots.txt documentation in English. This helps with localization.
-  - Removed redundant documentation about how to build, test, and release structured data. Each feature has guidance about this, embedded directly into each guide (for example, the [Video structured data guide](https://developers.google.com/search/docs/appearance/structured-data/video#add-structured-data)).
-  - Improved the troubleshooting sections across all structured data feature guides (for example, the [Product structured data guide](https://developers.google.com/search/docs/appearance/structured-data/product#troubleshooting)).
+  - Removed redundant documentation about how to build, test, and release structured data. Each feature has guidance about this, embedded directly into each guide (for example, the [Video structured data guide](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt#add-structured-data)).
+  - Improved the troubleshooting sections across all structured data feature guides (for example, the [Product structured data guide](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt#troubleshooting)).
   - Added more beginner-friendly information about how to [get
     started with structured data](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data#get-started).
 - **June 15** : Updated the timeline in the [page
   experience documentation](https://developers.google.com/search/docs/appearance/page-experience). The page experience update is now slowly rolling out to all users. It will be complete by the end of August 2021.
 - **June 11** :
   - Clarified the [Sitelinks search box](https://developers.google.com/search/docs/appearance/structured-data/sitelinks-searchbox#potential-action-target) documentation to explain the more standard and explicit form for specifying the search box `urlTemplate`. Google will still accept the shorthand form as noted.
-  - Added a new optional property to the [Dataset documentation](https://developers.google.com/search/docs/appearance/structured-data/dataset): `funder`.
+  - Added a new optional property to the [Dataset documentation](https://developers.google.com/search/docs/appearance/structured-data/dataset.md.txt): `funder`.
 - **June 10** : Deprecated the [critic
   review documentation](https://developers.google.com/search/docs/appearance/structured-data/critic-review). We initially tested critic review markup with a group of site owners, and ultimately found that it wasn't useful for the ecosystem at scale. This deprecation doesn't affect any other features on Google Search that use review markup. You can leave the markup on your site so that search engines can better understand your web page.
-- **June 8** : Added [`BackOrder`](https://schema.org/BackOrder) as an allowed value for the `availability` property in [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product).
-- **June 4** : Added [`gtin`](https://schema.org/gtin) as an allowed identifier and clarified how to correctly use [`isbn`](https://schema.org/isbn) for [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product).
-- **June 3** : Added support for the [`inLanguage`](https://schema.org/inLanguage) property to the [Math solvers documentation](https://developers.google.com/search/docs/appearance/structured-data/math-solvers#math-solver).
+- **June 8** : Added [`BackOrder`](https://schema.org/BackOrder) as an allowed value for the `availability` property in [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt).
+- **June 4** : Added [`gtin`](https://schema.org/gtin) as an allowed identifier and clarified how to correctly use [`isbn`](https://schema.org/isbn) for [Product structured data](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt).
+- **June 3** : Added support for the [`inLanguage`](https://schema.org/inLanguage) property to the [Math solvers documentation](https://developers.google.com/search/docs/appearance/structured-data/math-solvers.md.txt#math-solver).
 - **June 1** :
   - Modified the [Math Solver developer
-    documentation](https://developers.google.com/search/docs/appearance/structured-data/math-solvers#problem-type-definitions) to add six new [problem types.](https://developers.google.com/search/docs/appearance/structured-data/math-solvers#problem-type-definitions)
+    documentation](https://developers.google.com/search/docs/appearance/structured-data/math-solvers#problem-type-definitions) to add six new [problem types.](https://developers.google.com/search/docs/appearance/structured-data/math-solvers.md.txt#problem-type-definitions)
   - Updated the `DuplexWeb` user agent (in [Overview of Google crawlers](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers)) to use a more recent system and Chrome version.
 
 ### May 2021
 
 - **May 18** :
-  - Added [documentation](https://developers.google.com/search/docs/appearance/structured-data/video#key-moments) for [`SeekToAction` structured
-    data](https://developers.google.com/search/docs/appearance/structured-data/video#seek), which is an alternative way to participate in the key moments feature. [`Clip`](https://developers.google.com/search/docs/appearance/structured-data/video#clip) structured data is now out of beta, and available to be used by any site.
-  - Modified the [`JobPosting` region availability list](https://developers.google.com/search/docs/appearance/structured-data/job-posting#region-availability) to include Austria and Denmark.
+  - Added [documentation](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt#key-moments) for [`SeekToAction` structured
+    data](https://developers.google.com/search/docs/appearance/structured-data/video#seek), which is an alternative way to participate in the key moments feature. [`Clip`](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt#clip) structured data is now out of beta, and available to be used by any site.
+  - Modified the [`JobPosting` region availability list](https://developers.google.com/search/docs/appearance/structured-data/job-posting.md.txt#region-availability) to include Austria and Denmark.
 - **May 6** : Modified the [publisher
   logo requirements of AMP `Article`](https://developers.google.com/search/docs/appearance/structured-data/article#article-types) structured data to more accurately reflect that we understand both raw URLs as well as `ImageObject` markup.
 
@@ -2902,20 +2930,20 @@ January 5
   structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/video#thumbnail-url) to state that the `thumbnailUrl` property must use one of the [supported Google Images file
   formats](https://developers.google.com/search/docs/appearance/google-images#supported-image-formats). Previously, the documentation didn't include WebP and SVG.
 - **April 1** : Clarified the [key
-  moments feature](https://developers.google.com/search/docs/appearance/video#key-moments). Google Search tries to automatically detect the segments in your video and show key moments to users, without any effort on your part. Alternatively, there are two ways that you can manually tell Google which timestamp and label to use: [`Clip` structured data](https://developers.google.com/search/docs/appearance/structured-data/video#clip) and [updating the description
+  moments feature](https://developers.google.com/search/docs/appearance/video#key-moments). Google Search tries to automatically detect the segments in your video and show key moments to users, without any effort on your part. Alternatively, there are two ways that you can manually tell Google which timestamp and label to use: [`Clip` structured data](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt#clip) and [updating the description
   of a YouTube video](https://developers.google.com/search/docs/appearance/structured-data/video#best-practices-youtube).
 
   > [!NOTE]
-  > Currently, Google is working with a wide range of providers to ensure that the use of `Clip` structured data works well at scale (our interest form is closed, as we have reached capacity). You're welcome to [read the documentation](https://developers.google.com/search/docs/appearance/structured-data/video#clip) and implement `Clip` structured data in advance. Keep in mind that Google doesn't guarantee that your structured data will show up in search results, even if your page is marked up correctly according to the Rich Results Test.
+  > Currently, Google is working with a wide range of providers to ensure that the use of `Clip` structured data works well at scale (our interest form is closed, as we have reached capacity). You're welcome to [read the documentation](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt#clip) and implement `Clip` structured data in advance. Keep in mind that Google doesn't guarantee that your structured data will show up in search results, even if your page is marked up correctly according to the Rich Results Test.
 
 ### March 2021
 
-- **March 29** : Removed the interest form for the [Key moments feature](https://developers.google.com/search/docs/appearance/structured-data/video#clips-example). The feature remains in development with a select group of providers, but the program is no longer accepting submissions.
-- **March 25** : Added new structured data documentation for [practice problems](https://developers.google.com/search/docs/appearance/structured-data/practice-problems) and [math solvers](https://developers.google.com/search/docs/appearance/structured-data/math-solvers).
+- **March 29** : Removed the interest form for the [Key moments feature](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt#clips-example). The feature remains in development with a select group of providers, but the program is no longer accepting submissions.
+- **March 25** : Added new structured data documentation for [practice problems](https://developers.google.com/search/docs/appearance/structured-data/practice-problems) and [math solvers](https://developers.google.com/search/docs/appearance/structured-data/math-solvers.md.txt).
 - **March 24** :
   - Based on user feedback, we added examples for the property `experienceRequirements.monthsOfExperience` in the [`JobPosting`
     structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/job-posting#education-and-experience-properties-beta).
-  - Added a new optional property to the [Dataset documentation](https://developers.google.com/search/docs/appearance/structured-data/dataset): `isAccessibleForFree`.
+  - Added a new optional property to the [Dataset documentation](https://developers.google.com/search/docs/appearance/structured-data/dataset.md.txt): `isAccessibleForFree`.
 - **March 17** : Updated the [video
   best practices](https://developers.google.com/search/docs/appearance/video) to more clearly emphasize the important guidelines. Removed duplicate content and updated the screenshots.
 - **March 16** : Based on user feedback, we added more examples for the [`max-snippet` robots `meta` rule](https://developers.google.com/search/docs/advanced/robots/robots_meta_tag#all), and also specified for each tag what Google's default behavior is when the tags are omitted.
@@ -2925,9 +2953,9 @@ January 5
   - `experienceRequirements`
   - `experienceRequirements.monthsOfExperience`
   - `experienceInPlaceOfEducation`
-- **March 8** : Added the `JP_E-CODE` value as an accepted value for the [`PropertyValue`](https://developers.google.com/search/docs/appearance/structured-data/book#propertyvalue-identifier) property in the [`Book`
+- **March 8** : Added the `JP_E-CODE` value as an accepted value for the [`PropertyValue`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#propertyvalue-identifier) property in the [`Book`
   documentation.](https://developers.google.com/search/docs/appearance/structured-data/book)
-- **March 1** : Removed instructions for submitting sitemaps on Google Sites from the [sitemap guide](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap). Google Sites doesn't create a sitemap for sites anymore.
+- **March 1** : Removed instructions for submitting sitemaps on Google Sites from the [sitemap guide](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap.md.txt). Google Sites doesn't create a sitemap for sites anymore.
 
 ### February 2021
 
@@ -2936,11 +2964,11 @@ January 5
 
 ### January 2021
 
-- **January 28** : Updated the [`Event` structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/event) to state that the [`offers.priceCurrency`](https://developers.google.com/search/docs/appearance/structured-data/event#offers-priceCurrency) property requires an ISO 4217 currency code.
-- **January 22** : Added documentation for the [price drop enhancement](https://developers.google.com/search/docs/appearance/structured-data/product#price-drop) for product rich results.
+- **January 28** : Updated the [`Event` structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt) to state that the [`offers.priceCurrency`](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#offers-priceCurrency) property requires an ISO 4217 currency code.
+- **January 22** : Added documentation for the [price drop enhancement](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt#price-drop) for product rich results.
 - **January 20** : Updated the [Job
   Training documentation](https://developers.google.com/search/docs/appearance/structured-data/job-training) to clarify that the appearance isn't available on Google Search right now.
-- **January 5** : Updated the [list of recommended hreflang checker tools](https://developers.google.com/search/docs/specialty/international/localized-versions#debugging-hreflang-errors) and removed those that don't work anymore.
+- **January 5** : Updated the [list of recommended hreflang checker tools](https://developers.google.com/search/docs/specialty/international/localized-versions.md.txt#debugging-hreflang-errors) and removed those that don't work anymore.
 
 ## 2020 updates
 
@@ -2948,18 +2976,18 @@ January 5
 
 - **December 4** : Migrated the following guides from the Search Console Help Center (the content hasn't changed):
   - [Large site owner's guide to managing your crawl budget](https://developers.google.com/search/docs/crawling-indexing/large-site-managing-crawl-budget)
-  - [Web hosting services](https://developers.google.com/search/docs/monitor-debug/prevent-abuse)
-  - [Keep redacted information out of Google Search](https://developers.google.com/search/docs/crawling-indexing/keep-redacted-information-out)
+  - [Web hosting services](https://developers.google.com/search/docs/monitor-debug/prevent-abuse.md.txt)
+  - [Keep redacted information out of Google Search](https://developers.google.com/search/docs/crawling-indexing/keep-redacted-information-out.md.txt)
   - [Best practices for bloggers](https://developers.google.com/search/docs/advanced/guidelines/bloggers)
-  - [`Soft 404` errors](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#soft-404-errors)
+  - [`Soft 404` errors](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#soft-404-errors)
 
 ### November 2020
 
 - **November 19** : Migrated the Google Webmaster blogs to the new [Google Search Central Blog](https://developers.google.com/search/blog).
 - **November 16** : Added a new guide about [how to join the Google Search Central office hours](https://developers.google.com/search/events/join-office-hours).
 - **November 12** :
-  - Added a new [guideline](https://developers.google.com/search/docs/appearance/structured-data/qapage#guidelines) for STEM-education related Q\&A pages.
-  - Added information about Googlebot's ability to crawl through HTTP/2 to the [Googlebot help page](https://developers.google.com/search/docs/crawling-indexing/googlebot).
+  - Added a new [guideline](https://developers.google.com/search/docs/appearance/structured-data/qapage.md.txt#guidelines) for STEM-education related Q\&A pages.
+  - Added information about Googlebot's ability to crawl through HTTP/2 to the [Googlebot help page](https://developers.google.com/search/docs/crawling-indexing/googlebot.md.txt).
 - **November 11** : Published a redesign of the entire site. Reorganized the navigation to account for a migration of over 100 new pages from the [Search Console Help
   Center](https://support.google.com/webmasters). The notable additions include:
   - [Home page](https://developers.google.com/search): Expanded the focus to include our entire audience, not just web developers.
@@ -2967,24 +2995,24 @@ January 5
   - [What's new on Google Search Central](https://developers.google.com/search/news): Check out the latest updates on Google Search, including changes to our blog, documentation, new Search events, YouTube videos, and podcast episodes.
   - [Blog landing page](https://developers.google.com/search/blog): Added a new home page for our blog, previously known as the Google Webmaster Central blog. We plan to move archived posts soon.
   - [Help landing page](https://developers.google.com/search/help): Updated to include all of our help resources. Refreshed and simplified the Webmaster FAQ into 4 pages:
-    - [Crawling and indexing FAQ](https://developers.google.com/search/help/crawling-index-faq)
-    - [Site position FAQ](https://developers.google.com/search/help/site-position-in-search-faq)
-    - [Site appearance FAQ](https://developers.google.com/search/help/site-appearance-faq)
+    - [Crawling and indexing FAQ](https://developers.google.com/search/help/crawling-index-faq.md.txt)
+    - [Site position FAQ](https://developers.google.com/search/help/site-position-in-search-faq.md.txt)
+    - [Site appearance FAQ](https://developers.google.com/search/help/site-appearance-faq.md.txt)
     - [Removing content from Google FAQ](https://developers.google.com/search/help/removing-information-from-search)
   - [Documentation landing page](https://developers.google.com/search/docs): Get an overview of the different learning paths in our documentation, including new Quickstart guides, beginner SEO guides, and advanced SEO guides.
   - [Quickstart guides](https://developers.google.com/search/docs/basics/get-started): A new set of guides for those that don't have much time to manage their site.
   - [Beginner SEO guides](https://developers.google.com/search/docs/beginner/get-started): A new set of guides for beginners who want to learn about SEO. New pages include: [Beginners guide to Search Console](https://developers.google.com/search/docs/beginner/search-console).
-  - [Advanced SEO guides](https://developers.google.com/search/docs/fundamentals/get-started): A new set of guides for advanced SEO topics. Most of the pages previously existed in the [Search Console Help Center](https://support.google.com/webmasters). New pages include:
+  - [Advanced SEO guides](https://developers.google.com/search/docs/fundamentals/get-started.md.txt): A new set of guides for advanced SEO topics. Most of the pages previously existed in the [Search Console Help Center](https://support.google.com/webmasters). New pages include:
     - [Advanced guide to Search Console](https://developers.google.com/search/docs/advanced/guidelines/search-console)
-    - [Overview of Search Appearance topics](https://developers.google.com/search/docs/appearance)
+    - [Overview of Search Appearance topics](https://developers.google.com/search/docs/appearance.md.txt)
     - [Block access to your content](https://developers.google.com/search/docs/advanced/crawling/block-access-overview)
-    - [Overview of international and multilingual site topics](https://developers.google.com/search/docs/specialty/international)
+    - [Overview of international and multilingual site topics](https://developers.google.com/search/docs/specialty/international.md.txt)
     - [What is a site move](https://developers.google.com/search/docs/crawling-indexing/what-is-site-move)
-    - [Move a site without URL changes](https://developers.google.com/search/docs/crawling-indexing/site-move-no-url-changes)
-    - [Move a site with URL changes](https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes)
+    - [Move a site without URL changes](https://developers.google.com/search/docs/crawling-indexing/site-move-no-url-changes.md.txt)
+    - [Move a site with URL changes](https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes.md.txt)
 
   > [!NOTE]
-  > To learn more about why we made these changes, read our [Goodbye Webmasters, Hello Google Search Central blog post](https://developers.google.com/search/blog/2020/11/goodbye-google-webmasters).
+  > To learn more about why we made these changes, read our [Goodbye Webmasters, Hello Google Search Central blog post](https://developers.google.com/search/blog/2020/11/goodbye-google-webmasters.md.txt).
 
 - **November 10** : Updated the timeline information for the [upcoming
   page experience ranking change](https://developers.google.com/search/docs/appearance/page-experience). The changes are planned to go live in May 2021.
@@ -2992,11 +3020,11 @@ January 5
 ### October 2020
 
 - **October 30** :
-  - Updated the [`librarySystem`](https://developers.google.com/search/docs/appearance/structured-data/book#librarysystem) `additionalProperty.value` property in the [`Book`
+  - Updated the [`librarySystem`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#librarysystem) `additionalProperty.value` property in the [`Book`
     documentation,](https://developers.google.com/search/docs/appearance/structured-data/book) replacing the `national` value with the `government` value.
-  - Updated the timeline for data-vocabulary.org support on [intro to structured data](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data) and [breadcrumb page](https://developers.google.com/search/docs/appearance/structured-data/breadcrumb). As of January 29, 2021, data-vocabulary.org markup will no longer be eligible for Google rich result features. To be eligible after January 29, 2021, you need to replace data-vocabulary.org markup with schema.org markup. Learn more about [sunsetting support for data-vocabulary](https://developers.google.com/search/blog/2020/01/data-vocabulary).
-- **October 29** : Added image ratio specifications to the [`hiringOrganization.logo` property](https://developers.google.com/search/docs/appearance/structured-data/job-posting#hiring) and the [Logo is incorrect troubleshooting section](https://developers.google.com/search/docs/appearance/structured-data/job-posting#logo-is-incorrect).
-- **October 22** : Changed the API requirement for [package tracking documentation](https://developers.google.com/search/docs/appearance/package-tracking) to state that we only accept POST requests.
+  - Updated the timeline for data-vocabulary.org support on [intro to structured data](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data.md.txt) and [breadcrumb page](https://developers.google.com/search/docs/appearance/structured-data/breadcrumb.md.txt). As of January 29, 2021, data-vocabulary.org markup will no longer be eligible for Google rich result features. To be eligible after January 29, 2021, you need to replace data-vocabulary.org markup with schema.org markup. Learn more about [sunsetting support for data-vocabulary](https://developers.google.com/search/blog/2020/01/data-vocabulary.md.txt).
+- **October 29** : Added image ratio specifications to the [`hiringOrganization.logo` property](https://developers.google.com/search/docs/appearance/structured-data/job-posting.md.txt#hiring) and the [Logo is incorrect troubleshooting section](https://developers.google.com/search/docs/appearance/structured-data/job-posting.md.txt#logo-is-incorrect).
+- **October 22** : Changed the API requirement for [package tracking documentation](https://developers.google.com/search/docs/appearance/package-tracking.md.txt) to state that we only accept POST requests.
 - **October 6** : Added new [examples
   of Web Stories](https://developers.google.com/search/docs/guides/enable-web-stories), [best
   practices for creating Web Stories](https://developers.google.com/search/docs/guides/web-stories-creation-best-practices), and [Web Story content policy](https://developers.google.com/search/docs/guides/web-stories-content-policy).
@@ -3012,17 +3040,17 @@ January 5
   - Websites for political entities (such as campaigns, parties, or elected officials) aren't eligible for this feature.
   - You must clearly attribute the specific claim that you're assessing to a distinct origin (separate from your website), whether it's another website, public statement, social media, or other traceable source.
 - **September 15** :
-  - Added support for `regionsAllowed` in the [Video documentation](https://developers.google.com/search/docs/appearance/structured-data/video). Added Microdata examples.
-  - Updated the [`EmployerAggregateRating`](https://developers.google.com/search/docs/appearance/structured-data/employer-rating) and [Review snippet documentation](https://developers.google.com/search/docs/appearance/structured-data/employer-rating) to clarify that `bestRating` and `worstRating` are recommended if you want to specify a different scale than the default 5-point system.
+  - Added support for `regionsAllowed` in the [Video documentation](https://developers.google.com/search/docs/appearance/structured-data/video.md.txt). Added Microdata examples.
+  - Updated the [`EmployerAggregateRating`](https://developers.google.com/search/docs/appearance/structured-data/employer-rating.md.txt) and [Review snippet documentation](https://developers.google.com/search/docs/appearance/structured-data/employer-rating.md.txt) to clarify that `bestRating` and `worstRating` are recommended if you want to specify a different scale than the default 5-point system.
 
 ### August 2020
 
-- **August 31** : Updated the [Image License documentation](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata) to state that the Licensable badge is now out of beta.
+- **August 31** : Updated the [Image License documentation](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata.md.txt) to state that the Licensable badge is now out of beta.
 - **August 27** : Clarified merging of user-agent groups in the file [robots.txt](https://developers.google.com/search/reference/robots_txt) documentation.
 - **August 26** : Added new documentation about the [Home activities](https://developers.google.com/search/docs/appearance/structured-data/home-activities) rich result.
-- **August 21** : Added section to the [Fix Search-related JavaScript problems](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript) guide to explain how to deal with non-HTTP network connections.
-- **August 10** : Clarified that there are different [`Article` requirements](https://developers.google.com/search/docs/appearance/structured-data/article) for AMP and non-AMP pages. Added an example of a non-AMP page with `Article` structured data.
-- **August 5** : Clarified in all relevant documentation that images referenced in structured data must be in one of the image file formats that are [supported by Google Images](https://developers.google.com/search/docs/appearance/google-images#supported-image-formats).
+- **August 21** : Added section to the [Fix Search-related JavaScript problems](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript.md.txt) guide to explain how to deal with non-HTTP network connections.
+- **August 10** : Clarified that there are different [`Article` requirements](https://developers.google.com/search/docs/appearance/structured-data/article.md.txt) for AMP and non-AMP pages. Added an example of a non-AMP page with `Article` structured data.
+- **August 5** : Clarified in all relevant documentation that images referenced in structured data must be in one of the image file formats that are [supported by Google Images](https://developers.google.com/search/docs/appearance/google-images.md.txt#supported-image-formats).
 - **August 3** :
   - Added a new episode about [Indexing (JavaScript) comments](https://search-off-the-record.libsyn.com/indexing-javascript-comments-and-much-more-0) to the [Search Off the Record podcast page](https://developers.google.com/search/podcasts/search-off-the-record).
   - Added the optional `jobBenefits` and `industry` properties to the [Estimated salary documentation](https://developers.google.com/search/docs/appearance/structured-data/estimated-salary), to match the existing requirements in the Rich Results Test.
@@ -3030,8 +3058,8 @@ January 5
 ### July 2020
 
 - **July 24** : Added new episodes to the [Search Off the Record podcast page](https://developers.google.com/search/podcasts/search-off-the-record).
-- **July 23** : Clarified that Google Search is still working on way to display [multiple fact checks](https://developers.google.com/search/docs/appearance/structured-data/factcheck#multiple-factchecks) for a single page, and that you may not see a rich result that features multiple fact checks in Google Search right away.
-- **July 21** : Added a new optional property to the [Dataset documentation](https://developers.google.com/search/docs/appearance/structured-data/dataset), `measurementTechnique`, and clarified that the `name` property should be unique for distinct datasets.
+- **July 23** : Clarified that Google Search is still working on way to display [multiple fact checks](https://developers.google.com/search/docs/appearance/structured-data/factcheck.md.txt#multiple-factchecks) for a single page, and that you may not see a rich result that features multiple fact checks in Google Search right away.
+- **July 21** : Added a new optional property to the [Dataset documentation](https://developers.google.com/search/docs/appearance/structured-data/dataset.md.txt), `measurementTechnique`, and clarified that the `name` property should be unique for distinct datasets.
 - **July 20** : Added the `reviewCount` property to the [`EmployerAggregateRating`
   documentation](https://developers.google.com/search/docs/appearance/structured-data/employer-rating), to match the existing requirements in the Rich Results Test. Either `reviewCount` or `ratingCount` is required.
 - **July 16** :
@@ -3039,21 +3067,21 @@ January 5
     documentation](https://developers.google.com/search/docs/appearance/structured-data/book) to explain how select book providers can provide a feed of data to Google with the structured data schema.
   - Clarified that [product rich
     results](https://developers.google.com/search/docs/appearance/structured-data/product#guidelines) only support pages that are about a single product, not category pages or lists.
-  - Based on [Lighthouse recommendations](https://developer.chrome.com/docs/lighthouse/seo/font-size), specified what small font size means on the [Common mistakes](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing#small-font-size) page of the Mobile SEO guidelines.
-- **July 8** : Clarified that Google Search understands when you specify [multiple items](https://developers.google.com/search/docs/appearance/structured-data/sd-policies#multiple-items) on a page with structured data, whether you nest the items or specify each item individually.
-- **July 1** : Clarified in the AMP logo guidelines in the [`Article` documentation](https://developers.google.com/search/docs/appearance/structured-data/article) that the logo can be in any format supported by Google Images.
+  - Based on [Lighthouse recommendations](https://developer.chrome.com/docs/lighthouse/seo/font-size), specified what small font size means on the [Common mistakes](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing.md.txt#small-font-size) page of the Mobile SEO guidelines.
+- **July 8** : Clarified that Google Search understands when you specify [multiple items](https://developers.google.com/search/docs/appearance/structured-data/sd-policies.md.txt#multiple-items) on a page with structured data, whether you nest the items or specify each item individually.
+- **July 1** : Clarified in the AMP logo guidelines in the [`Article` documentation](https://developers.google.com/search/docs/appearance/structured-data/article.md.txt) that the logo can be in any format supported by Google Images.
 
 ### June 2020
 
 - **June 30** : Added more examples to the [Carousel
   documentation](https://developers.google.com/search/docs/appearance/structured-data/carousel), and clarified the supported types and how to add them.
-- **June 23** : Added a note to differentiate between guidelines applicable to [`Article` AMP logo](https://developers.google.com/search/docs/appearance/structured-data/article) guidelines and generic [`Logo`](https://developers.google.com/search/docs/appearance/structured-data/logo) guidelines.
-- **June 19** : Added a `contentUrl` requirement to the [Image License documentation](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata) to make it clear that the feature needs a specific image URL to apply the license to.
-- **June 16** : Added browser-native lazy-loading to the [lazy-loading guide](https://developers.google.com/search/docs/crawling-indexing/javascript/lazy-loading).
-- **June 15** : Added [monitoring rich results video](https://www.youtube.com/watch?v=Vmfvf8nG09k) and more detailed information on using Search Console to monitor rich results to structured data reference pages (for example [Product](https://developers.google.com/search/docs/appearance/structured-data/product#monitor), [`Recipe`](https://developers.google.com/search/docs/appearance/structured-data/recipe#monitor), [FAQ](https://developers.google.com/search/docs/appearance/structured-data/faqpage#monitor)).
+- **June 23** : Added a note to differentiate between guidelines applicable to [`Article` AMP logo](https://developers.google.com/search/docs/appearance/structured-data/article.md.txt) guidelines and generic [`Logo`](https://developers.google.com/search/docs/appearance/structured-data/logo) guidelines.
+- **June 19** : Added a `contentUrl` requirement to the [Image License documentation](https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata.md.txt) to make it clear that the feature needs a specific image URL to apply the license to.
+- **June 16** : Added browser-native lazy-loading to the [lazy-loading guide](https://developers.google.com/search/docs/crawling-indexing/javascript/lazy-loading.md.txt).
+- **June 15** : Added [monitoring rich results video](https://www.youtube.com/watch?v=Vmfvf8nG09k) and more detailed information on using Search Console to monitor rich results to structured data reference pages (for example [Product](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt#monitor), [`Recipe`](https://developers.google.com/search/docs/appearance/structured-data/recipe.md.txt#monitor), [FAQ](https://developers.google.com/search/docs/appearance/structured-data/faqpage#monitor)).
 - **June 12** : Added `.webp`, too, to the list of supported image file formats for [`Logo` structured data](https://developers.google.com/search/docs/appearance/structured-data/logo).
 - **June 10** : Added `.svg` to the list of supported image file formats for [`Logo` structured data](https://developers.google.com/search/docs/appearance/structured-data/logo).
-- **June 8** : Clarified that the recognized values for an `applicationCategory` on a [Software App](https://developers.google.com/search/docs/appearance/structured-data/software-app) are of type `Text`.
+- **June 8** : Clarified that the recognized values for an `applicationCategory` on a [Software App](https://developers.google.com/search/docs/appearance/structured-data/software-app.md.txt) are of type `Text`.
 - **June 4** : Clarified in the [Sitelinks search box](https://developers.google.com/search/docs/appearance/structured-data/sitelinks-searchbox) documentation that the search query parameter key can be any string permitted by [RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.4); it doesn't have to be `q`.
 
 ### May 2020
@@ -3066,8 +3094,8 @@ January 5
 - **May 15** : Added a note to the [`Product`
   structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/product) about how to be eligible for the Google Shopping tab. Learn more about the [data
   and eligibility requirements](https://support.google.com/merchants/answer/9199328).
-- **May 12** : Extended the [JavaScript SEO basics guide](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics) to include [guidance on JavaScript-generated links](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics#how-googlebot-processes-javascript), [History API
-  instead of fragment URLs](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics#use-history-api), and [avoiding `soft 404` errors](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics#avoid-soft-404s).
+- **May 12** : Extended the [JavaScript SEO basics guide](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt) to include [guidance on JavaScript-generated links](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt#how-googlebot-processes-javascript), [History API
+  instead of fragment URLs](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics#use-history-api), and [avoiding `soft 404` errors](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt#avoid-soft-404s).
 - **May 11** :
   - Added guidance on [how
     to reduce the Googlebot crawl rate](https://developers.google.com/search/docs/crawling-indexing/reduce-crawl-rate).
@@ -3077,30 +3105,30 @@ January 5
     - **Corporate Contact structured data** : We now automatically discover corporate contact information to include in Google knowledge panels. If you're verified as an official representative of a Google knowledge panel, you can suggest a change directly. Learn more at [Update your Google knowledge panel](https://support.google.com/knowledgepanel/answer/7534842).
     - **Place Actions structured data** : Instead, scheduling providers can use the [Maps Booking API](https://developers.google.com/maps-booking/guides/starter-integration/overview). Google Search continues to support existing partners that added Place Action structured data prior to June 17, 2019.
 - **May 7** :
-  - The Rich Result Test now supports [`Article` structured data on AMP pages](https://developers.google.com/search/docs/appearance/structured-data/article#examples). Removed the following recommended fields from the documentation because we no longer need these signals: `description`, `publisher.logo.height`, `publisher.logo.width`.
+  - The Rich Result Test now supports [`Article` structured data on AMP pages](https://developers.google.com/search/docs/appearance/structured-data/article.md.txt#examples). Removed the following recommended fields from the documentation because we no longer need these signals: `description`, `publisher.logo.height`, `publisher.logo.width`.
   - Added a [video](https://www.youtube.com/watch?v=JlamLfyFjTA) to the [Submit URLs guide](https://developers.google.com/search/docs/guides/submit-URLs) that explains what a sitemap is, whether you need one or not, and how to submit a sitemap and track its status using Search Console.
   - Removed the page about joining the Mini-apps Early Adopters Program. The program is no longer accepting submissions.
 - **May 6** : Added information about how to [test robots.txt markup](https://developers.google.com/search/reference/robots_txt#testing).
 - **May 5** :
   - Updated the [Job posting
     content policies](https://developers.google.com/search/docs/appearance/structured-data/job-posting#content-policies) to have a clear structure and language that describes what Google will enforce. Added the following new policies:
-    - [Irrelevant content](https://developers.google.com/search/docs/appearance/structured-data/job-posting#irrelevant-content)
-    - [Incomplete content](https://developers.google.com/search/docs/appearance/structured-data/job-posting#incomplete)
+    - [Irrelevant content](https://developers.google.com/search/docs/appearance/structured-data/job-posting.md.txt#irrelevant-content)
+    - [Incomplete content](https://developers.google.com/search/docs/appearance/structured-data/job-posting.md.txt#incomplete)
     - We don't allow job postings on behalf of an organization or company without authorization.
-    - [Advertisements disguised as a job posting](https://developers.google.com/search/docs/appearance/structured-data/job-posting#advertisements)
+    - [Advertisements disguised as a job posting](https://developers.google.com/search/docs/appearance/structured-data/job-posting.md.txt#advertisements)
   - Updated `SpecialAnnouncement` structured data to include information on [how to use Search Console](https://developers.google.com/search/docs/appearance/structured-data/special-announcements#monitor) to troubleshoot markup and analyze the rich result performance.
   - Podcasts on Google information has migrated to the new [Podcasts Manager](https://support.google.com/podcast-publishers/answer/9476656) help center. Visit the help center to learn how to get your podcast on Google.
-- **May 1** : Updated the [Indexing API documentation](https://developers.google.com/search/apis/indexing-api/v3/using-api#removing) to include the `<meta name="robots" content="noindex" />` tag as an option for removing a URL.
+- **May 1** : Updated the [Indexing API documentation](https://developers.google.com/search/apis/indexing-api/v3/using-api.md.txt#removing) to include the `<meta name="robots" content="noindex" />` tag as an option for removing a URL.
 
 ### April 2020
 
 - **April 30** :
-  - Added a note to explain that it isn't reliable to use [cached links](https://support.google.com/websearch/answer/1687222) for debugging purposes. Instead, use the [URL Inspection Tool](https://support.google.com/webmasters/answer/9012289) because it has the a most up-to-date version of your page. The note was added to the [general debugging guide](https://developers.google.com/search/help/debug), [JavaScript debugging guide](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript), and the [structured data debugging guide](https://developers.google.com/search/docs/guides/prototype#fix-page).
+  - Added a note to explain that it isn't reliable to use [cached links](https://support.google.com/websearch/answer/1687222) for debugging purposes. Instead, use the [URL Inspection Tool](https://support.google.com/webmasters/answer/9012289) because it has the a most up-to-date version of your page. The note was added to the [general debugging guide](https://developers.google.com/search/help/debug.md.txt), [JavaScript debugging guide](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript.md.txt), and the [structured data debugging guide](https://developers.google.com/search/docs/guides/prototype#fix-page).
   - Updated the [Breadcrumb
     structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/breadcrumb) to have some explanatory text on how breadcrumbs relate to URL paths.
 - **April 27** : Updated the [Job
   training structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/job-training) to require 2-letter country codes for provider addresses.
-- **April 23** : Added [missing meta description issue](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing#missing-meta-description) to the list of error messages in the [mobile-first indexing best practices](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing).
+- **April 23** : Added [missing meta description issue](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing.md.txt#missing-meta-description) to the list of error messages in the [mobile-first indexing best practices](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing.md.txt).
 - **April 22** : Updated the [Paywalled
   content structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/paywalled-content) to include a list of supported types.
 - **April 20** : Added [COVID-19
@@ -3118,11 +3146,11 @@ January 5
   - Updated the [`JobPosting` structured data
     documentation](https://developers.google.com/search/docs/appearance/structured-data/job-posting) to highlight markup for work from home jobs. Added a screenshot of the feature in Google Search, a code example, and a banner at the top of the documentation.
 - **April 14** : Added optional properties to the [`Event`
-  structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/event): [`organizer`](https://developers.google.com/search/docs/appearance/structured-data/event#organizer), [`organizer.name`](https://developers.google.com/search/docs/appearance/structured-data/event#organizer-name), [`organizer.url`](https://developers.google.com/search/docs/appearance/structured-data/event#organizer-url).
+  structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/event): [`organizer`](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#organizer), [`organizer.name`](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#organizer-name), [`organizer.url`](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#organizer-url).
 - **April 10** : Updated the [COVID-19 announcements documentation](https://developers.google.com/search/docs/appearance/structured-data/special-announcements). The Rich Results Test now supports `SpecialAnnouncements`.
 - **April 8** :
   - Added a note to [COVID-19
-    announcements documentation](https://developers.google.com/search/docs/appearance/structured-data/special-announcements) to clarify that businesses should use [`LocalBusiness` markup](https://developers.google.com/search/docs/appearance/structured-data/local-business) or [Google
+    announcements documentation](https://developers.google.com/search/docs/appearance/structured-data/special-announcements) to clarify that businesses should use [`LocalBusiness` markup](https://developers.google.com/search/docs/appearance/structured-data/local-business.md.txt) or [Google
     My Business](https://support.google.com/business/answer/9773423) to update store hours and post updates.
   - Added a new case study that showcases how [Saramin
     increased organic Search traffic 2x by investing in SEO](https://developers.google.com/search/case-studies/saramin-case-study).
@@ -3133,33 +3161,33 @@ January 5
     announcements documentation](https://developers.google.com/search/docs/appearance/structured-data/special-announcements). The Structured Data Testing Tool now supports `announcementLocation`. Added a new screenshot of an announcement in Search results. Added a new example that shows a page with multiple announcements, and added Microdata examples.
   - Added new guidance on how to [add structured
     data with JavaScript](https://developers.google.com/search/docs/appearance/structured-data/generate-structured-data-with-javascript).
-- **April 2** : Added new guidance on how to [submit COVID-19 announcements in Search Console](https://developers.google.com/search/docs/appearance/structured-data/special-announcements#using-search-console). Added information on [how to sign up for the technical support group](https://developers.google.com/search/docs/appearance/structured-data/special-announcements#troubleshooting). At first, we'll be accepting only national government domains and US state level agencies. For more information about the group, [read our announcement](https://developers.google.com/search/blog/2020/03/health-organizations-covid19).
+- **April 2** : Added new guidance on how to [submit COVID-19 announcements in Search Console](https://developers.google.com/search/docs/appearance/structured-data/special-announcements#using-search-console). Added information on [how to sign up for the technical support group](https://developers.google.com/search/docs/appearance/structured-data/special-announcements#troubleshooting). At first, we'll be accepting only national government domains and US state level agencies. For more information about the group, [read our announcement](https://developers.google.com/search/blog/2020/03/health-organizations-covid19.md.txt).
 
 ### March 2020
 
 - **March 31** : Added new guidance for how to [add structured data to COVID-19 announcements](https://developers.google.com/search/docs/appearance/structured-data/special-announcements). This feature is still under development, and you may see changes in requirements, guidelines, and how the feature appears in Google Search.
-- **March 26** : Added new guidance for how to [pause your online business](https://developers.google.com/search/docs/crawling-indexing/pause-online-business).
+- **March 26** : Added new guidance for how to [pause your online business](https://developers.google.com/search/docs/crawling-indexing/pause-online-business.md.txt).
 - **March 24** :
   - In the [Estimated Salary
     documentation](https://developers.google.com/search/docs/appearance/structured-data/estimated-salary), replaced the `unitText` property with the `duration` property. Starting March 24, 2020, we updated the documentation to require `duration` instead of `unitText`. While we continue to support `unitText`, we require `duration` moving forward. We recommend that you switch over to using `duration`, if possible.
   - Updated the [Google
     Podcasts brand assets](https://developers.google.com/search/docs/guides/podcast-management#direct-link) to include localized Google Podcasts badges in 49 languages.
-- **March 23** : Added a new recommended field to the [Package tracking developer documentation](https://developers.google.com/search/docs/appearance/package-tracking): `CanReschedule`.
+- **March 23** : Added a new recommended field to the [Package tracking developer documentation](https://developers.google.com/search/docs/appearance/package-tracking.md.txt): `CanReschedule`.
 - **March 20** :
   - Added the Latest updates page (this page), which includes the major updates made to the Google Search developer documentation in March 2020.
-  - Added a new recommendation to the [JavaScript best practices](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics#caching) about using long-lived caching to avoid caching issues with Googlebot. Added a new step about using content fingerprinting to the [JavaScript troubleshooting documentation](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript).
+  - Added a new recommendation to the [JavaScript best practices](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt#caching) about using long-lived caching to avoid caching issues with Googlebot. Added a new step about using content fingerprinting to the [JavaScript troubleshooting documentation](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript.md.txt).
   - Added a note to the [`Event`
     structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/event) about the new optional properties that were added on March 16-17, 2020. The Rich Results Test now supports the new properties.
 - **March 17** :
   - Added optional properties to the [`Event`
-    structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/event): [`eventAttendanceMode`](https://developers.google.com/search/docs/appearance/structured-data/event#event-attendance-mode), [`VirtualLocation`](https://developers.google.com/search/docs/appearance/structured-data/event#virtual-location) type for `location`, [`location.url`](https://developers.google.com/search/docs/appearance/structured-data/event#location-url) for online events. For more information about this change, check out our [blog post](https://developers.google.com/search/blog/2020/03/new-properties-virtual-or-canceled-events).
+    structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/event): [`eventAttendanceMode`](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#event-attendance-mode), [`VirtualLocation`](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#virtual-location) type for `location`, [`location.url`](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#location-url) for online events. For more information about this change, check out our [blog post](https://developers.google.com/search/blog/2020/03/new-properties-virtual-or-canceled-events.md.txt).
   - Added [general
     troubleshooting info](https://developers.google.com/search/docs/appearance/structured-data/sitelinks-searchbox#troubleshooting) to the Sitelinks search box documentation. Clarified that while Google Search may automatically display a search box scoped to your website, it's still helpful to explicitly provide information by adding `WebSite` structured data, which can help Google better understand your site.
   - In the [Job training developer documentation](https://developers.google.com/search/docs/appearance/structured-data/job-training), removed the `hasCredential` property from the list of recommended properties for `EducationalOccupationalProgram`. This is because `hasCredential` is only recommended for the `Organization` type on schema.org, not `EducationalOccupationalProgram`.
-- **March 16** : Added optional properties to the [`Event` structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/event): [`eventStatus`](https://developers.google.com/search/docs/appearance/structured-data/event#eventstatus) and [`previousStartDate`](https://developers.google.com/search/docs/appearance/structured-data/event#previous-start-date). For more information about this change, check out our [blog post](https://developers.google.com/search/blog/2020/03/new-properties-virtual-or-canceled-events).
+- **March 16** : Added optional properties to the [`Event` structured data documentation](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt): [`eventStatus`](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#eventstatus) and [`previousStartDate`](https://developers.google.com/search/docs/appearance/structured-data/event.md.txt#previous-start-date). For more information about this change, check out our [blog post](https://developers.google.com/search/blog/2020/03/new-properties-virtual-or-canceled-events.md.txt).
 - **March 5** :
-  - In the [`Product` structured data](https://developers.google.com/search/docs/appearance/structured-data/product) documentation, clarified that one of the following properties is required: `review`, `aggregateRating`, `offers`. Changed the expected type for `brand` to be `Brand` or `Organization` (`Thing` is still accepted).
+  - In the [`Product` structured data](https://developers.google.com/search/docs/appearance/structured-data/product.md.txt) documentation, clarified that one of the following properties is required: `review`, `aggregateRating`, `offers`. Changed the expected type for `brand` to be `Brand` or `Organization` (`Thing` is still accepted).
   - Added new recommended fields to the [Package
     tracking developer documentation](https://developers.google.com/search/docs/appearance/package-tracking): `TimestampEvent` and `LocationEvent`.
 - **March 3** : Added [hostload
-  issues](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing#hostload-issues) to the list of error messages in the [mobile-first indexing best practices](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing).
+  issues](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing#hostload-issues) to the list of error messages in the [mobile-first indexing best practices](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing.md.txt).

@@ -1,5 +1,3 @@
-# Book Schema for Google Search | Google Search Central
-
 # Book actions (`Book`) structured data
 
 Book actions make Google Search an entry point to discover books and authors. This enables
@@ -31,16 +29,15 @@ likely to be positioned higher in an ordering. There's no way to control the ord
 ## Get started
 
 To successfully implement Book actions, you must build your feed in accordance with the Book
-actions [structured data type definitions](https://developers.google.com/search/docs/appearance/structured-data/book#structured-data-type-definitions),
+actions [structured data type definitions](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#structured-data-type-definitions),
 but first review the following sections:
 
-- [Guidelines](https://developers.google.com/search/docs/appearance/structured-data/book#guidelines)
-- [Create your feed](https://developers.google.com/search/docs/appearance/structured-data/book#create-your-feed)
-- [Test your feed with the Data
-  Feed validation tool](https://developers.google.com/search/docs/appearance/structured-data/book#test-your-feed-with-the-data-feed-validation-tool)
-- [Host your feed file](https://developers.google.com/search/docs/appearance/structured-data/book#host-your-feed-file)
-- [Submit your feed file for review](https://developers.google.com/search/docs/appearance/structured-data/book#submit-your-feed-file-for-review)
-- [Update your feed as needed](https://developers.google.com/search/docs/appearance/structured-data/book#update-your-feed-as-needed)
+- [Guidelines](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#guidelines)
+- [Create your feed](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#create-your-feed)
+- [Check your feed for common errors](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#check-your-feed-for-common-errors)
+- [Host your feed file](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#host-your-feed-file)
+- [Submit your feed file for review](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#submit-your-feed-file-for-review)
+- [Update your feed as needed](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#update-your-feed-as-needed)
 
 ## Guidelines
 
@@ -49,13 +46,13 @@ familiar with some important details and key concepts. Further, your feed must m
 standardized format specifications.
 
 To help you do that, follow the guidelines described here, in addition to the
-[general structured data guidelines](https://developers.google.com/search/docs/appearance/structured-data/sd-policies) and the
-[Search Essentials](https://developers.google.com/search/docs/essentials). The guidelines are as follows:
+[general structured data guidelines](https://developers.google.com/search/docs/appearance/structured-data/sd-policies.md.txt) and the
+[Search Essentials](https://developers.google.com/search/docs/essentials.md.txt). The guidelines are as follows:
 
-- [Works and editions](https://developers.google.com/search/docs/appearance/structured-data/book#works-and-editions)
-- [Library systems and library members](https://developers.google.com/search/docs/appearance/structured-data/book#library-systems-and-library-members)
-- [ISBN and other supported identifiers](https://developers.google.com/search/docs/appearance/structured-data/book#isbn-and-other-supported-identifiers)
-- [Links](https://developers.google.com/search/docs/appearance/structured-data/book#links)
+- [Works and editions](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#works-and-editions)
+- [Library systems and library members](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#library-systems-and-library-members)
+- [ISBN and other supported identifiers](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#isbn-and-other-supported-identifiers)
+- [Links](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#links)
 
 ### Works and editions
 
@@ -69,12 +66,12 @@ an edition. In this case, the work *Charlotte's Web* might have a first edition,
 edition, abridged edition, French translation edition, and so on.
 
 This distinction is especially important in the feed where it might not be immediately
-obvious. There are two [`Book` entities](https://developers.google.com/search/docs/appearance/structured-data/book#book-entity):
+obvious. There are two [`Book` entities](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#book-entity):
 
-- [`Book` (`Work`)](https://developers.google.com/search/docs/appearance/structured-data/book#book-work) is the "top level" `Book` entity:
+- [`Book` (`Work`)](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#book-work) is the "top level" `Book` entity:
   - `workExample` is a property of `Work` and specifies one and only one instance of a `Book` (`Edition`).
   - There must be at least one `workExample` for each `Work`.
-- [`Book` (`Edition`)](https://developers.google.com/search/docs/appearance/structured-data/book#book-edition) is the "lower level" `Book` entity.
+- [`Book` (`Edition`)](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#book-edition) is the "lower level" `Book` entity.
 
 It helps to remember that there can be multiple editions of a work. We recommend that you
 group these editions together as much as possible. This helps Google systems leverage all of
@@ -89,10 +86,10 @@ them into multiple work records, but each work record must have the following:
 > [!NOTE]
 > **Note:** This section is relevant for providers who lend books.
 
-The [`Library entity`](https://developers.google.com/search/docs/appearance/structured-data/book#library-entity) is
+The [`Library entity`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#library-entity) is
 the "top level" `Library` entity type. It's an abstract construct, which consists
-of a [`LibrarySystem`](https://developers.google.com/search/docs/appearance/structured-data/book#librarysystem) entity and each "lower level"
-[`Library (member)`](https://developers.google.com/search/docs/appearance/structured-data/book#library-member) entity of that library system.
+of a [`LibrarySystem`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#librarysystem) entity and each "lower level"
+[`Library (member)`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#library-member) entity of that library system.
 
 The `LibrarySystem` entity is an abstraction and represents a collaborative
 network of library *members*. For example, Austin Public Library can be specified as a
@@ -131,7 +128,7 @@ Google Search prefers ISBN-13, but you can alternatively provide the following:
 > They might not be surfaced to users in Google Search. However, the
 > following practices might help facilitate a correct match:
 >
-> - Group all of the [`Edition`](https://developers.google.com/search/docs/appearance/structured-data/book#book-edition) entities under the same [Work](https://developers.google.com/search/docs/appearance/structured-data/book#book-work), and ensure at least one of the editions has an ISBN, OCLC Number, LCCN, or JP e-code. Google Search may be able to leverage the available ISBN or other supported identifier from another edition.
+> - Group all of the [`Edition`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#book-edition) entities under the same [Work](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#book-work), and ensure at least one of the editions has an ISBN, OCLC Number, LCCN, or JP e-code. Google Search may be able to leverage the available ISBN or other supported identifier from another edition.
 > - Add third-party identifiers. Google Search currently supports two widely used library control numbers: OCLC Number or LCCN. If you have either of these, provide them.
 
 ### Links
@@ -139,7 +136,7 @@ Google Search prefers ISBN-13, but you can alternatively provide the following:
 To make sure people have the best experience finding your books, links in your feed must
 adhere to the following guidelines:
 
-- If you have duplicate pages for the same content, the link must be the [canonical URL](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls) that contains the book title and other book information.
+- If you have duplicate pages for the same content, the link must be the [canonical URL](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls.md.txt) that contains the book title and other book information.
 - After a user clicks a read action or borrow action link, the user must be sent to a page that directly supports the purchase or borrowing of the book. Specifically, don't point action links to pages with more links that must be clicked in order to purchase or borrow the content. For example, don't send people to a search results page or a product summary page.
 
 ## Create your feed
@@ -148,12 +145,12 @@ adhere to the following guidelines:
 > **Note:** The use of this feature is limited to book providers that have [filled out the interest form](https://docs.google.com/forms/d/e/1FAIpQLSd0mg2Yu6kNzBjkFSWQuiu61WIXo2kBmwFuwaA3JHiw7MfCdg/viewform) and have been onboarded.
 
 If your site sells books for users to buy, you must upload your
-[`Book`](https://developers.google.com/search/docs/appearance/structured-data/book#book-entity) feed. A Google support team will reach out to you
+[`Book`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#book-entity) feed. A Google support team will reach out to you
 with details about how and where to upload your feed.
 
 If your site lends books for users to borrow, you must upload two separate feeds: your
-[`Book`](https://developers.google.com/search/docs/appearance/structured-data/book#book-entity) feed and your
-[`Library`](https://developers.google.com/search/docs/appearance/structured-data/book#library-entity) feed. A Google support team will reach out
+[`Book`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#book-entity) feed and your
+[`Library`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#library-entity) feed. A Google support team will reach out
 to you with details about how and where to upload your feed.
 
 ### Adhere to feed file size,
@@ -165,7 +162,7 @@ The requirements are as follows:
   - An uncompressed feed file's size must be less than 1 GB.
   - A feed file that's to be compressed must be less than 1 GB. If your uncompressed feed file exceeds 1 GB, you must split the uncompressed feed file into multiple files.
 - You can compress feed files. They must be formatted into a zip, gz, tar, tar.gz, JAR, ar, arj, cpio, or dump archive file.
-- If you have multiple feed files, you can upload them as is, or if you prefer, you can include them as part of a [sitemap index file](https://developers.google.com/search/docs/crawling-indexing/sitemaps/large-sitemaps).
+- If you have multiple feed files, you can upload them as is, or if you prefer, you can include them as part of a [sitemap index file](https://developers.google.com/search/docs/crawling-indexing/sitemaps/large-sitemaps.md.txt).
 - Single feed files must have the `.json` filename extension.
 
 ### Adhere to feed content requirements
@@ -174,20 +171,15 @@ Be especially aware of the following feed content requirements that you must adh
 
 - The feed mustn't contain stale entities. Stale entities are entities with `availabilityEnds` set to a date that has passed or entities that are no longer available on your site.
 - All deep links, such as `urlTemplate`, and all URLs, such as `url`, that you include in your feed must be production URLs. Don't use QA, development, or any other type of non-production URL.
-- All URLs, such as `url`, must be [canonical](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls).
+- All URLs, such as `url`, must be [canonical](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls.md.txt).
 - Each entity in your feed must specify the following properties:
   - A unique ID: `@id`
   - A unique URL: `url`
   - A unique deep link: `urlTemplate`
 
-## Test your feed with the Data Feed
-validation tool
+## Check your feed for common errors
 
-We recommend the following troubleshooting steps for resolving common errors and warnings
-on the [Data Feed validation tool](https://actions.google.com/tools/feed-validator/u/0/):
-
-- Make sure that you have the correct option selected in the **Validate on** field.
-  Select **Books Action** for the `Book` entity.
+Before you host your feed, check it for the following common errors:
 
 - Verify that the value of `@type` is spelled correctly.
 - Make sure that the value of `@context` is set properly. Set `"@context": "https://schema.org"` for both `ReadAction` and `BorrowAction`.
@@ -242,8 +234,8 @@ more information about your content, which can provide a better user experience.
 
 Every schema.org data feed file delivered to Google must contain one single entity of
 [`DataFeed`](https://schema.org/DataFeed) at the root level. All
-[`Book`](https://developers.google.com/search/docs/appearance/structured-data/book#book-entity) and
-[`Library`](https://developers.google.com/search/docs/appearance/structured-data/book#library-entity) entities must be listed under the
+[`Book`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#book-entity) and
+[`Library`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#library-entity) entities must be listed under the
 `dataFeedElement` field of the `DataFeed` entity.
 
 The Google-supported properties are the following:
@@ -252,7 +244,7 @@ The Google-supported properties are the following:
 |---|---|
 | `@context` | [`Text`](https://schema.org/Text) Set to `https://schema.org`. |
 | `@type` | [`Text`](https://schema.org/Text) Set to `DataFeed`. |
-| `dataFeedElement` | [`Book`](https://schema.org/Book) or [`LibrarySystem`](https://schema.org/LibrarySystem) Set to either a single [`Book`](https://schema.org/Book) entity or [`LibrarySystem`](https://schema.org/LibrarySystem) entity. Otherwise, set to an array of either only `Book` entities or `LibrarySystem` entities. Don't set this to an array that includes both `Book` entities and `LibrarySystem` entities. Example use in a `Book` feed: ``` { "@context": "https://schema.org", "@type": "DataFeed", "dataFeedElement": [ { "@context": "https://schema.org", "@type": "Book", "@id": "https://example.com/work/the_catcher_in_the_rye", "url": "https://example.com/work/the_catcher_in_the_rye", "name": "The Catcher in the Rye", "author": { "@type": "Person", "name": "J.D. Salinger" }, "sameAs": "https://en.wikipedia.org/wiki/The_Catcher_in_the_Rye", "workExample": [ { "@type": "Book", "@id": "https://example.com/edition/the_catcher_in_the_rye_paperback", "isbn": "9787543321724", "bookEdition": "Mass Market Paperback", "bookFormat": "https://schema.org/Paperback", "inLanguage": "en", ... }, ... ] } ], "dateModified": "2018-09-10T13:58:26.892Z" } ``` Example use in a `LibrarySystem` feed: ``` { "@context": "https://schema.org", "@type": "DataFeed", "dataFeedElement": [ { "@context": "https://schema.org", "@type": "LibrarySystem", "@id": "https://example.com/library-systems/100", "name": "Santa Clara County Library District", "additionalProperty": [ { "@type": "PropertyValue", "name": "librarytype", "value": "public" } ], ... }, ... ], "dateModified": "2018-09-10T13:58:26.892Z" } ``` > [!WARNING] > **Warning:** As described in > [Create your feed](https://developers.google.com/search/docs/appearance/structured-data/book#create-your-feed), if you have both a > [`Book`](https://developers.google.com/search/docs/appearance/structured-data/book#book-entity) feed and a [`Library`](https://developers.google.com/search/docs/appearance/structured-data/book#library-entity) > feed, they must be two separate feeds files. Therefore, for any given > `DataFeed` entity, you can set its `dataFeedElement` property > according to one and only one of the following conditions: > - Set `dataFeedElement` to either a single `Book` entity or an array of `Book` entities. > - Set `dataFeedElement` to either a single `LibrarySystem` entity or an array of `LibrarySystem` entities. |
+| `dataFeedElement` | [`Book`](https://schema.org/Book) or [`LibrarySystem`](https://schema.org/LibrarySystem) Set to either a single [`Book`](https://schema.org/Book) entity or [`LibrarySystem`](https://schema.org/LibrarySystem) entity. Otherwise, set to an array of either only `Book` entities or `LibrarySystem` entities. Don't set this to an array that includes both `Book` entities and `LibrarySystem` entities. Example use in a `Book` feed: ``` { "@context": "https://schema.org", "@type": "DataFeed", "dataFeedElement": [ { "@context": "https://schema.org", "@type": "Book", "@id": "https://example.com/work/the_catcher_in_the_rye", "url": "https://example.com/work/the_catcher_in_the_rye", "name": "The Catcher in the Rye", "author": { "@type": "Person", "name": "J.D. Salinger" }, "sameAs": "https://en.wikipedia.org/wiki/The_Catcher_in_the_Rye", "workExample": [ { "@type": "Book", "@id": "https://example.com/edition/the_catcher_in_the_rye_paperback", "isbn": "9787543321724", "bookEdition": "Mass Market Paperback", "bookFormat": "https://schema.org/Paperback", "inLanguage": "en", ... }, ... ] } ], "dateModified": "2018-09-10T13:58:26.892Z" } ``` Example use in a `LibrarySystem` feed: ``` { "@context": "https://schema.org", "@type": "DataFeed", "dataFeedElement": [ { "@context": "https://schema.org", "@type": "LibrarySystem", "@id": "https://example.com/library-systems/100", "name": "Santa Clara County Library District", "additionalProperty": [ { "@type": "PropertyValue", "name": "librarytype", "value": "public" } ], ... }, ... ], "dateModified": "2018-09-10T13:58:26.892Z" } ``` > [!WARNING] > **Warning:** As described in > [Create your feed](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#create-your-feed), if you have both a > [`Book`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#book-entity) feed and a [`Library`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#library-entity) > feed, they must be two separate feeds files. Therefore, for any given > `DataFeed` entity, you can set its `dataFeedElement` property > according to one and only one of the following conditions: > - Set `dataFeedElement` to either a single `Book` entity or an array of `Book` entities. > - Set `dataFeedElement` to either a single `LibrarySystem` entity or an array of `LibrarySystem` entities. |
 | `dateModified` | [`DateTime`](https://schema.org/DateTime) The date and time of the last update of the feed in the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. |
 
 ### `Book` entity
@@ -268,7 +260,7 @@ add more information about your content, which can provide a better user experie
 This `Book` entity is the top level entity type. It represents a *work*.
 
 > [!IMPORTANT]
-> **Key Point:** Read the [Works and editions](https://developers.google.com/search/docs/appearance/structured-data/book#works-and-editions) guidelines to understand the difference between the two `Book` entities in your implementation.
+> **Key Point:** Read the [Works and editions](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#works-and-editions) guidelines to understand the difference between the two `Book` entities in your implementation.
 
 The Google-supported properties are the following:
 
@@ -292,7 +284,7 @@ The `workExample` property uses this `Book` entity. It represents an
 *edition* of a *work*.
 
 > [!IMPORTANT]
-> **Key Point:** Read the [Works and editions](https://developers.google.com/search/docs/appearance/structured-data/book#works-and-editions) guidelines to understand the difference between the two `Book` entities in your implementation.
+> **Key Point:** Read the [Works and editions](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#works-and-editions) guidelines to understand the difference between the two `Book` entities in your implementation.
 
 The Google-supported properties are the following:
 
@@ -303,14 +295,14 @@ The Google-supported properties are the following:
 | `bookFormat` | [`Enum`](https://schema.org/Enumeration) The format of the edition. The value of this must be one of the following: - `https://schema.org/AudiobookFormat` - `https://schema.org/EBook` - `https://schema.org/Hardcover` - `https://schema.org/Paperback` |
 | `inLanguage` | [`Text`](https://schema.org/Text) The main language of the content in the edition. Use one of the two-letter codes from the [list of ISO 639-1 alpha-2 codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes). |
 | `isbn` | [`Text`](https://schema.org/Text) The ISBN-13 of the edition. If you have ISBN-10, convert it into ISBN-13. |
-| `potentialAction` | [`ReadAction`](https://schema.org/ReadAction) or [`BorrowAction`](https://schema.org/BorrowAction) The action to be triggered for users to purchase or download the book. For more details, refer to [`ReadAction`](https://developers.google.com/search/docs/appearance/structured-data/book#readaction-potentialaction) or [`BorrowAction`](https://developers.google.com/search/docs/appearance/structured-data/book#borrowaction-potentialaction). |
+| `potentialAction` | [`ReadAction`](https://schema.org/ReadAction) or [`BorrowAction`](https://schema.org/BorrowAction) The action to be triggered for users to purchase or download the book. For more details, refer to [`ReadAction`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#readaction-potentialaction) or [`BorrowAction`](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#borrowaction-potentialaction). |
 
 | Recommended properties ||
 |---|---|
 | `author` | [`Person`](https://schema.org/Person) or [`Organization`](https://schema.org/Organization) The author(s) of the edition. **Note:** Only use this when the author of the edition is different from the work author information. If the edition doesn't have an author, but rather, one or more *contributors*, include these other contributors as defined in [schema.org/Book](https://schema.org/Book). For example, an edition might have no known or recorded author, but might instead have a number of editors. Conversely, if an edition's author is an organization, define the author as defined in [schema.org/Organization](https://schema.org/Organization). For example, *Publication manual of the American Psychological Association, 6th edition*'s author might be the organization `American Psychological Association`. |
 | `bookEdition` | [`Text`](https://schema.org/Text) The edition information of the book. For example, `2nd Edition`. |
 | `datePublished` | [`Date`](https://schema.org/Date) The date of publication of the edition in <var translate="no">YYYY-MM-DD</var> or <var translate="no">YYYY</var> format. This can be either a specific date or only a specific year. |
-| `identifier` | [`PropertyValue`](https://schema.org/PropertyValue) The external or other ID that unambiguously identifies this edition. Multiple identifiers are allowed. For more details, refer to [`PropertyValue` (`identifier`)](https://developers.google.com/search/docs/appearance/structured-data/book#propertyvalue-identifier). This property can be repeated. |
+| `identifier` | [`PropertyValue`](https://schema.org/PropertyValue) The external or other ID that unambiguously identifies this edition. Multiple identifiers are allowed. For more details, refer to [`PropertyValue` (`identifier`)](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#propertyvalue-identifier). This property can be repeated. |
 | `name` | [`Text`](https://schema.org/Text) The title of the edition. Only use this when the title of the edition is different from the title of the work. |
 | `sameAs` | [`URL`](https://schema.org/URL) The URL of a reference web page that unambiguously indicates the edition. For example, a Wikipedia page for this specific edition. Don't reuse the `sameAs` of the `Work`. |
 | `url` | [`URL`](https://schema.org/URL) The URL on your website where the edition is introduced or described. It can be the same as `workExample.target.urlTemplate`. |
@@ -403,7 +395,7 @@ entity.
 | Required properties ||
 |---|---|
 | `@type` | [`Text`](https://schema.org/Text) Set to `PropertyValue`. |
-| `propertyID` | [`Text`](https://schema.org/Text) The type of ID. As described in [ISBN and other supported identifiers](https://developers.google.com/search/docs/appearance/structured-data/book#isbn-and-other-supported-identifiers), it must be either of the following: - `OCLC_NUMBER` - `LCCN` - `JP_E-CODE` |
+| `propertyID` | [`Text`](https://schema.org/Text) The type of ID. As described in [ISBN and other supported identifiers](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#isbn-and-other-supported-identifiers), it must be either of the following: - `OCLC_NUMBER` - `LCCN` - `JP_E-CODE` |
 | `value` | [`Text`](https://schema.org/Text) The ID value. The external ID that unambiguously identifies this edition. Remove all non-numeric prefixes of the external ID. |
 
 Example `identifier`:
@@ -838,10 +830,10 @@ entity type. It's an abstract construct, which consists of a
 The `Library` feed is distinct from the `Book` feed. Therefore, any `Library`
 feed you might implement must be entirely separate from your `Book` feed.
 For more information, refer to
-[Create your feed](https://developers.google.com/search/docs/appearance/structured-data/book#create-your-feed).
+[Create your feed](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#create-your-feed).
 
 > [!IMPORTANT]
-> **Key Point:** Read the [Library systems and library members](https://developers.google.com/search/docs/appearance/structured-data/book#library-systems-and-library-members) guidelines to understand the difference between the top level `Library` entity, the `LibrarySystem` entity, and the lower level `Library` entity in your implementation.
+> **Key Point:** Read the [Library systems and library members](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#library-systems-and-library-members) guidelines to understand the difference between the top level `Library` entity, the `LibrarySystem` entity, and the lower level `Library` entity in your implementation.
 
 #### LibrarySystem
 
@@ -849,20 +841,20 @@ The `LibrarySystem` entity represents a collaborative network
 of library *members*.
 
 > [!IMPORTANT]
-> **Key Point:** Read the [Library systems and library members](https://developers.google.com/search/docs/appearance/structured-data/book#library-systems-and-library-members) guidelines to understand the difference between the top level `Library` entity, the `LibrarySystem` entity, and the lower level `Library` entity in your implementation.
+> **Key Point:** Read the [Library systems and library members](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#library-systems-and-library-members) guidelines to understand the difference between the top level `Library` entity, the `LibrarySystem` entity, and the lower level `Library` entity in your implementation.
 
 | Required properties ||
 |---|---|
-| `@context` | `https://schema.org/Text` Set to `https://schema.org`. |
-| `@id` | `https://schema.org/URL` A globally unique ID for the library system in URL format. The ID must be stable and not change over time. It's treated as an opaque string and doesn't need to be a working link. The domain used for the `@id` value must be owned by your organization. |
-| `@type` | `https://schema.org/Text` Set to `LibrarySystem`. |
-| `additionalProperty` | `https://schema.org/PropertyValue` The additional property used to indicate the type of the library. |
-| `additionalProperty.@type` | `https://schema.org/Text` Set to `PropertyValue`. |
-| `additionalProperty.name` | `https://schema.org/Text` Set to `librarytype`. |
-| `additionalProperty.value` | `https://schema.org/Text` The type of the library. Use one of the following values: - `public` - `academic` - `corporate` - `government` - `school` - `special` |
-| `member` | `https://schema.org/Library` The member(s) of the library system. |
-| `name` | `https://schema.org/Text` The name of the library system. For example, `The Southwestern League of Libraries`. |
-| `url` | `https://schema.org/URL` The URL where the library system is introduced or described. Google Search uses this link to reconcile the content in your feed with the content in Google's databases. For the actual landing page, Google Search uses the URL provided in `workExample.target.urlTemplate`. |
+| `@context` | `Text` Set to `https://schema.org`. |
+| `@id` | `URL` A globally unique ID for the library system in URL format. The ID must be stable and not change over time. It's treated as an opaque string and doesn't need to be a working link. The domain used for the `@id` value must be owned by your organization. |
+| `@type` | `Text` Set to `LibrarySystem`. |
+| `additionalProperty` | `PropertyValue` The additional property used to indicate the type of the library. |
+| `additionalProperty.@type` | `Text` Set to `PropertyValue`. |
+| `additionalProperty.name` | `Text` Set to `librarytype`. |
+| `additionalProperty.value` | `Text` The type of the library. Use one of the following values: - `public` - `academic` - `corporate` - `government` - `school` - `special` |
+| `member` | `Library` The member(s) of the library system. |
+| `name` | `Text` The name of the library system. For example, `The Southwestern League of Libraries`. |
+| `url` | `URL` The URL where the library system is introduced or described. Google Search uses this link to reconcile the content in your feed with the content in Google's databases. For the actual landing page, Google Search uses the URL provided in `workExample.target.urlTemplate`. |
 
 #### `Library` (`member`)
 
@@ -872,20 +864,20 @@ uses the `Library (member)` entity.
 of a given library *system*.
 
 > [!IMPORTANT]
-> **Key Point:** Read the [Library systems and library members](https://developers.google.com/search/docs/appearance/structured-data/book#library-systems-and-library-members) guidelines to understand the difference between the top level `Library` entity, the `LibrarySystem` entity, and the lower level `Library` entity in your implementation.
+> **Key Point:** Read the [Library systems and library members](https://developers.google.com/search/docs/appearance/structured-data/book.md.txt#library-systems-and-library-members) guidelines to understand the difference between the top level `Library` entity, the `LibrarySystem` entity, and the lower level `Library` entity in your implementation.
 
 | Required properties ||
 |---|---|
-| `@id` | `https://schema.org/URL` A globally unique ID for the library branch in URL format. The ID must be stable and not change over time. It's treated as an opaque string and doesn't need to be a working link. The domain used for the `@id` value must be owned by your organization. |
-| `@type` | `https://schema.org/Text` Set to `Library`. |
-| `location` | `https://schema.org/PostalAddress` The street address of the library branch. Not all properties apply to every country. You must include as many as apply to the addresses of your libraries. Example United States `location`: ``` { "@type": "Library", "@id": "https://example.com/library-branches/1001", "name": "Campbell Library", "location": { "@type": "PostalAddress", "streetAddress": "77 Harrison Ave", "addressLocality": "Campbell", "addressRegion": "CA", "postalCode": "95008", "addressCountry": "US" } } ``` Example Japan `location`: ``` { "@type": "Library", "@id": "https://example.com/library-branches/1003", "name": "Tokyo Metropolitan Central Library", "location": { "@type": "PostalAddress", "streetAddress": "７-13-5 Minamiazabu, Minato City", "addressLocality": "Tokyo", "postalCode": "106-0047", "addressCountry": "JP" } } ``` |
-| `location.@type` | `https://schema.org/Text` Set to `PostalAddress`. |
-| `location.addressCountry` | `https://schema.org/Text` The country code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) format. For example, `US`. |
-| `location.addressLocality` | `https://schema.org/Text` The locality. For example, `Mountain View`. |
-| `location.addressRegion` | `https://schema.org/Text` The region. For example, `CA`. |
-| `location.postalCode` | `https://schema.org/Text` The postal code. For example, `94043`. |
-| `location.streetAddress` | `https://schema.org/Text` The street address. For example, `1600 Amphitheatre Pkwy`. |
-| `name` | `https://schema.org/Text` The name of the library branch. |
+| `@id` | `URL` A globally unique ID for the library branch in URL format. The ID must be stable and not change over time. It's treated as an opaque string and doesn't need to be a working link. The domain used for the `@id` value must be owned by your organization. |
+| `@type` | `Text` Set to `Library`. |
+| `location` | `PostalAddress` The street address of the library branch. Not all properties apply to every country. You must include as many as apply to the addresses of your libraries. Example United States `location`: ``` { "@type": "Library", "@id": "https://example.com/library-branches/1001", "name": "Campbell Library", "location": { "@type": "PostalAddress", "streetAddress": "77 Harrison Ave", "addressLocality": "Campbell", "addressRegion": "CA", "postalCode": "95008", "addressCountry": "US" } } ``` Example Japan `location`: ``` { "@type": "Library", "@id": "https://example.com/library-branches/1003", "name": "Tokyo Metropolitan Central Library", "location": { "@type": "PostalAddress", "streetAddress": "７-13-5 Minamiazabu, Minato City", "addressLocality": "Tokyo", "postalCode": "106-0047", "addressCountry": "JP" } } ``` |
+| `location.@type` | `Text` Set to `PostalAddress`. |
+| `location.addressCountry` | `Text` The country code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) format. For example, `US`. |
+| `location.addressLocality` | `Text` The locality. For example, `Mountain View`. |
+| `location.addressRegion` | `Text` The region. For example, `CA`. |
+| `location.postalCode` | `Text` The postal code. For example, `94043`. |
+| `location.streetAddress` | `Text` The street address. For example, `1600 Amphitheatre Pkwy`. |
+| `name` | `Text` The name of the library branch. |
 
 ### Example `LibrarySystem` feed JSON file
 

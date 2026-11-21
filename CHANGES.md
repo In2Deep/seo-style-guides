@@ -19,3 +19,29 @@
 ## 2026-11-12 a11y-vocab
 
 - new guide, 1 pages
+
+## 2026-11-21 style
+
+- changed: placeholders.md, word-list.md
+
+## 2026-11-21 seo
+
+- changed: appearance--aggregator-unit.md, appearance--structured-data--book.md, crawling-indexing--301-redirects.md, crawling-indexing--troubleshoot-crawling-errors.md, monitor-debug--security--safe-browsing-repeat-offenders.md
+- new: monitor-debug--identify-google-search-traffic.md
+
+## 2026-11-21 crawling
+
+- changed: changelog.md
+- new: crawlers-fetchers--allow-google-agent.md
+
+## 2026-11-21 vitals
+
+- changed: debug-layout-shifts.md
+
+## 2026-11-21 learn
+
+- changed: html--dialog.md, html--focus.md, html--template.md, html.md
+
+## 2026-11-21 search-help
+
+- changed: help--office-hours--2023--december.md, updates.md

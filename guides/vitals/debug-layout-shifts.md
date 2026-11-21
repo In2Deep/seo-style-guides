@@ -1,3 +1,5 @@
+> Documentation index: https://web.dev/articles/llms.txt
+
 Learn how to identify and fix layout shifts.
 
 
@@ -180,8 +182,6 @@ Changing the position of element B resulted in this layout shift.
 Although element B changes size, there is no layout shift in this example.
 
 ![Example showing a element changing size but not causing a layout shift](https://web.dev/static/articles/debug-layout-shifts/image/example-showing-element-927040d6f99ce.png)
-
-Check out a [demo of how DOM changes are reported by the Layout Instability API](https://desert-righteous-router.glitch.me/).
 
 ### DevTools
 

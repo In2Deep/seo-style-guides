@@ -5,7 +5,7 @@ People in
 [European Economic Area (EEA)](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:European_Economic_Area_(EEA))
 countries who are searching for things like "hotels near me" may notice that the experience has
 changed. These experiences include the aggregator units and
-[supplier units](https://developers.google.com/search/docs/appearance/supplier-unit). This page explains how the
+[supplier units](https://developers.google.com/search/docs/appearance/supplier-unit.md.txt). This page explains how the
 aggregator unit works and how businesses that serve users in EEA can express interest in the
 aggregator unit.
 ![Aggregator unit in Google Search](https://developers.google.com/static/search/docs/images/aggregator-unit.png)
@@ -32,7 +32,7 @@ available, expanding a unit populated with results from the new aggregator. Only
 unit will show at a time.
 
 > [!NOTE]
-> **Note** : To provide visibility to direct providers, Google Search shows another unit alongside the aggregator unit. [Learn more about the supplier unit](https://developers.google.com/search/docs/appearance/supplier-unit).
+> **Note** : To provide visibility to direct providers, Google Search shows another unit alongside the aggregator unit. [Learn more about the supplier unit](https://developers.google.com/search/docs/appearance/supplier-unit.md.txt).
 
 ## Feature availability
 
@@ -51,14 +51,14 @@ standards to participate:
 
 - **Express interest** : If your business serves users in EEA, and you would like to express interest in participating in the aggregator units, you can start by filling out the applicable form:
   - For ground transportation, flight, hotel, local business, and things to do queries, fill out the [Google Search Aggregator Features form](https://support.google.com/websearch/contact/search_aggregator_features).
-  - For product queries, contact us through the [comparison shopping services contact form](https://support.google.com/css-center/gethelp).
+  - For product queries, there is no additional action required, as product businesses follow the existing [CSS product page requirements](https://support.google.com/css-center/answer/7524491#Prominently_CSS).
 - **Have relevant content**: Given the aggregator unit will only appear in response to certain queries (for example, for hotels, flights, ground transportation, local businesses, and things to do), businesses must have the relevant content for the respective query to be eligible for the aggregator unit.
 - **Provide data** : Eligible aggregators that wish to participate must provide data to populate a unit by direct data feed integrations or real-time APIs for queries such as flights or long distance trains and buses. For more information on the data required for the aggregator unit, see the applicable guides:
-  - For hotel queries, see the [Lodging Point of Interest Feed](https://developers.google.com/actions-center/verticals/lodging/overview) documentation.
+  - For hotel queries, see the [Lodging Point of Interest Feed](https://developers.google.com/actions-center/verticals/lodging/overview.md.txt) documentation.
   - For ground transportation queries, see the [Transport features API](https://developers.google.com/travel/transport) documentation.
   - For flight queries, see the [Partner standard Live API](https://developers.google.com/travel/flights/otas_guides/live-API-specification) documentation.
   - For product queries, learn [how to start showing product pages across Google](https://support.google.com/css-center/answer/14157117).
-  - For local business and things to do queries, see the [Local and things to do Point of Interest Feed](https://developers.google.com/actions-center/verticals/local_vss/integration-steps/overview) documentation.
+  - For local business and things to do queries, see the [Local and things to do Point of Interest Feed](https://developers.google.com/actions-center/verticals/local_vss/integration-steps/overview.md.txt) documentation.
 - **Comply with Google Search content policies** : All content in the aggregator unit must comply with Google Search's [content policies](https://support.google.com/websearch/answer/10622781).
 
 ## Aggregator unit best practices
@@ -70,7 +70,7 @@ business, and things to do queries, the unit is populated by direct data feed in
 search features, we show information in the unit based on what is most helpful to users for their
 queries. To learn more about how we think about Search quality, you can view the Search Quality
 Raters guidelines, as outlined in
-[our blog](https://developers.google.com/search/blog/2023/11/search-quality-rater-guidelines-update).
+[our blog](https://developers.google.com/search/blog/2023/11/search-quality-rater-guidelines-update.md.txt).
 
 
 To help deliver the best possible experience for users, we encourage you to follow these best

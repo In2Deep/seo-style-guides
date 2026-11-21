@@ -1,6 +1,6 @@
 968f3044a78423e38bab0159c64f125d4581402f385bee57eed139f029e8b25b  appearance--ad-network-and-translation.md
 1d4bba8b116660d39c0f16d0bae700fd2e20ff6265f844c1e58284c7866f09b9  appearance--aggregator-features.md
-3799de1cf4ccfb6fb70b6ba56c2b28cdf39923785deb7c55c2577e5a9e6492af  appearance--aggregator-unit.md
+5f2a911f85cad7a69840a38cf802c44723dd55f8f0ebab0b21652c406574c87c  appearance--aggregator-unit.md
 edb23527ad7bcc5791dcf739a8ab96f2ccda39407760e19d9c7d79190bbcdd36  appearance--ai-features.md
 1eec40048b2cf2cffdf30b30040f12f4dd2d786ad7195eb70f201bc5ee0bf6ff  appearance--avoid-intrusive-interstitials.md
 ed72223e55d17749191834fd2afaf5352cd2a4b23eb167143d6640e898597872  appearance--core-updates.md
@@ -29,7 +29,7 @@ ab941cd365d6ce8c6a0984482a95fb55979ad89cf983b3a2c3904e0dcf9a11d0  appearance--pu
 120503a92ff17ded08cde6abecb08871761ddfbd84b9d187da95cdba1336f878  appearance--south-africa-features.md
 bb452d2a5adb1f45434b7a0b2139d9a3ecb75771d3e426e289e49f2c9afe6b43  appearance--spam-updates.md
 f32d986876a1cada98f0528aaf27149a1ccaa40cf66deca49f17f6ec4537e724  appearance--structured-data--article.md
-103fdff30b40afea7b4ab890080a4384b2e02564b4ff534e1841ac8da4bd1b17  appearance--structured-data--book.md
+04b09794a1e0dbfd6e0bf4116a85f0afb3537efba1a7d3a43655983daa514619  appearance--structured-data--book.md
 cc1c8897b860a2452bbd8822c26f8d6405bee2f06379aa204544fbb1bd23ff51  appearance--structured-data--breadcrumb.md
 af35790c5eabcb077ebe574d1a99cb554500ddfb6296d4fcea54a66f0345472c  appearance--structured-data--carousel.md
 8da328e524b8bf0cf3d78f859a8e68792f3757caf70aeb9366294a27c4ac5e2f  appearance--structured-data--carousels-beta.md
@@ -76,7 +76,7 @@ f31827e8953efbc680c6ad76e997feb5e3d9b3b52fcebf6d1cb5181b58fc53d6  appearance--vi
 27e4c7b4b8f07f3d74949f89b5b329af75d91d62c7ef1ed2f9eb7602d413e718  appearance--web-stories-content-policy.md
 846e6d55f6cd19870f244201518a545205d0ff147db88e71af7f1f325ac6bed5  appearance--web-stories-creation-best-practices.md
 d45b8ec273e228bd7c1e4d3570efec902d4db4708585b61f8f8ffcb16b36d477  appearance.md
-5e6ed078fe04fecd6c1b3e367986040ee99dc3c4ed9f09187022322db4e08153  crawling-indexing--301-redirects.md
+10ed36947f11ebcc0c8f8a28f77cfd4490708b6080ad9d867a6995972a87b5f3  crawling-indexing--301-redirects.md
 b4d1c75c0b1041217a54e8776534a6006d9011a5db7602af97cf1d82a64ba2ca  crawling-indexing--amp--enhance-amp.md
 fcf64616895074a487c0bc7e1d6d3a28f81564af07413553313dc9cdb95ede6d  crawling-indexing--amp--remove-amp.md
 44e75d3c5860106d72082fc517f5ecf4a12cb387af6ffb41e135d84b20a26817  crawling-indexing--amp--validate-amp.md
@@ -112,7 +112,7 @@ b49e9a13663f8e37cef1933b12a9f56c0ada58cdce4e82f121acc57b5f86aaff  crawling-index
 ba9d4be05e102ed1bc2ab4adc0589121b1ba82519eabe8ed3c1728fc8958b6cf  crawling-indexing--sitemaps--overview.md
 12869ea3017b0a217b5997af0d4ee1859c5633e188d56164d58541904cf9ad6a  crawling-indexing--sitemaps--video-sitemaps.md
 0aaf0594ea8b49d0fc33a23630ae68644060c6ed1d0214515b0b647c018fc2cf  crawling-indexing--special-tags.md
-07e19777ae9286a3cc3d383193e254045d438b6e80bb8b95c23db0380c9d505c  crawling-indexing--troubleshoot-crawling-errors.md
+c44d6f6150d886374565dadce253e29f267936398ee33274c3a05908e7b0489c  crawling-indexing--troubleshoot-crawling-errors.md
 3e190fb7a7f20f44f0271d056f3c1f2e1f94521ca780b4199132eb6d608521b6  crawling-indexing--url-structure.md
 769d6d2ae6f765ad23a33f64cef94e6dbe9bda9ab7b8834c792341acc39b5afc  crawling-indexing--valid-page-metadata.md
 96b70c9e68e4c839e26dd821d804c4c5906e613608738faae70bec2297258b65  crawling-indexing--website-testing.md
@@ -135,6 +135,7 @@ a9f753ede5445d4fc0c7a705f4009011969d47f39e9a779edad3b0cb94748283  monitor-debug-
 96327dbc8560153de9972bab33e8a00df27f4ed18eab4bef2ff9340ad569f436  monitor-debug--bubble-chart-analysis.md
 bc95ef9ebbbfe0c50ee45401a8f6e8ad1ce4c9cbd552ffcd3e975c02f144d77b  monitor-debug--debugging-search-traffic-drops.md
 7cc72db5c28dcd6ff20702d79dda7a1c8cc89f1eb6bd59afc977f51d26ddbeeb  monitor-debug--google-analytics-search-console.md
+85989ccf71a051bb76b352ba8042b80802dbfb127f3c451e1d9c2e5619729cd1  monitor-debug--identify-google-search-traffic.md
 15a1ae15db96d49450de004a0bf8b3501198fcdb97069094f6cad3fcbbea53b8  monitor-debug--prevent-abuse.md
 d91290ee49d34cae46719def1a8ce0071be0bacb10c76fb28be29cea97a01cd2  monitor-debug--search-console-start.md
 ea4cff8db9322061b0a1fad0e7f2a9fd9815cdc122218187777c272c1e368993  monitor-debug--search-operators--all-search-site.md
@@ -142,7 +143,7 @@ f6c874aea4a3c8ad726f43584ba7b7a840464a13d50a0b3d01c78e9b06545a56  monitor-debug-
 1c7da5ebeb5186df7dcc647b25fed49930c83c670686ad088525c0ebcc95c009  monitor-debug--search-operators.md
 9774bf3ebc9f7739ab76bf0f28fba1f3cd690f4baa6a3eae4abf2d4cb4b87758  monitor-debug--security--malware.md
 a109bc1057304903f23bf292c7b25ba3e03a875b84a0596d3c0363c5fd4c7a66  monitor-debug--security--prevent-malware.md
-2cf34803b13c4bf8932d16fb141656f396492e61c1bfc1298d80e025659b3a87  monitor-debug--security--safe-browsing-repeat-offenders.md
+4f6f4cebd6590e82903c935418208b997b9e0779296874ab574c16cad576c2af  monitor-debug--security--safe-browsing-repeat-offenders.md
 e097376a91941c0873aae3899c34f61dbb8d025da1f7bea8931d495ea99bac52  monitor-debug--security--social-engineering.md
 4c84c2904f81450d78d08ac750a5621bbcf5527f1c4b7ee9e45524b54b82500f  monitor-debug--security.md
 39524b7849e889737bebc3fd17c19c79c94ea17d548b2466574e25672e08352a  monitor-debug--trends-start.md

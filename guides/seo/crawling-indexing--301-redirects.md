@@ -6,7 +6,7 @@ telling your visitors and Google Search that a page has a new location. Redirect
 particularly useful in the following circumstances:
 
 - You've moved your site to a new domain, and you want to make the transition as seamless as possible.
-- People access your site through several different URLs. If, for example, your home page can be reached in multiple ways (for instance, `https://example.com/home`, ` http://home.example.com`, or `https://www.example.com`), it's a good idea to pick one of those URLs as your preferred ([canonical](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls#definition)) destination, and use redirects to send traffic from the other URLs to your preferred URL.
+- People access your site through several different URLs. If, for example, your home page can be reached in multiple ways (for instance, `https://example.com/home`, ` http://home.example.com`, or `https://www.example.com`), it's a good idea to pick one of those URLs as your preferred ([canonical](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls.md.txt#definition)) destination, and use redirects to send traffic from the other URLs to your preferred URL.
 - You're merging two websites and want to make sure that links to outdated URLs are redirected to the correct pages.
 - You removed a page and you want to send users to a new page.
 
@@ -14,6 +14,8 @@ particularly useful in the following circumstances:
 > If you're using a platform like Blogger or Shopify, the platform may already have built-in redirect solutions. Try searching for help articles (for example, search for "blogger redirects").
 
 ## Overview of redirect types
+
+[Video](https://www.youtube.com/watch?v=vfGGiFQbb7A)
 
 
 While your users generally won't be able to tell the difference between the different types of
@@ -29,11 +31,40 @@ The following table explains the various ways you can use to set up permanent an
 redirects, ordered by how likely Google is able to interpret correctly (for example, a server
 side redirect has the highest chance of being interpreted correctly by Google). Choose the
 redirect type that works for your situation and site:
+Redirect types Permanent
+Googlebot follows the redirect, and the indexing pipeline uses the redirect as a signal that
+the redirect target should be
+[canonical](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls.md.txt#definition).
 
-| Redirect types ||
-|---|---|
-| Permanent | Googlebot follows the redirect, and the indexing pipeline uses the redirect as a signal that the redirect target should be [canonical](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls#definition). > [!IMPORTANT] > Use permanent redirects when you're sure that the redirect won't be reverted. |---|---| | `HTTP 301 (moved permanently)` | Set up [server-side redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#serverside). | | `HTTP 308 (moved permanently)` | Set up [server-side redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#serverside). | | `meta refresh` (0 seconds) | Set up [`meta refresh` redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#metarefresh). | | HTTP refresh (0 seconds) | Set up [`meta refresh` redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#metarefresh). | | JavaScript `location` | Set up [JavaScript redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#jslocation). > [!WARNING] > Only use JavaScript redirects if you can't do server-side or `meta refresh` redirects. | | Crypto redirect | Learn more about [crypto redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#cryptoredirects). > [!WARNING] > Don't rely on crypto redirects for letting search engines know that your content has moved unless you have no other choice. | |
-| Temporary | Googlebot follows the redirect, but the indexing pipeline doesn't use the redirect as a signal that the redirect target should be canonical. The target page might still be indexed if other canonicalization signals are present. |---|---| | `HTTP 302 (found)` | Set up [server-side redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#serverside). | | `HTTP 303 (see other)` | Set up [server-side redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#serverside). | | `HTTP 307 (temporary redirect)` | Set up [server-side redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#serverside). | | `meta refresh` (more than 0 seconds) | Set up [`meta refresh` redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#metarefresh). | | `HTTP refresh` (more than 0 seconds) | Set up [`meta refresh` redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#metarefresh). | |
+> [!IMPORTANT]
+> Use permanent redirects when you're sure that the redirect won't be reverted.
+
+`HTTP 301 (moved permanently)`
+Set up [server-side redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects.md.txt#serverside).
+`HTTP 308 (moved permanently)` `meta refresh` (0 seconds)
+Set up [`meta refresh` redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects.md.txt#metarefresh).
+HTTP refresh (0 seconds) JavaScript `location`
+Set up [JavaScript redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects.md.txt#jslocation).
+
+> [!WARNING]
+> Only use JavaScript redirects if you can't do server-side or `meta refresh` redirects.
+
+Crypto redirect
+Learn more about
+[crypto redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects.md.txt#cryptoredirects).
+
+> [!WARNING]
+> Don't rely on crypto redirects for letting search engines know that your content has moved unless you have no other choice.
+
+Temporary
+Googlebot follows the redirect, but the indexing pipeline doesn't use the redirect as a
+signal that the redirect target should be canonical. The target page might still be indexed
+if other canonicalization signals are present.
+`HTTP 302 (found)`
+Set up [server-side redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects.md.txt#serverside).
+`HTTP 303 (see other)` `HTTP 307 (temporary redirect)` `meta refresh` (more than 0 seconds)
+Set up [`meta refresh` redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects.md.txt#metarefresh).
+`HTTP refresh` (more than 0 seconds)
 
 ## Server-side redirects
 
@@ -150,7 +181,7 @@ redirect rules yourself. Follow your web server's guides:
 ## `meta refresh` and its HTTP equivalent
 
 
-If [server-side redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects#serverside) aren't possible to implement on your
+If [server-side redirects](https://developers.google.com/search/docs/crawling-indexing/301-redirects.md.txt#serverside) aren't possible to implement on your
 platform, `meta refresh` redirects may be a viable alternative. Google
 differentiates between two kinds of `meta refresh` redirects:
 
@@ -238,7 +269,7 @@ disputed; not all search engines may recognize this pseudo-redirect as an offici
 
 When you redirect a URL, Google keeps track of both the redirect source (the old URL) and the
 redirect target (the new URL). One of the URLs will be the
-[canonical](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls); which one,
+[canonical](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls.md.txt); which one,
 depends on signals such as whether the redirect was temporary or permanent. The other URL
 becomes an *alternate name* of the canonical URL. Alternate names are different versions
 of a canonical URL that users might recognize and trust more. Alternate names may appear in search
@@ -246,7 +277,7 @@ results when a user's query hints that they might trust the old URL more.
 
 
 For example, if you
-[moved to a new domain name](https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes),
+[moved to a new domain name](https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes.md.txt),
 it's very likely that Google will continue to occasionally show the old URLs in the results,
 even though the new URLs are already indexed. This is normal and as users get used to the new
 domain name, the alternate names will fade away without you doing anything.

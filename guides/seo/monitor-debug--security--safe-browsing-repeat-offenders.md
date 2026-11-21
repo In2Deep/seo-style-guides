@@ -1,5 +1,3 @@
-# Google Safe Browsing Repeat Offenders Policy | Google Search Central
-
 # Google Safe Browsing Repeat Offenders Policy
 
 Google Safe Browsing helps protect users by showing warnings on dangerous sites or dangerous
@@ -14,4 +12,6 @@ When a site is established as a Repeat Offender, the website owner will be notif
 to their registered Search Console email address. Once Safe Browsing has designated a site as
 a Repeat Offender, the website owner will be unable to request additional reviews via Search
 Console. Repeat Offender status persists for 30 days, after which the website owner will be able
-to request a review.
+to request a review. If the website owner believes their site was originally classified in
+error, they can
+[report it](https://safebrowsing.google.com/safebrowsing/report_error/).

@@ -1,5 +1,3 @@
-# Troubleshoot Google Search Crawling Errors | Google Search Central
-
 # Troubleshoot Google Search crawling errors
 
 Here are the key steps to troubleshooting and fixing Google Search crawling issues for your site:
@@ -10,8 +8,8 @@ Here are the key steps to troubleshooting and fixing Google Search crawling issu
    should be](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#not_crawled_should_be).
 3. [See whether any parts of your site need to be crawled more quickly than
    they already are.](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#updates)
-4. [Improve your site's crawl efficiency.](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#improve_crawl_efficiency)
-5. [Handle overcrawling of your site](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#emergencies).
+4. [Improve your site's crawl efficiency.](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#improve_crawl_efficiency)
+5. [Handle overcrawling of your site](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#emergencies).
 
 ## See if Googlebot is encountering availability issues on your site
 
@@ -61,7 +59,7 @@ site availability is throttling Google's access (or Google is trying not to over
 
 Search Console doesn't provide a crawl history for your site that can be filtered by URL or
 path, but you can inspect your site logs to see whether specific URLs have been crawled by
-[Googlebot](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers). Whether or
+[Googlebot](https://developers.google.com/search/docs/crawling-indexing/googlebot.md.txt). Whether or
 not those crawled URLs have been indexed is another story.
 
 Remember that for most sites, new pages will take several days minimum to be noticed; most
@@ -72,13 +70,13 @@ such as news sites.
 
 If you are adding pages to your site and they are not being crawled in a reasonable amount of
 time, either Google doesn't know about them, the content is blocked, your site has reached its
-maximum serving capacity, or you are [out of crawl budget](https://developers.google.com/crawling/docs/crawl-budget#more-crawl-budget).
+maximum serving capacity, or you are [out of crawl budget](https://developers.google.com/crawling/docs/crawl-budget.md.txt#more-crawl-budget).
 
 1. Tell Google about your new pages: update your sitemaps to reflect new URLs.
 2. Examine your robots.txt rules to confirm that you're not accidentally blocking pages.
 3. Review your crawling priorities (a.k.a. use your crawl budget wisely). [Manage
-   your inventory](https://developers.google.com/crawling/docs/crawl-budget#manage_inventory) and [improve your site's crawling efficiency](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#improve_crawl_efficiency).
-4. [Check that you're not running out of serving capacity](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#availability_issues). Googlebot will scale back its crawling if it detects that your servers are having trouble responding to crawl requests.
+   your inventory](https://developers.google.com/crawling/docs/crawl-budget#manage_inventory) and [improve your site's crawling efficiency](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#improve_crawl_efficiency).
+4. [Check that you're not running out of serving capacity](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#availability_issues). Googlebot will scale back its crawling if it detects that your servers are having trouble responding to crawl requests.
 
 Note that pages might not be shown in search results, even if crawled, if there isn't
 sufficient value or user demand for the content.
@@ -96,7 +94,7 @@ content.
 
 **Diagnosing:**
 
-Examine your site logs to see when specific URLs were crawled by [Googlebot](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers).
+Examine your site logs to see when specific URLs were crawled by [Googlebot](https://developers.google.com/search/docs/crawling-indexing/googlebot.md.txt).
 
 To learn the indexing date, use the URL Inspection tool or do a search for URLs that
 you updated.
@@ -105,18 +103,18 @@ you updated.
 
 **Do:**
 
-- Use a [news sitemap](https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap) if your site has news content.
+- Use a [news sitemap](https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap.md.txt) if your site has news content.
 - Use the `<lastmod>` tag in sitemaps to indicate when an indexed URL has been updated.
-- Use a [crawlable URL structure](https://developers.google.com/search/docs/crawling-indexing/url-structure) to help Google find your pages.
-- Provide standard, [crawlable `<a>` links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable#crawlable-links) to help Google find your pages.
-- If your site uses separate HTML for mobile and desktop versions, provide the same set of links on the mobile version as you have on the desktop version. If it's not possible to provide the same set of links on the mobile version, ensure that they're included in a [sitemap](https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview) file. Google only [indexes the
+- Use a [crawlable URL structure](https://developers.google.com/search/docs/crawling-indexing/url-structure.md.txt) to help Google find your pages.
+- Provide standard, [crawlable `<a>` links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable.md.txt#crawlable-links) to help Google find your pages.
+- If your site uses separate HTML for mobile and desktop versions, provide the same set of links on the mobile version as you have on the desktop version. If it's not possible to provide the same set of links on the mobile version, ensure that they're included in a [sitemap](https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview.md.txt) file. Google only [indexes the
   mobile version](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing) of pages, and limiting the links shown there can slow down discovery of new pages.
 
 **Avoid:**
 
 - Submitting the same, unchanged sitemap multiple times per day.
 - Expecting that Googlebot will crawl everything in a sitemap, or crawl them immediately. Sitemaps are useful suggestions to Googlebot, not absolute requirements.
-- Including URLs in your sitemaps that [you don't want to appear in Search](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#hide_urls). This can waste your crawl budget on pages that you don't want indexed.
+- Including URLs in your sitemaps that [you don't want to appear in Search](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#hide_urls). This can waste your crawl budget on pages that you don't want indexed.
 
 ## Improve your site's crawl efficiency
 
@@ -144,7 +142,7 @@ Google generally supports the
 [`If-Modified-Since` and `If-None-Match` HTTP request headers](https://developer.mozilla.org/docs/Web/HTTP/Headers/If-Modified-Since)
 for crawling. Google's crawlers don't send the headers with all crawl attempts; it depends on
 the use case of the request (for example,
-[AdsBot](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers#adsbot) is more
+[AdsBot](https://developers.google.com/crawling/docs/crawlers-fetchers/google-special-case-crawlers.md.txt#adsbot) is more
 likely to set the `If-Modified-Since` and `If-None-Match` HTTP request
 headers). If our crawlers send the `If-Modified-Since` header, the header's value
 is the [date and time](https://www.rfc-editor.org/rfc/rfc9110#name-if-modified-since)
@@ -174,13 +172,13 @@ content on a site.
 Exposing many URLs on your site that you don't want crawled by Search can negatively affect a
 site's crawling and indexing. Typically these URLs fall into the following categories:
 
-- [Faceted navigation](https://developers.google.com/search/docs/crawling-indexing/crawling-managing-faceted-navigation) and [session identifiers](https://developers.google.com/search/blog/2007/09/google-duplicate-content-caused-by-url): Faceted navigation is typically duplicate content from the site; session identifiers and other URL parameters that simply sort or filter the page don't provide new content. Learn how to [manage crawling of faceted navigation pages](https://developers.google.com/search/docs/crawling-indexing/crawling-managing-faceted-navigation).
-- [Duplicate content](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls): Help Google identify duplicate content to avoid unnecessary crawling.
-- [`soft 404` pages](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#soft-404-errors): Return a `404` code when a page no longer exists.
-- [Hacked pages](https://developers.google.com/search/docs/monitor-debug/security/what-is-hacked): Be sure to check the [Security
+- [Faceted navigation](https://developers.google.com/crawling/docs/faceted-navigation.md.txt) and [session identifiers](https://developers.google.com/search/blog/2007/09/google-duplicate-content-caused-by-url.md.txt): Faceted navigation is typically duplicate content from the site; session identifiers and other URL parameters that simply sort or filter the page don't provide new content. Learn how to [manage crawling of faceted navigation pages](https://developers.google.com/crawling/docs/faceted-navigation.md.txt).
+- [Duplicate content](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls.md.txt): Help Google identify duplicate content to avoid unnecessary crawling.
+- [`soft 404` pages](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#soft-404-errors): Return a `404` code when a page no longer exists.
+- [Hacked pages](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#hacked-content): Be sure to check the [Security
   Issues report](https://search.google.com/search-console/security-issues) and fix or remove any hacked pages you find.
-- [Infinite spaces](https://developers.google.com/search/blog/2008/08/to-infinity-and-beyond-no) and proxies: Block these from crawling with robots.txt.
-- [Low quality and spam content](https://developers.google.com/search/docs/essentials/spam-policies): Good to avoid, obviously.
+- [Infinite spaces](https://developers.google.com/search/blog/2008/08/to-infinity-and-beyond-no.md.txt) and proxies: Block these from crawling with robots.txt.
+- [Low quality and spam content](https://developers.google.com/search/docs/essentials/spam-policies.md.txt): Good to avoid, obviously.
 - Shopping cart pages, infinite scrolling pages, and pages that perform an action (such as "sign up" or "buy now" pages).
 
 **Do:**
@@ -227,9 +225,9 @@ Search Console will show a `soft 404` error in the site's
 Depending on the state of the page and the outcome you want, you can solve `soft 404`
 errors in multiple ways:
 
-- [The page and content are no longer available.](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#pagegone)
-- [The page or content is now somewhere else.](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#pagemoved)
-- [The page and content still exist.](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors#pageother)
+- [The page and content are no longer available.](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#pagegone)
+- [The page or content is now somewhere else.](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#pagemoved)
+- [The page and content still exist.](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors.md.txt#pageother)
 
 
 Try to determine which solution would be the best for your users.
@@ -264,7 +262,7 @@ code to prevent having the pages indexed.
 
 
 If your page has moved or has a clear replacement on your site, return a
-[`301 (permanent redirect)`](https://developers.google.com/search/docs/crawling-indexing/301-redirects)
+[`301 (permanent redirect)`](https://developers.google.com/search/docs/crawling-indexing/301-redirects.md.txt)
 to redirect the user. This won't interrupt their browsing experience and it's also a great
 way to tell search engines about the new location of the page. Use the
 [URL Inspection tool](https://support.google.com/webmasters/answer/9012289)
@@ -282,7 +280,7 @@ nearly blank, or the content has an error message, it could be that your page re
 resources that can't be loaded (images, scripts, and other non-textual elements), which can be
 interpreted as a `soft 404`.
 Reasons that resources can't be loaded include blocked resources (blocked by
-[robots.txt](https://developers.google.com/search/docs/crawling-indexing/robots/intro)), having too many
+[robots.txt](https://developers.google.com/search/docs/crawling-indexing/robots/intro.md.txt)), having too many
 resources on a page, various server errors, or slow loading or very large resources.
 
 ## Handle overcrawling of your site (emergencies)
@@ -303,4 +301,4 @@ Googlebot:
 1. Return `503` or `429` HTTP response status codes *temporarily* for Googlebot requests when your server is overloaded. Googlebot will retry these URLs for about 2 days. Note that returning "no availability" codes for more than a few days will cause Google to permanently slow or stop crawling URLs on your site, so follow the additional next steps.
 2. When the crawl rate goes down, stop returning `503` or `429` HTTP response status codes for crawl requests; returning `503` or `429` for more than 2 days will cause Google to drop those URLs from the index.
 3. Monitor your crawling and your host capacity over time.
-4. If the problematic crawler is one of the [AdsBot crawlers](https://developers.google.com/search/docs/crawling-indexing/google-special-case-crawlers#adsbot-mobile-web), the problem is likely that you have created [Dynamic Search Ad targets](https://support.google.com/google-ads/answer/2497706) for your site that Google is trying to crawl. This crawl will reoccur every 3 weeks. If you don't have the server capacity to handle these crawls, either limit your ad targets or get increased serving capacity.
+4. If the problematic crawler is one of the [AdsBot crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-special-case-crawlers.md.txt#adsbot-mobile-web), the problem is likely that you have created [Dynamic Search Ad targets](https://support.google.com/google-ads/answer/2497706) for your site that Google is trying to crawl. This crawl will reoccur every 3 weeks. If you don't have the server capacity to handle these crawls, either limit your ad targets or get increased serving capacity.

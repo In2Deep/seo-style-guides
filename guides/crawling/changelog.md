@@ -9,22 +9,38 @@ page to your [feed reader](https://en.wikipedia.org/wiki/Comparison_of_feed_aggr
 or add the feed URL directly:
 `https://developers.google.com/crawling/docs/changelog/crawling_docs_updates.rss`.
 
+## November 2026
+
+November 17
+:
+
+    ### Added guidance on allowing `Google-Agent`
+
+
+    **What** : Published a
+    [technical guide](https://developers.google.com/crawling/docs/crawlers-fetchers/allow-google-agent.md.txt) on how to
+    ensure that `Google-Agent` has access to your website.
+
+
+    **Why** : To help publishers that want to enable `Google-Agent` for their
+    website.
+
 ## October 2026
 
 October 30
 :
 
-    ### Updated [common crawlers page](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers#google-extended)
+    ### Updated [common crawlers page](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers.md.txt#google-extended)
     to mention future AI training control support
 
 
     **What** : Added a
-    [note](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers#google-extended)
+    [note](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers.md.txt#google-extended)
     about Google's intention to support the shared machine-readable training preference signal.
 
 
     **Why** : Learn more in our
-    [blog post](https://developers.google.com/search/blog/2026/10/ai-training-control).
+    [blog post](https://developers.google.com/search/blog/2026/10/ai-training-control.md.txt).
 
 October 23
 :
@@ -32,7 +48,7 @@ October 23
     ### Updated guidance on robots.txt specifications
 
 
-    **What** : Updated the [how Google interprets the robots.txt specification](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec) to add recommendation for percent-encoding in rule paths.
+    **What** : Updated the [how Google interprets the robots.txt specification](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec.md.txt) to add recommendation for percent-encoding in rule paths.
 
 
     **Why**: To synchronize the documentation with the episodes of "The Non-Canonical Cabinet" video series.
@@ -45,13 +61,13 @@ October 6
 
     **What** : Restructured the emergency crawl rate reduction section and added information and
     examples about the `Retry-After` HTTP header to the
-    [Reduce the Google crawl rate](https://developers.google.com/crawling/docs/crawlers-fetchers/reduce-crawl-rate)
+    [Reduce the Google crawl rate](https://developers.google.com/crawling/docs/crawlers-fetchers/reduce-crawl-rate.md.txt)
     documentation.
 
 
     **Why** : Support for the `Retry-After` HTTP header is not new (it was already
     documented in
-    [Temporarily pause or disable a website](https://developers.google.com/search/docs/crawling-indexing/pause-online-business)),
+    [Temporarily pause or disable a website](https://developers.google.com/search/docs/crawling-indexing/pause-online-business.md.txt)),
     and adding it directly to the crawl rate reduction guide makes it easier to find and
     understand when urgently reducing crawler traffic.
 
@@ -64,7 +80,7 @@ September 17
 
 
     **What** : Updated the
-    [`Mediapartners-Google`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-special-case-crawlers#mediapartners-google)
+    [`Mediapartners-Google`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-special-case-crawlers.md.txt#mediapartners-google)
     documentation to clarify that it affects various
     ad-related Google products (not just AdSense), and renamed the section heading from
     AdSense to `Mediapartners-Google`.
@@ -83,7 +99,7 @@ July 22
 
 
     **What** : Polished and clarified the
-    [Optimize your crawl budget](https://developers.google.com/crawling/docs/crawl-budget) page to improve clarity,
+    [Optimize your crawl budget](https://developers.google.com/crawling/docs/crawl-budget.md.txt) page to improve clarity,
     terminology consistency, and flow.
 
 
@@ -96,7 +112,7 @@ July 16
     ### Updating the NotebookLM user agent
 
 
-    **What** : Updated the NotebookLM user agent to be [`Google-GeminiNotebook`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers#gemini-notebook).
+    **What** : Updated the NotebookLM user agent to be [`Google-GeminiNotebook`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers.md.txt#gemini-notebook).
     If you hardcoded the old value in your code, update the string to avoid potential bugs. We
     will continue to support the old value to allow for a smooth transition.
 
@@ -110,7 +126,7 @@ July 14
 
 
     **What** : Updated the
-    [`Google-InspectionTool`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers#google-inspection-tool)
+    [`Google-InspectionTool`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers.md.txt#google-inspection-tool)
     user agent string.
 
 
@@ -141,8 +157,8 @@ March 20
     ### Added the Google-Agent user agent
 
 
-    **What** : Added the [Google-Agent user agent](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers#google-agent) and added the IP ranges for user triggered
-    agents to the documentation on [verifying requests from Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests).
+    **What** : Added the [Google-Agent user agent](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers.md.txt#google-agent) and added the IP ranges for user triggered
+    agents to the documentation on [verifying requests from Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests.md.txt).
 
 
     **Why**: The Google-Agent user agent is rolling out over the next few weeks, and will be
@@ -155,7 +171,7 @@ March 3
     ### Added an overview page about Google's web crawling
 
 
-    **What** : Added a new page [about how Google's crawling works](https://developers.google.com/crawling/docs/about-crawling).
+    **What** : Added a new page [about how Google's crawling works](https://developers.google.com/crawling/docs/about-crawling.md.txt).
 
 
     **Why**: Based on questions we've received over the years, we've put together a resource
@@ -171,7 +187,7 @@ February 11
 
 
     **What** : Updated the location of Google's
-    [IP ranges for common crawlers, special crawlers, and user-triggered fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests#automatic)
+    [IP ranges for common crawlers, special crawlers, and user-triggered fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests.md.txt#automatic)
     to the `/crawling/ipranges` directory. The old location will continue to work for
     the time being, but we recommend updating your links to the new location.
 
@@ -187,9 +203,9 @@ February 3
 
     **What** : Moved the information about the default file size limits of Google's crawlers and
     fetchers from the
-    [Googlebot documentation](https://developers.google.com/search/docs/crawling-indexing/googlebot)
+    [Googlebot documentation](https://developers.google.com/search/docs/crawling-indexing/googlebot.md.txt)
     to the
-    [crawling documentation](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers#file-size-limits).
+    [crawling documentation](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers.md.txt#file-size-limits).
 
 
     **Why**: The original location of this information was not the most logical place as it
@@ -204,7 +220,7 @@ January 21
     ### Added Google Messages to the list of user-triggered fetchers
 
 
-    **What** : Added the [Google Messages](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers#google-messages) fetcher to the list of user-triggered fetchers.
+    **What** : Added the [Google Messages](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers.md.txt#google-messages) fetcher to the list of user-triggered fetchers.
 
 
     **Why**: To help site owners identify traffic from Google Messages when it generates link previews for URLs sent in chat messages.
@@ -222,10 +238,10 @@ December 18
     only the location of the documentation and some minor wording changes to clarify that some
     guidance applies to both Google Search and other Google products.
 
-    - [Managing crawling of faceted navigation URLs](https://developers.google.com/crawling/docs/faceted-navigation)
-    - [Optimize your crawl budget](https://developers.google.com/crawling/docs/crawl-budget)
-    - [How HTTP status codes affect Google's crawlers](https://developers.google.com/crawling/docs/troubleshooting/http-status-codes)
-    - [Debug DNS and network errors](https://developers.google.com/crawling/docs/troubleshooting/dns-network-errors)
+    - [Managing crawling of faceted navigation URLs](https://developers.google.com/crawling/docs/faceted-navigation.md.txt)
+    - [Optimize your crawl budget](https://developers.google.com/crawling/docs/crawl-budget.md.txt)
+    - [How HTTP status codes affect Google's crawlers](https://developers.google.com/crawling/docs/troubleshooting/http-status-codes.md.txt)
+    - [Debug DNS and network errors](https://developers.google.com/crawling/docs/troubleshooting/dns-network-errors.md.txt)
 
 
     **Why**: This documentation is more relevant to many Google products that use Google's crawlers,
@@ -238,7 +254,7 @@ December 2
 
 
     **What** : Updated the
-    [Google Read Aloud user agent page](https://developers.google.com/crawling/docs/crawlers-fetchers/read-aloud-user-agent)
+    [Google Read Aloud user agent page](https://developers.google.com/crawling/docs/crawlers-fetchers/read-aloud-user-agent.md.txt)
     to provide additional details on how it functions, in particular that it uses stateless
     rendering, and that it needs to access the page to see the meta tags used on the page.
 
@@ -258,11 +274,11 @@ November 20
     to a new [Google crawling documentation site](https://developers.google.com/crawling). The content hasn't changed,
     only the location. Notable moves include:
 
-    - [Overview of Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers)
-    - [Verify requests from Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests)
-    - [Reduce the Google crawl rate](https://developers.google.com/crawling/docs/crawlers-fetchers/reduce-crawl-rate)
-    - [Google common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers)
-    - [How Google interprets the robots.txt specification](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec)
+    - [Overview of Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers.md.txt)
+    - [Verify requests from Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests.md.txt)
+    - [Reduce the Google crawl rate](https://developers.google.com/crawling/docs/crawlers-fetchers/reduce-crawl-rate.md.txt)
+    - [Google common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers.md.txt)
+    - [How Google interprets the robots.txt specification](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec.md.txt)
 
 
     **Why**: Google's crawling infrastructure is shared across a variety of Google products beyond Search,
@@ -277,7 +293,7 @@ November 12
 
 
     **What** : We added the
-    [`Google-Pinpoint`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers#google-pinpoint)
+    [`Google-Pinpoint`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers.md.txt#google-pinpoint)
     fetcher to the list of user-triggered fetchers.
 
 
@@ -290,7 +306,7 @@ November 3
 
 
     **What** : Based on feedback, we added the
-    [`Google-CWS`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers#google-cws)
+    [`Google-CWS`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers.md.txt#google-cws)
     fetcher to the list of user-triggered fetchers.
 
 ## October 2025
@@ -301,7 +317,7 @@ October 15
     ### Updated the list of Google products that use the Read Aloud service
 
 
-    **What** : Update the documentation on [Google Read Aloud](https://developers.google.com/crawling/docs/crawlers-fetchers/read-aloud-user-agent) with an updated list of Google products that use the Read Aloud service.
+    **What** : Update the documentation on [Google Read Aloud](https://developers.google.com/crawling/docs/crawlers-fetchers/read-aloud-user-agent.md.txt) with an updated list of Google products that use the Read Aloud service.
 
 
     **Why**: Other Google products can now use the Google Read Aloud service.
@@ -313,7 +329,7 @@ October 9
 
 
     **What** : Based on feedback, we added
-    [`Google-NotebookLM`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers#notebooklm)
+    [`Google-NotebookLM`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers.md.txt#notebooklm)
     to the list of user-triggered fetchers.
 
 ## July 2025
@@ -324,7 +340,7 @@ July 1
     ### Updated the Google Read Aloud user agent
 
 
-    **What** : Updated [Google Read Aloud user agent](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers)
+    **What** : Updated [Google Read Aloud user agent](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers.md.txt)
     in HTTP requests with newer browser versions.
 
 
@@ -338,7 +354,7 @@ April 25
     ### Updated the description of the Google-Extended product token
 
 
-    **What** : Based on publisher feedback, we updated the [Google-Extended](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers#google-extended)
+    **What** : Based on publisher feedback, we updated the [Google-Extended](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers.md.txt#google-extended)
     product token description to provide additional specificity and clarity.
 
 :
@@ -347,7 +363,7 @@ April 25
 
 
     **What** : Updated the
-    [`Googlebot-News`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers#googlebot-news)
+    [`Googlebot-News`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers.md.txt#googlebot-news)
     user agent description.
 
 
