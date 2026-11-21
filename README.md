@@ -280,6 +280,10 @@ developers.google.com, web.dev and developer.chrome.com. Google licenses that co
 code samples under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0). Each
 saved page's source address is listed in its guide's `README.md`.
 
+Portions of this repository are reproduced from work created and shared by Google and used
+according to terms described in the
+[Creative Commons 4.0 Attribution License](https://creativecommons.org/licenses/by/4.0/).
+
 The license below covers the code in this repo, not the pages in `guides/`.
 
 The copy in `guides/a11y-vocab/` is the Schema.org Accessibility Properties for Discoverability
