@@ -5,7 +5,7 @@
   "author": {
     "name": "Brandon Hatch"
   },
-  "license": "MIT",
+  "license": "MIT-0",
   "keywords": ["seo", "structured-data", "json-ld", "images", "lighthouse", "core-web-vitals", "style-guide", "mcp"],
   "mcpServers": {
     "google_seo_and_style_guides": {

@@ -275,8 +275,7 @@ developers.google.com, web.dev and developer.chrome.com. Google licenses that co
 code samples under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0). Each
 saved page's source address is listed in its guide's `README.md`.
 
-The code in this repo is under the MIT License; see `LICENSE`. That license does not cover the
-pages in `guides/`.
+The license below covers the code in this repo, not the pages in `guides/`.
 
 The copy in `guides/a11y-vocab/` is the Schema.org Accessibility Properties for Discoverability
 Vocabulary, copyright its contributors, published by the W3C Accessibility Discoverability
@@ -285,3 +284,7 @@ Vocabulary for Schema.org Community Group under the
 It is converted from HTML to Markdown, and its source address is listed in `guides/a11y-vocab/README.md`.
 
 This project is not affiliated with or endorsed by Google or the W3C.
+
+## License
+
+MIT No Attribution (MIT-0), by Brandon Hatch. Do anything you like with it: use it, change it, sell it. You don't have to credit me. If you build something with it, a mention is appreciated, and no hard feelings if not.
