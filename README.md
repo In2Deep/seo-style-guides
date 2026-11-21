@@ -162,11 +162,16 @@ From a copy of this repo on your computer:
 /plugin install lx-seo@seo-style-guides
 ```
 
-From GitHub, replace `<owner>/<repo>` with the repository that holds it:
+From GitHub:
 
 ```
-/plugin install lx-seo --marketplace <owner>/<repo>
+/plugin marketplace add In2Deep/seo-style-guides
+/plugin install lx-seo@seo-style-guides
 ```
+
+Then restart Claude Code, so it starts the plugin's tool server. The server needs Python 3.10 or
+newer; `mcp-server/launch.sh` finds one from Homebrew, python.org, pyenv, asdf, mise, conda or uv,
+even when Claude starts it without your shell's PATH.
 
 A plugin install is a snapshot. It gives you keyword search, every checker, and the `/lx-seo`
 actions with no setup. Claude Code replaces the plugin's folder when the plugin updates, so guide

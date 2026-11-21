@@ -273,3 +273,9 @@ def check_structured_data(markup: str) -> str:
             except RecursionError:
                 raise ValueError(f"JSON-LD item {number} is too deeply nested") from None
     return "\n".join(report)
+
+
+if __name__ == "__main__":  # python3 structured_data.py page.html (or a .json file): the check_structured_data report
+    import sys
+
+    print(check_structured_data(Path(sys.argv[1]).read_text(encoding="utf-8")))

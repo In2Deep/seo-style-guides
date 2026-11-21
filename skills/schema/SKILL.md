@@ -14,6 +14,8 @@ This skill reports and drafts. Don't change the site's files unless the user the
 
 A site behind a login can't be reviewed. Don't enter a password; ask for the address of a local preview of the same build instead.
 
+`read_google_doc`, `search_google_docs`, `check_structured_data` and `check_google_quote` come from this plugin's `google_seo_and_style_guides` server. If they are listed only as deferred tools, load them first. If they aren't available, tell the user the plugin's tool server didn't start (it needs Python 3.10 or newer, and Claude needs a restart after the plugin is installed or updated). Then use the saved pages it would have read: they are in `${CLAUDE_PLUGIN_ROOT}/guides/<guide>/`. Confirm a quote with `grep -F` on a short run of its words in the saved page, since lines wrap. For `check_structured_data`, run `python3 -B "${CLAUDE_PLUGIN_ROOT}/structured_data.py" <file>` on a saved HTML or JSON file. Don't read Google's live pages in their place.
+
 ## Steps
 
 1. Run the page checker on the address to get the page list and each page's current JSON-LD types:
