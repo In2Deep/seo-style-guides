@@ -133,7 +133,7 @@ to. It doesn't follow robots.txt, so only a firewall, CDN, bot service or server
 out. The checker loads every page (the first 50, or `--pages N`) twice: with Google-Agent's
 published User-Agent string, read from the saved `crawling` guide, and with the same browser string
 without Google-Agent in it. A page fails when the name alone changes the answer: blocked, rate
-limited, a challenge page, or sent somewhere else. It also lists every form and where it sends,
+limited, a challenge page, or sent somewhere else; it also fails when neither request gets an answer. It also lists every form and where it sends,
 in-page CAPTCHA widgets, and robots.txt lines that name Google-Agent. Each `--blocklist` (a file or
 an address, in any common format) is compared with Google's current list of Google-Agent addresses,
 `user-triggered-agents.json`, and every entry that covers one of them fails.

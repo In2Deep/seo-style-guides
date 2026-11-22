@@ -12,6 +12,7 @@ import re
 import sys
 from html import unescape
 from html.parser import HTMLParser
+from http.client import HTTPException
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.parse import urldefrag, urljoin, urlsplit
@@ -264,7 +265,7 @@ def sitemap_locs(url: str) -> tuple[list[str], bool]:
     """The <loc> addresses in one sitemap file, and whether it is a sitemap index."""
     try:
         xml = fetch(url)[3]
-    except (OSError, ValueError):
+    except (OSError, ValueError, HTTPException):
         return [], False
     return [unescape(loc.strip()) for loc in re.findall(r"<loc>(.*?)</loc>", xml, re.S)], "<sitemapindex" in xml
 
@@ -311,8 +312,10 @@ def site_pages(start: str, user_agent: str = USER_AGENT):
     for url in order:  # grows while links are followed
         try:
             final, kind, robots, html = fetch(url, user_agent)
-        except (OSError, ValueError) as error:
-            status = f"HTTP {error.code}" if isinstance(error, HTTPError) else str(getattr(error, "reason", error))
+        except (OSError, ValueError, HTTPException) as error:  # HTTPException: an answer cut short or not HTTP at all
+            status = (f"HTTP {error.code}" if isinstance(error, HTTPError)
+                      else f"the answer was cut short or garbled ({type(error).__name__})" if isinstance(error, HTTPException)
+                      else str(getattr(error, "reason", error)))
             yield url, linked_from[url], f"could not fetch: {status}"
             continue
         if kind not in ("text/html", "application/xhtml+xml"):

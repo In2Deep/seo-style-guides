@@ -12,15 +12,18 @@ import io
 import ipaddress
 import json
 import os
+import socket
 import struct
 import subprocess
 import sys
 import tempfile
 import threading
+import time
 import unittest
 import zlib
 from pathlib import Path
 from typing import Any
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import agent_check  # noqa: E402
@@ -337,7 +340,7 @@ class AgentCheckTest(unittest.TestCase):
         self.assertNotIn("Google-Agent", browser)
         self.assertEqual((pages, passed, failed), (2, 1, 1), text)
         self.assertIn(f"FAIL {start}contact", text)
-        self.assertIn("Google-Agent got HTTP 403, a challenge page challenge", text)
+        self.assertIn("Google-Agent got HTTP 403, a challenge page;", text)
         self.assertIn(f"GET {start}find (on 1 page; search)", text)
         self.assertIn(f"POST {start}send (on 1 page; CAPTCHA: reCAPTCHA)", text)
         self.assertEqual(robots, ["User-agent: Google-Agent"])
@@ -353,6 +356,95 @@ class AgentCheckTest(unittest.TestCase):
         self.assertEqual(len(blocked), 5, blocked)
         hits = {str(entry) for entry, _ in agent_check.overlaps(blocked, google)}
         self.assertEqual(hits, {"74.125.232.5/32", "2001:4860::/32"})
+
+    def test_hard_answers_are_told_apart(self) -> None:
+        class Site(http.server.BaseHTTPRequestHandler):
+            protocol_version = "HTTP/1.0"
+
+            def log_message(self, *args) -> None:
+                pass
+
+            def send(self, status: int, body: str, *headers: tuple[str, str], length: str = "") -> None:
+                self.send_response(status)
+                self.send_header("Content-Type", "text/html")
+                for name, value in headers:
+                    self.send_header(name, value)
+                if length:
+                    self.send_header("Content-Length", length)
+                self.end_headers()
+                self.wfile.write(body.encode())
+
+            def do_GET(self) -> None:
+                agent = "Google-Agent" in self.headers.get("User-Agent", "")
+                page = "<title>Page</title><p>ok</p>"
+                if self.path == "/":
+                    return self.send(200, "".join(f'<a href="/{name}">x</a>' for name in (
+                        "cf", "cf-script", "drop", "garbage", "cut-short", "redirect", "gone", "captcha-article", "vercel", "slow")))
+                if self.path == "/cf" and agent:
+                    return self.send(403, "<title>Just a moment...</title>", ("cf-mitigated", "challenge"))
+                if self.path == "/cf-script":  # Cloudflare adds its challenge script to ordinary pages too
+                    return self.send(200, page + '<script src="/cdn-cgi/challenge-platform/scripts/jsd/main.js"></script>')
+                if self.path == "/drop" and agent:
+                    return
+                if self.path == "/garbage" and agent:
+                    self.wfile.write(b"NOT HTTP\r\n\r\n")
+                    return
+                if self.path == "/cut-short":  # promises more than it sends, to everyone
+                    return self.send(200, page, length="5000")
+                if self.path == "/redirect" and agent:
+                    return self.send(302, "", ("Location", "/sorry"))
+                if self.path == "/gone":
+                    return self.send(404, "<title>Not found</title>")
+                if self.path == "/captcha-article":
+                    return self.send(200, "<title>How our CAPTCHA works</title><p>ok</p>")
+                if self.path == "/vercel" and agent:
+                    return self.send(429, "<title>Vercel Security Checkpoint</title>", ("x-vercel-mitigated", "challenge"))
+                if self.path == "/slow" and agent:
+                    time.sleep(1.5)
+                if self.path.startswith("/sitemap"):
+                    return self.send(404, "")
+                return self.send(200, page)
+
+        server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Site)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        start = f"http://127.0.0.1:{server.server_address[1]}/"
+        agent, browser = agent_check.agent_user_agent()
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output), mock.patch.object(agent_check, "FETCH_TIMEOUT", 1):
+            totals = agent_check.check_pages(start, agent, browser, 50, {})
+            page_check.check_site(start)  # a cut-short page is reported, not a crash
+        server.shutdown()
+        server.server_close()
+        text = output.getvalue()
+        lines = text.splitlines()
+
+        def detail(name: str) -> str:
+            first = next(i for i, line in enumerate(lines) if line.startswith(("PASS ", "FAIL ")) and line.split()[1] == start + name)
+            return "\n".join(lines[first:first + 3])
+
+        for name, expected in {"": "PASS", "cf": "FAIL challenges: Google-Agent got HTTP 403, Cloudflare challenge page;",
+                               "cf-script": "PASS", "drop": "FAIL gets in by name: Google-Agent got no answer (Remote end closed",
+                               "garbage": "FAIL gets in by name: Google-Agent got no answer (a garbled answer (BadStatusLine))",
+                               "cut-short": "PASS", "redirect": f"FAIL gets in by name: Google-Agent was sent to {start}sorry",
+                               "gone": "NOTICE both got HTTP 404", "captcha-article": "PASS",
+                               "vercel": "FAIL challenges: Google-Agent got HTTP 429, Vercel challenge page;",
+                               "slow": "FAIL gets in by name: Google-Agent got no answer (timed out)"}.items():
+            with self.subTest(page=name):
+                self.assertIn(expected, detail(name), text)
+        self.assertNotIn("NOTICE", detail("captcha-article"))
+        self.assertEqual(totals, (11, 5, 6), text)
+        self.assertIn("the answer was cut short or garbled (IncompleteRead)", text)
+
+    def test_a_site_that_cannot_be_reached_fails(self) -> None:
+        with socket.socket() as probe:  # a port nothing listens on
+            probe.bind(("127.0.0.1", 0))
+            start = f"http://127.0.0.1:{probe.getsockname()[1]}/"
+        agent, browser = agent_check.agent_user_agent()
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            totals = agent_check.check_pages(start, agent, browser, 50, {})
+        self.assertEqual(totals, (1, 0, 1), output.getvalue())
+        self.assertIn("could not reach the page: neither request got an answer", output.getvalue())
 
 
 class SiteCheckTest(unittest.TestCase):

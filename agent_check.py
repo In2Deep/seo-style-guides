@@ -22,6 +22,7 @@ import json
 import re
 import sys
 from html.parser import HTMLParser
+from http.client import HTTPException, IncompleteRead
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.parse import urljoin, urlsplit
@@ -48,6 +49,7 @@ CHALLENGE_MARKERS = (("/cdn-cgi/challenge-platform/", "Cloudflare"), ("cf-chl-",
                      ("/_sec/cp_challenge/", "Akamai"), ("_incapsula_resource", "Imperva"),
                      ("incapsula incident id", "Imperva"), ("sucuri website firewall", "Sucuri"),
                      ("awswaf.com", "AWS WAF"), ("vercel security checkpoint", "Vercel"))
+UNNAMED_CHALLENGE = "unnamed"  # a challenge page known only by its title and a refusing status
 CHALLENGE_TITLES = re.compile(r"<title>[^<]*(just a moment|attention required|access denied|are you a robot|"
                               r"verify you are human|security check|captcha|checking your browser)", re.I)
 # In-page CAPTCHA widgets: a script address, or a class on the element the widget fills.
@@ -95,12 +97,16 @@ def load(url: str, user_agent: str) -> dict:
         response = urlopen(request, timeout=FETCH_TIMEOUT)
     except HTTPError as error:
         response = error
-    except (OSError, ValueError) as error:
+    except (OSError, ValueError) as error:  # refused, dropped (RemoteDisconnected is an OSError) or timed out
         return {"status": None, "error": str(getattr(error, "reason", error)), "url": url, "headers": {}, "text": ""}
+    except HTTPException as error:  # the answer wasn't HTTP at all
+        return {"status": None, "error": f"a garbled answer ({type(error).__name__})", "url": url, "headers": {}, "text": ""}
     try:
         with response:
             body = response.read(MAX_BODY_BYTES)
-    except (OSError, ValueError, AttributeError):  # an error answer with no body, or a connection dropped mid-read
+    except IncompleteRead as error:  # the answer was cut short: keep what came
+        body = error.partial
+    except (OSError, ValueError, AttributeError, HTTPException):  # an error answer with no body, or a dropped connection
         body = b""
     headers = {name.lower(): value for name, value in response.headers.items()}
     text = body.decode(response.headers.get_content_charset() or "utf-8", errors="replace")
@@ -108,16 +114,20 @@ def load(url: str, user_agent: str) -> dict:
 
 
 def challenge(answer: dict) -> str:
-    """The service whose challenge page this answer is, or ""."""
+    """The service whose challenge page this answer is, UNNAMED_CHALLENGE, or "".
+
+    A marker or a title alone is not enough on a page that was served normally: Cloudflare adds its challenge
+    script to ordinary pages, and an ordinary page can be about CAPTCHAs."""
     for header, value, service in CHALLENGE_HEADERS:
         if header in answer["headers"] and value in answer["headers"][header].lower():
             return service
     text = answer["text"][:200_000].lower()
     refused = answer["status"] in TURNED_AWAY
+    titled = bool(CHALLENGE_TITLES.search(answer["text"][:20_000]))
     for marker, service in CHALLENGE_MARKERS:
-        if refused and marker in text:  # Cloudflare also adds its challenge script to normal pages
+        if (refused or titled) and marker in text:
             return service
-    return "a challenge page" if CHALLENGE_TITLES.search(answer["text"][:20_000]) else ""
+    return UNNAMED_CHALLENGE if refused and titled else ""
 
 
 def outcome(answer: dict) -> str:
@@ -126,7 +136,7 @@ def outcome(answer: dict) -> str:
         return f"no answer ({answer['error']})"
     service = challenge(answer)
     if service:
-        return f"HTTP {answer['status']}, {service} challenge"
+        return f"HTTP {answer['status']}, " + ("a challenge page" if service == UNNAMED_CHALLENGE else f"{service} challenge page")
     if answer["status"] in TURNED_AWAY or answer["status"] >= 400:
         return f"HTTP {answer['status']}"
     return ""
@@ -250,8 +260,11 @@ def check_pages(start: str, agent: str, browser: str, limit: int, forms: dict) -
         as_agent = load(url, agent)
         browser_got, agent_got = outcome(as_browser), outcome(as_agent)
         problems, notices = [], []
-        if agent_got and not browser_got:
-            problems.append((CHECK["rate limits" if as_agent["status"] == 429 else "challenges" if "challenge" in agent_got
+        if as_agent["status"] is None and as_browser["status"] is None:
+            problems.append((None, f"could not reach the page: neither request got an answer ({as_agent['error']}). "
+                                   "If this computer's address is banned there, this check can't tell anything"))
+        elif agent_got and not browser_got:
+            problems.append((CHECK["challenges" if "challenge" in agent_got else "rate limits" if as_agent["status"] == 429
                                    else "gets in by name"], f"Google-Agent got {agent_got}; the same browser without its name got the page"))
         elif agent_got and browser_got and refused(as_agent):
             notices.append((CHECK["challenges" if "challenge" in agent_got else "gets in by name"],
@@ -307,25 +320,29 @@ def print_forms(forms: dict) -> None:
     print()
 
 
-def check_blocklists(names: list[str]) -> bool:
-    """Compares each blocklist with Google's Google-Agent ranges. True if any blocks them."""
+def plural(count: int, word: str) -> str:
+    return f"{count} {word}{'s' * (count != 1)}"
+
+
+def check_blocklists(names: list[str]) -> tuple[bool, list[str]]:
+    """Compares each blocklist with Google's Google-Agent ranges. Returns whether any covers them, and what couldn't be read."""
     try:
         google, dated = agent_networks()
-    except (OSError, ValueError, KeyError) as error:
+    except (OSError, ValueError, KeyError, HTTPException) as error:
         print(f"FAIL blocklists: could not read Google's address list ({error}): {AGENT_RANGES_URL}\n")
-        return True
+        return False, ["Google's address list"]
     versions = [sum(network.version == version for network in google) for version in (4, 6)]
     print(f"Google-Agent's addresses: {len(google)} ranges ({versions[0]} IPv4, {versions[1]} IPv6), Google's list dated {dated}.")
     if not names:
         print("  No --blocklist given, so no address rules were compared.\n")
-        return False
-    any_blocked = False
+        return False, []
+    any_blocked, unread = False, []
     for name in names:
         try:
             blocked = read_networks(read_blocklist(name))
-        except (OSError, ValueError) as error:
+        except (OSError, ValueError, HTTPException) as error:
             print(f"FAIL {name}: could not read it ({error})")
-            any_blocked = True
+            unread.append(name)
             continue
         hits = overlaps(blocked, google)
         if not blocked:
@@ -342,7 +359,7 @@ def check_blocklists(names: list[str]) -> bool:
         else:
             print(f"PASS {name}: {len(blocked)} entries, none cover Google-Agent's addresses")
     print()
-    return any_blocked
+    return any_blocked, unread
 
 
 def main() -> int:
@@ -354,6 +371,8 @@ def main() -> int:
     args = parser.parse_args()
     if not args.address.startswith(("http://", "https://")):
         parser.error("give a web address that starts with http:// or https://")
+    if args.pages < 1:
+        parser.error("--pages must be 1 or more")
     agent, browser = agent_user_agent()
     start = args.address
     parts = urlsplit(start)
@@ -366,12 +385,13 @@ def main() -> int:
         say("NOTICE", CHECK["robots.txt"], f"robots.txt names Google-Agent ({'; '.join(robots)}), but those rules don't hold it back", "")
         print()
     print_forms(forms)
-    blocked = check_blocklists(args.blocklist)
-    print(f"{start}: {pages} pages checked, {passed} passed, {failed} failed"
-          f"{'; a blocklist covers Google-Agent' if blocked else ''}.")
+    blocked, unread = check_blocklists(args.blocklist)
+    print(f"{start}: {plural(pages, 'page')} checked, {passed} passed, {failed} failed"
+          f"{'; a blocklist covers Google-Agent' if blocked else ''}"
+          f"{'; could not read ' + ', '.join(unread) if unread else ''}.")
     print("Not tested from here: requests from Google's addresses, Web Bot Auth signatures, rate limits under load, "
           "and whether proxies keep the headers.")
-    return 1 if failed or blocked else 0
+    return 1 if failed or blocked or unread else 0
 
 
 if __name__ == "__main__":
