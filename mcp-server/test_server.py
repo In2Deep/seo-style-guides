@@ -9,6 +9,7 @@ import contextlib
 import functools
 import http.server
 import io
+import ipaddress
 import json
 import os
 import struct
@@ -22,6 +23,7 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import agent_check  # noqa: E402
 import image_check  # noqa: E402
 import page_check  # noqa: E402
 import sync_google_docs  # noqa: E402
@@ -216,7 +218,7 @@ class GoogleDocsServerTest(unittest.TestCase):
         self.assertNotIn("Google documents no search feature for this type", text)
 
     def test_every_page_check_quote_is_in_its_page(self) -> None:
-        for check in page_check.CHECKS + image_check.CHECKS:
+        for check in page_check.CHECKS + image_check.CHECKS + agent_check.CHECKS:
             with self.subTest(check=check["name"]):
                 text, is_error = self.session.call("check_google_quote", page=check["source"], quote=check["quote"])
                 self.assertFalse(is_error, text)
@@ -285,6 +287,72 @@ class HtmlToMarkdownTest(unittest.TestCase):
             "- one\n\n  - nested\n\nExample 3\n\n"
             '```\n{\n   "a": 1\n}\n```\n',
         )
+
+    def test_converts_a_google_article_without_its_footer(self) -> None:
+        document = """<nav>Menu</nav><article><div class="devsite-article-body clearfix">
+<h1 class="page-title">Web Bot Auth</h1><p>See <a href="/crawling/docs/x">the guide</a> and <a href="#y">below</a>.</p>
+</div><devsite-thumb-rating></devsite-thumb-rating><p>Last updated today.</p></article>"""
+        markdown = sync_google_docs.article_markdown("https://developers.google.com/crawling/docs/web-bot-auth", document)
+        self.assertIsNotNone(markdown)
+        self.assertTrue(markdown.decode().endswith(
+            "# Web Bot Auth\n\nSee [the guide](https://developers.google.com/crawling/docs/x) and below.\n"), markdown)
+        self.assertNotIn(b"Last updated", markdown)
+        self.assertIsNone(sync_google_docs.article_markdown("https://example.com/", "<p>no article</p>"))
+
+
+class AgentCheckTest(unittest.TestCase):
+    def test_finds_a_block_by_name_a_captcha_form_and_robots_rules(self) -> None:
+        class Site(http.server.BaseHTTPRequestHandler):
+            def log_message(self, *args) -> None:
+                pass
+
+            def do_GET(self) -> None:
+                pages = {"/": '<a href="/contact">Contact</a><form role="search" action="/find"><input name="q"></form>',
+                         "/contact": '<form method="post" action="/send"><div class="g-recaptcha"></div></form>',
+                         "/robots.txt": "User-agent: Google-Agent\nDisallow: /\n"}
+                if self.path not in pages:
+                    self.send_error(404)
+                    return
+                blocked = "Google-Agent" in self.headers.get("User-Agent", "") and self.path == "/contact"
+                body = ("<title>Just a moment...</title>" if blocked else pages[self.path]).encode()
+                self.send_response(403 if blocked else 200)
+                self.send_header("Content-Type", "text/plain" if self.path.endswith(".txt") else "text/html")
+                self.end_headers()
+                self.wfile.write(body)
+
+        server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Site)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        start = f"http://127.0.0.1:{server.server_address[1]}/"
+        agent, browser = agent_check.agent_user_agent()
+        forms: dict = {}
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            pages, passed, failed = agent_check.check_pages(start, agent, browser, 10, forms)
+            agent_check.print_forms(forms)
+        robots = agent_check.robots_agent_lines(start.rstrip("/"), browser)
+        server.shutdown()
+        server.server_close()
+        text = output.getvalue()
+        self.assertIn("Google-Agent;", agent)
+        self.assertNotIn("Google-Agent", browser)
+        self.assertEqual((pages, passed, failed), (2, 1, 1), text)
+        self.assertIn(f"FAIL {start}contact", text)
+        self.assertIn("Google-Agent got HTTP 403, a challenge page challenge", text)
+        self.assertIn(f"GET {start}find (on 1 page; search)", text)
+        self.assertIn(f"POST {start}send (on 1 page; CAPTCHA: reCAPTCHA)", text)
+        self.assertEqual(robots, ["User-agent: Google-Agent"])
+
+    def test_reads_blocklists_in_common_formats(self) -> None:
+        google = [ipaddress.ip_network("74.125.232.0/28"), ipaddress.ip_network("2001:4860:c::/124")]
+        blocklist = """# nftables set
+        elements = { 10.0.0.0/8, 74.125.232.5, 192.0.2.1-192.0.2.3 }
+        {"cidr":"2001:4860::/32","sblid":"SBL1"}
+        12:30:45 not an address, std::cout neither"""
+        blocked = agent_check.read_networks(blocklist)
+        self.assertIn(ipaddress.ip_network("192.0.2.2/31"), blocked)  # the range 192.0.2.1 to .3
+        self.assertEqual(len(blocked), 5, blocked)
+        hits = {str(entry) for entry, _ in agent_check.overlaps(blocked, google)}
+        self.assertEqual(hits, {"74.125.232.5/32", "2001:4860::/32"})
 
 
 class SiteCheckTest(unittest.TestCase):

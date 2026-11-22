@@ -1,12 +1,12 @@
 {
   "name": "lx-seo",
-  "version": "0.4.7",
-  "description": "Google's SEO, crawling, style, Lighthouse and web.dev guides saved locally, with search, a quote checker, a JSON-LD checker, a page checker and an image checker.",
+  "version": "0.5.0",
+  "description": "Google's SEO, crawling, style, Lighthouse and web.dev guides saved locally, with search, a quote checker, a JSON-LD checker, a page checker, an image checker and a Google-Agent checker.",
   "author": {
     "name": "Brandon Hatch"
   },
   "license": "MIT-0",
-  "keywords": ["seo", "structured-data", "json-ld", "images", "lighthouse", "core-web-vitals", "style-guide", "mcp"],
+  "keywords": ["seo", "structured-data", "json-ld", "images", "google-agent", "lighthouse", "core-web-vitals", "style-guide", "mcp"],
   "mcpServers": {
     "google_seo_and_style_guides": {
       "command": "${CLAUDE_PLUGIN_ROOT}/mcp-server/launch.sh",

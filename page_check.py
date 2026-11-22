@@ -252,9 +252,9 @@ def check_page(html: str) -> str:
     return report(run_checks(html))
 
 
-def fetch(url: str) -> tuple[str, str, str, str]:
+def fetch(url: str, user_agent: str = USER_AGENT) -> tuple[str, str, str, str]:
     """The final address, content type, X-Robots-Tag header and text of one web address."""
-    with urlopen(Request(url, headers={"User-Agent": USER_AGENT}), timeout=FETCH_TIMEOUT) as response:
+    with urlopen(Request(url, headers={"User-Agent": user_agent}), timeout=FETCH_TIMEOUT) as response:
         robots = ", ".join(response.headers.get_all("X-Robots-Tag") or [])
         text = response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
         return response.geturl(), response.headers.get_content_type(), robots, text
@@ -278,8 +278,10 @@ def sitemap_urls(origin: str) -> list[str]:
     return []
 
 
-def site_pages(start: str):
+def site_pages(start: str, user_agent: str = USER_AGENT):
     """Fetches every page found under the start address, from the sitemap and by following links, in the order found.
+
+    Pages are fetched with the given User-Agent; the sitemap always with this checker's own.
 
     Yields (address, where it was linked from, page): page is (final address, X-Robots-Tag header, HTML), or the
     reason it could not be fetched. Other content types are skipped. Stops at MAX_PAGES and says so."""
@@ -308,7 +310,7 @@ def site_pages(start: str):
         add(url, "the sitemap")
     for url in order:  # grows while links are followed
         try:
-            final, kind, robots, html = fetch(url)
+            final, kind, robots, html = fetch(url, user_agent)
         except (OSError, ValueError) as error:
             status = f"HTTP {error.code}" if isinstance(error, HTTPError) else str(getattr(error, "reason", error))
             yield url, linked_from[url], f"could not fetch: {status}"

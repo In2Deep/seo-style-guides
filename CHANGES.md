@@ -45,3 +45,7 @@
 ## 2026-11-21 search-help
 
 - changed: help--office-hours--2023--december.md, updates.md
+
+## 2026-11-21 crawling
+
+- new: crawlers-fetchers--web-bot-auth.md

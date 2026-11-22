@@ -20,6 +20,8 @@ One guide is not Google's and has no Markdown version:
     a11y-vocab  W3C Schema.org Accessibility Properties for Discoverability Vocabulary
                 https://www.w3.org/2021/a11y-discov-vocab/latest/
 It is one HTML document, which this script converts to Markdown (see html_to_markdown).
+In a guide with html_fallback (crawling), a Google page with no Markdown version is converted from its HTML
+the same way (see article_markdown).
 
 Google's pages are saved byte for byte as Google serves them, so the standard tool also verifies a copy:
     cd guides/seo && shasum -a 256 -c SHA256SUMS
@@ -54,7 +56,7 @@ from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Callable
-from urllib.parse import urlsplit
+from urllib.parse import urljoin, urlsplit
 
 REPO_ROOT = Path(__file__).resolve().parent
 SNAPSHOT_ROOT = REPO_ROOT / "guides"
@@ -97,6 +99,7 @@ class Guide:
     scopes: tuple[str, ...] = ()  # path prefixes that count as the guide, when not just root_path
     menus: tuple[tuple[str, str], ...] = ()  # (menu page path, section label) when the guide has several menus
     follow_links: bool = True  # also save in-guide pages the saved pages link to
+    html_fallback: bool = False  # convert a page that has no Markdown version from its HTML (see article_markdown)
     owner: str = "Google"  # who publishes the guide, for messages such as "Google changed the guide"
     credit: str = "Google LLC, CC BY 4.0"  # the short credit shown beside every page read
     # For a guide that isn't Google's: a function that downloads it in place of read_navigation and
@@ -144,10 +147,11 @@ class Guide:
 
 
 class MarkdownWriter(HTMLParser):
-    """Convert a W3C report's HTML to plain Markdown: headings, paragraphs, lists, notes and code.
+    """Convert a W3C report's or a Google page's HTML to plain Markdown: headings, paragraphs, lists, notes and code.
 
     Scripts, styles, the table of contents and the example format buttons are dropped. Links to
-    other sites keep their address; links within the document keep only their text.
+    other sites keep their address; links within the document keep only their text. With a base
+    address, a relative link is made absolute first, so a Google page keeps its links to other pages.
     """
 
     SKIPPED = {"script", "style", "nav", "fieldset", "button", "input", "head"}
@@ -155,8 +159,9 @@ class MarkdownWriter(HTMLParser):
               "details", "summary", "table", "tr", "hr", "figure", "figcaption", "h1", "h2", "h3",
               "h4", "h5", "h6"}
 
-    def __init__(self) -> None:
+    def __init__(self, base: str = "") -> None:
         super().__init__(convert_charrefs=True)
+        self.base = base
         self.blocks: list[str] = []
         self._text: list[str] = []
         self._prefix = ""
@@ -203,6 +208,8 @@ class MarkdownWriter(HTMLParser):
             self._text.append(" ")
         elif tag == "a":
             href = attributes.get("href") or ""
+            if self.base and href and not href.startswith("#"):
+                href = urljoin(self.base, href)
             self._link = href if href.startswith(("http://", "https://")) else None
             self._link_text = []
 
@@ -239,12 +246,31 @@ class MarkdownWriter(HTMLParser):
             self._text.append(data)
 
 
-def html_to_markdown(document: str) -> str:
-    writer = MarkdownWriter()
+def html_to_markdown(document: str, base: str = "") -> str:
+    writer = MarkdownWriter(base)
     writer.feed(document)
     writer.close()
     writer._flush()
     return "\n\n".join(writer.blocks) + "\n"
+
+
+GOOGLE_ARTICLE_START = '<div class="devsite-article-body'
+GOOGLE_ARTICLE_ENDS = ("<devsite-thumb-rating", "</article>")  # the page's feedback buttons, or the end of the article
+
+
+def article_markdown(page_url: str, document: str) -> bytes | None:
+    """A Google page's article converted to Markdown, for a page with no Markdown version; None if no article is found.
+
+    Only the article body is kept: the menus, the feedback buttons and the "Last updated" footer are left out,
+    so the copy changes only when the article does."""
+    start = document.find(GOOGLE_ARTICLE_START)
+    if start < 0:
+        return None
+    ends = [end for end in (document.find(marker, start) for marker in GOOGLE_ARTICLE_ENDS) if end > 0]
+    article = document[start:min(ends)] if ends else document[start:]
+    header = (f"Source: <{page_url}>\n\nConverted from HTML to Markdown by `{SCRIPT_PATH}`, because Google serves"
+              " no Markdown version of this page.\n\n")
+    return (header + html_to_markdown(article, base=page_url)).encode("utf-8")
 
 
 # The W3C's "latest" address forwards to this page, which names the dated report with a script.
@@ -287,6 +313,7 @@ GUIDES = {
             "[Changelog](changelog.md)",
             home_path="/crawling",  # /crawling/docs itself is a 404
             navigation_path="/crawling/docs/crawlers-fetchers/overview-google-crawlers",
+            html_fallback=True,  # the Web Bot Auth page has no Markdown version
         ),
         Guide(
             "lighthouse",
@@ -587,13 +614,23 @@ def fetch_markdown(guide: Guide, page: GuidePage) -> tuple[bytes | None, str | N
     no_markdown = Unavailable("no-md", page.page_url, "has no Markdown version, so it isn't saved")
     try:
         content_type, body, final_url = fetch(page.markdown_url)
+        if content_type == MARKDOWN_CONTENT_TYPE:
+            return body, guide.path_of(final_url), None
+    except FetchError as error:
+        if not is_client_error(error):
+            raise
+    if not guide.html_fallback:
+        return None, None, no_markdown
+    try:
+        content_type, body, final_url = fetch(page.page_url)
     except FetchError as error:
         if is_client_error(error):
             return None, None, no_markdown
         raise
-    if content_type != MARKDOWN_CONTENT_TYPE:
+    converted = article_markdown(page.page_url, body.decode("utf-8", errors="replace")) if content_type == "text/html" else None
+    if converted is None:
         return None, None, no_markdown
-    return body, guide.path_of(final_url), None
+    return converted, guide.path_of(final_url), None
 
 
 def report_progress(guide: Guide, done: int, total: int) -> None:
@@ -701,6 +738,10 @@ def render_readme(guide: Guide, pages: list[GuidePage], snapshot_date: str) -> s
             f"- Source: each page's Markdown, served at the page's address plus `{MARKDOWN_SUFFIX}`, saved byte for byte.",
             f"- File names: the page's address after `{guide.root_path}/`, with `{PATH_SEPARATOR_IN_FILE_NAME}` for each `/`.",
         )),
+        *((
+            "- A page with no Markdown version is converted from its HTML instead, so it is not byte for byte;",
+            "  its first lines name the page and say it was converted.",
+        ) if guide.html_fallback else ()),
         "- Checksums: `SHA256SUMS` holds each page's SHA-256.",
         *(guide.readme_license or (
             f"- License: Google LLC, \"{guide.title}\". Page content is under",

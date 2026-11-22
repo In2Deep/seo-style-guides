@@ -20,10 +20,11 @@ Everything runs on Python 3.10 or later with the standard library only. There is
 
 | Path | What it holds |
 |---|---|
-| `sync_google_docs.py` | Downloads each guide page as Markdown and compares it with the saved copy by SHA-256. |
+| `sync_google_docs.py` | Downloads each guide page as Markdown and compares it with the saved copy by SHA-256. In the `crawling` guide, a page Google offers no Markdown for is converted from its HTML. |
 | `structured_data.py` | Checks a page's JSON-LD against the required and recommended property tables in the saved structured-data pages. |
 | `page_check.py` | Checks a built HTML page before it is deployed. Each check quotes the Google page it comes from. |
 | `image_check.py` | Checks a page's images and opens their files: size, shape, format, names, alt text, lazy loading, favicon. Each check quotes the Google page it comes from. |
+| `agent_check.py` | Checks whether Google-Agent gets into a site: each page loaded with and without Google-Agent's name, forms and CAPTCHA widgets, robots.txt, and blocklists against Google's addresses. Each check quotes the Google page it comes from. |
 | `CHANGES.md` | One dated entry per guide each time `--save` changes it, naming the pages changed, added or removed. |
 | `vectors.py` | Splits the saved pages into sections and embeds them with a local model, for search by meaning. |
 | `vectors/` | The section vectors `vectors.py` writes (about 32 MB). Not in git; rebuild with `python3 vectors.py`. |
@@ -33,6 +34,7 @@ Everything runs on Python 3.10 or later with the standard library only. There is
 | `mcp-server/test_server.py` | Tests that drive the server through its launcher. |
 | `skills/json-ld/` | The `/lx-seo:json-ld` action: find mistakes in a whole site's JSON-LD. |
 | `skills/images/` | The `/lx-seo:images` action: find image problems on a whole site. |
+| `skills/google-agent/` | The `/lx-seo:google-agent` action: check whether Google-Agent gets into a site, then ask what the checker can't see. |
 | `skills/schema/` | The `/lx-seo:schema` action: find markup a site could add, and draft it. `accessibility-vocabulary.md` holds the allowed values for its optional accessibility metadata. |
 | `.claude-plugin/` | The plugin and marketplace manifests. The plugin is named `lx-seo`, so its actions are typed `/lx-seo:<action>`. |
 
@@ -118,6 +120,28 @@ read from disk, following `<base href>`. A path that
 starts with `/` is looked up in the nearest folder above the page that has it. Given a web address,
 it checks every page the way `page_check.py` does and fetches each image once. It reads HTML only,
 not CSS, lists every problem it finds, and changes nothing. Needs Python 3.10 or newer.
+
+## Check whether Google-Agent gets in
+
+```bash
+python3 agent_check.py https://example.com/
+python3 agent_check.py https://example.com/ --blocklist blocked.txt --blocklist https://www.spamhaus.org/drop/drop_v4.json
+```
+
+Google-Agent is the name Google's AI agents use when they visit a site because a person asked them
+to. It doesn't follow robots.txt, so only a firewall, CDN, bot service or server rule can keep it
+out. The checker loads every page (the first 50, or `--pages N`) twice: with Google-Agent's
+published User-Agent string, read from the saved `crawling` guide, and with the same browser string
+without Google-Agent in it. A page fails when the name alone changes the answer: blocked, rate
+limited, a challenge page, or sent somewhere else. It also lists every form and where it sends,
+in-page CAPTCHA widgets, and robots.txt lines that name Google-Agent. Each `--blocklist` (a file or
+an address, in any common format) is compared with Google's current list of Google-Agent addresses,
+`user-triggered-agents.json`, and every entry that covers one of them fails.
+
+Its requests come from your computer, not from Google's addresses, and carry no Web Bot Auth
+signature, so rules that trust Google's addresses or signatures aren't tested; the
+`/lx-seo:google-agent` skill asks about those. It sends Google-Agent's name, so run it on sites you
+run. It never submits a form and changes nothing.
 
 ## Search by meaning (optional)
 
@@ -213,6 +237,7 @@ You don't call the tools yourself. Ask in plain words and the session picks the 
 | One built page checked | "Run the page check on dist/index.html." | `check_page` |
 | Mistakes in a whole site's JSON-LD | `/lx-seo:json-ld https://example.com` | the `json-ld` skill and `page_check.py` |
 | Image problems on a whole site | `/lx-seo:images https://example.com` | the `images` skill and `image_check.py` |
+| Whether Google-Agent gets into a site | `/lx-seo:google-agent https://example.com` | the `google-agent` skill and `agent_check.py` |
 | Markup a whole site could add | `/lx-seo:schema https://example.com` | the `schema` skill and `page_check.py` |
 | The same, plus accessibility metadata | `/lx-seo:schema https://example.com accessibility` | the `schema` skill and the W3C accessibility vocabulary |
 | To know if Google changed anything | "Are the saved guides current?" | `check_google_docs` |
