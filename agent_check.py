@@ -251,7 +251,7 @@ def check_pages(start: str, agent: str, browser: str, limit: int, forms: dict) -
     passed = failed = 0
     for count, (url, _, page) in enumerate(page_check.site_pages(start, browser), 1):
         if count > limit:
-            print(f"Stopped after {limit} pages; use --pages for more.\n")
+            print(f"Stopped after {plural(limit, 'page')}; use --pages for more.\n")
             break
         if isinstance(page, str):  # the crawler's own browser request failed: load it again to see the answer
             as_browser = load(url, browser)

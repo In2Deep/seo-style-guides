@@ -94,7 +94,8 @@ python3 page_check.py https://example.com/
 Given a web address, it checks every page of that site under that address. It finds the pages from
 the site's sitemap and by following links on the same site, and prints one PASS or FAIL line per
 page with only the failed checks. For a fetched page, the noindex check also reads the
-`X-Robots-Tag` HTTP header. It stops at 500 pages, and a site behind a login cannot be checked.
+`X-Robots-Tag` HTTP header. It stops at 500 pages, or at the number given with `--pages N`;
+`--pages 1` checks only the address given. A site behind a login cannot be checked.
 
 ## Check a page's images
 
@@ -119,7 +120,7 @@ headers and container boundaries, and reports unreadable or structurally incompl
 (PNG, JPEG, GIF, BMP, WebP, AVIF, HEIC, TIFF, ICO, PPM, SVG). For a local file, image paths are
 read from disk, following `<base href>`. A path that
 starts with `/` is looked up in the nearest folder above the page that has it. Given a web address,
-it checks every page the way `page_check.py` does and fetches each image once. It reads HTML only,
+it checks every page the way `page_check.py` does (`--pages N` included) and fetches each image once. It reads HTML only,
 not CSS, lists every problem it finds, and changes nothing. Needs Python 3.10 or newer.
 
 ## Check whether Google-Agent gets in
@@ -242,6 +243,7 @@ You don't call the tools yourself. Ask in plain words and the session picks the 
 | Markup a whole site could add | `/lx-seo:schema https://example.com` | the `schema` skill and `page_check.py` |
 | The same, plus accessibility metadata | `/lx-seo:schema https://example.com accessibility` | the `schema` skill and the W3C accessibility vocabulary |
 | Every check on a whole site, in one report | `/lx-seo:all https://example.com` | the `all` skill, which runs the four skills above |
+| Every check on one page only | `/lx-seo:all https://example.com/about/ only` | the `all` skill, with each checker stopped after that page |
 | To know if Google changed anything | "Are the saved guides current?" | `check_google_docs` |
 | What changed, and when | "What changed in the guides since 2026-11-01?" | `google_docs_changes` |
 | The newest guides | "Update the SEO guide." | `update_google_docs` |
@@ -264,7 +266,8 @@ contrast, are listed for the site owner to confirm.
 and Google-Agent checkers one after another (never at once, so a site's rate limit doesn't see
 three crawlers together), and writes one report with every failure first, worst kind first. It
 reads every page several ways, so on a big site it takes a while and uses many tokens. For one
-kind of problem, that problem's action is quicker.
+kind of problem, that problem's action is quicker. Given a page's address, it checks that page and
+the pages whose addresses start with it; add `only` after the address to check just that page.
 
 The server has ten tools:
 

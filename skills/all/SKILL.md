@@ -1,7 +1,7 @@
 ---
 name: all
 description: Run every check in this plugin on a website and write one report. Asks its questions once at the start, runs the page, image and Google-Agent checkers one after another, then does the reading that the json-ld, schema, images and google-agent skills do. That covers markup that doesn't match the page, structured data the pages could add (drafted), pictures beside their alt text, the first big picture at phone and desktop width, and Google's six Google-Agent questions. Use when asked to run all the checks, a full or complete check, or an audit of everything this plugin checks. For one kind of problem, the skill for it is quicker. It reports only; fixing is a separate request.
-argument-hint: <address> [accessibility] [blocklist file or address ...]
+argument-hint: <address> [only] [accessibility] [blocklist file or address ...]
 ---
 
 # All checks
@@ -19,7 +19,7 @@ This skill reports. Don't change the site's files or any firewall, CDN or server
 
 ## Before you start
 
-The argument is the site's address, for example `https://example.com` or `http://127.0.0.1:4321/`. The checks cover every page under it. After the address, the word `accessibility` asks for accessibility metadata, and anything else is a blocklist for the Google-Agent check.
+The argument is the site's address, for example `https://example.com` or `http://127.0.0.1:4321/`. The checks cover that page and every page whose address starts with it, so `https://example.com/blog/` also covers `https://example.com/blog/first-post/`. After the address, the word `only` checks just the page at that address, the word `accessibility` asks for accessibility metadata, and anything else is a blocklist for the Google-Agent check.
 
 Ask what you need in one message, before running anything, and only what the arguments didn't answer:
 
@@ -34,7 +34,7 @@ After that, don't stop for answers again until step 5.
 
 1. Read each Google page the four skills say to read, once, with `read_google_doc`.
 
-2. Run the three checkers one after another, in this order, never at the same time. Add `--blocklist "<list>"` for each blocklist, or leave it out if there are none:
+2. Run the three checkers one after another, in this order, never at the same time. Add `--blocklist "<list>"` for each blocklist, or leave it out if there are none. With `only`, add `--pages 1` to all three, so each stops after the page given:
 
    ```sh
    python3 -B "${CLAUDE_PLUGIN_ROOT}/page_check.py" "https://example.com/"

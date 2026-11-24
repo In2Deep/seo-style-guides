@@ -468,6 +468,31 @@ class SiteCheckTest(unittest.TestCase):
         self.assertIn(f"{start}second.html", text)
         self.assertIn("2 pages checked", text)
 
+    def test_a_page_limit_of_one_checks_only_the_address_given(self) -> None:
+        self.assertEqual(page_check.page_limit(["https://example.com/", "--pages", "1"]), (["https://example.com/"], 1))
+        self.assertEqual(page_check.page_limit(["https://example.com/"]), (["https://example.com/"], page_check.MAX_PAGES))
+        for bad in (["--pages", "0"], ["--pages"], ["--pages", "two"]):
+            with self.subTest(args=bad), self.assertRaises(SystemExit):
+                page_check.page_limit(["https://example.com/", *bad])
+        with tempfile.TemporaryDirectory() as folder:
+            Path(folder, "index.html").write_text(GOOD_PAGE.replace('href="/specs"', 'href="/second.html"'))
+            Path(folder, "second.html").write_text(GOOD_PAGE)
+            quiet = type("QuietHandler", (http.server.SimpleHTTPRequestHandler,), {"log_message": lambda *args: None})
+            server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), functools.partial(quiet, directory=folder))
+            threading.Thread(target=server.serve_forever, daemon=True).start()
+            start = f"http://127.0.0.1:{server.server_address[1]}/"
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                page_check.check_site(start, limit=1)
+                image_check.check_site(start, {}, 1)
+            server.shutdown()
+            server.server_close()
+        text = output.getvalue()
+        self.assertIn(f"PASS {start}\n", text)
+        self.assertNotIn("second.html", text)
+        self.assertEqual(text.count("1 page checked"), 2, text)
+        self.assertEqual(text.count("Stopped at the limit of 1 page; more pages were found."), 2, text)
+
 
 class ImageCheckTest(unittest.TestCase):
     @staticmethod

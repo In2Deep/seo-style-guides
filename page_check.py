@@ -4,9 +4,10 @@
 Every check names the saved guide page it comes from and quotes it exactly (a test confirms each
 quote is in its page). Parses with html.parser; fetches nothing and runs no JavaScript.
 
-A web address (http:// or https://) checks every page of that site found from its sitemap and links.
+A web address (http:// or https://) checks every page under it found from its sitemap and links, up to
+MAX_PAGES, or the number given with --pages (--pages 1 checks only the address given).
 
-Run: python3 page_check.py path/to/page.html|https://site/ [more ...]   (exit status 1 if any check fails)
+Run: python3 page_check.py path/to/page.html|https://site/ [more ...] [--pages N]   (exit status 1 if any check fails)
 """
 import re
 import sys
@@ -279,13 +280,13 @@ def sitemap_urls(origin: str) -> list[str]:
     return []
 
 
-def site_pages(start: str, user_agent: str = USER_AGENT):
+def site_pages(start: str, user_agent: str = USER_AGENT, limit: int = MAX_PAGES):
     """Fetches every page found under the start address, from the sitemap and by following links, in the order found.
 
     Pages are fetched with the given User-Agent; the sitemap always with this checker's own.
 
     Yields (address, where it was linked from, page): page is (final address, X-Robots-Tag header, HTML), or the
-    reason it could not be fetched. Other content types are skipped. Stops at MAX_PAGES and says so."""
+    reason it could not be fetched. Other content types are skipped. Stops at the limit and says so."""
     start = urldefrag(start)[0]
     parts = urlsplit(start)
     scope = parts.path.rstrip("/")
@@ -300,14 +301,14 @@ def site_pages(start: str, user_agent: str = USER_AGENT):
         if (url in linked_from or split.scheme not in ("http", "https") or split.netloc != parts.netloc
                 or not (split.path == scope or split.path.startswith(scope + "/")) or split.path.lower().endswith(NOT_PAGES)):
             return
-        if len(order) >= MAX_PAGES:
+        if len(order) >= limit:
             limit_reached = True
             return
         order.append(url)
         linked_from[url] = source
 
     add(start, "the address given")
-    for url in sitemap_urls(f"{parts.scheme}://{parts.netloc}"):
+    for url in sitemap_urls(f"{parts.scheme}://{parts.netloc}") if len(order) < limit else []:
         add(url, "the sitemap")
     for url in order:  # grows while links are followed
         try:
@@ -324,13 +325,13 @@ def site_pages(start: str, user_agent: str = USER_AGENT):
             add(urljoin(final, element["attrs"].get("href", "").strip()), url)
         yield url, linked_from[url], (final, robots, html)
     if limit_reached:
-        print(f"Stopped at the limit of {MAX_PAGES} pages; more pages were found.")
+        print(f"Stopped at the limit of {limit} page{'s' * (limit != 1)}; more pages were found.")
 
 
-def check_site(start: str) -> bool:
-    """Checks every page found under the start address; prints one block per page and a total. True if any failed."""
+def check_site(start: str, limit: int = MAX_PAGES) -> bool:
+    """Checks every page found under the start address, up to the limit; prints one block per page and a total. True if any failed."""
     passed_pages = failed_pages = 0
-    for url, source, page in site_pages(start):
+    for url, source, page in site_pages(start, limit=limit):
         if isinstance(page, str):
             print(f"FAIL {url} ({page}; linked from {source})\n")
             failed_pages += 1
@@ -347,17 +348,30 @@ def check_site(start: str) -> bool:
         for check, found in failed:
             print(f"  FAIL {check['name']}: {found}", f'    Google: "{check["quote"]}"', f"    source: {check['source']}", sep="\n")
         print("".join(f"  NOTICE {check['name']}: {found}\n" for check, passed, found in results if passed and "Notice:" in found))
-    print(f"{urldefrag(start)[0]}: {passed_pages + failed_pages} pages checked, {passed_pages} passed, {failed_pages} failed.\n")
+    checked = passed_pages + failed_pages
+    print(f"{urldefrag(start)[0]}: {checked} page{'s' * (checked != 1)} checked, {passed_pages} passed, {failed_pages} failed.\n")
     return failed_pages > 0
 
 
+def page_limit(args: list[str]) -> tuple[list[str], int]:
+    """The arguments without `--pages N`, and N (MAX_PAGES when it isn't given)."""
+    if "--pages" not in args:
+        return args, MAX_PAGES
+    at = args.index("--pages")
+    value = args[at + 1] if at + 1 < len(args) else ""
+    if not value.isdigit() or int(value) < 1:
+        sys.exit("--pages needs a whole number, 1 or more.")
+    return args[:at] + args[at + 2:], int(value)
+
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    names, limit = page_limit(sys.argv[1:])
+    if not names:
         sys.exit(__doc__.strip().splitlines()[-1])
     any_failed = False
-    for name in sys.argv[1:]:
+    for name in names:
         if name.startswith(("http://", "https://")):
-            any_failed |= check_site(name)
+            any_failed |= check_site(name, limit)
             continue
         results = run_checks(Path(name).read_text(encoding="utf-8", errors="replace"))
         any_failed |= not all(passed for _, passed, _ in results)

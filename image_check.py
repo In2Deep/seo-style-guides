@@ -5,10 +5,10 @@ Like page_check.py, every check names the saved guide page it comes from and quo
 confirms each quote is in its page). Unlike it, this opens the image files: it reads their type and pixel size
 from the first bytes (PNG, JPEG, GIF, BMP, WebP, AVIF, HEIC, TIFF, ICO, PPM, SVG), at most MAX_IMAGE_BYTES of
 each. For a local HTML file, image paths are read from disk; for a web address, every page of that site is
-checked and the images are fetched. It reads only what the HTML says: no CSS, no JavaScript, no layout, so a
+checked (or as many as --pages allows) and the images are fetched. It reads only what the HTML says: no CSS, no JavaScript, no layout, so a
 size set in CSS is not seen. Needs Python 3.10 or newer.
 
-Run: python3 image_check.py path/to/page.html|https://site/ [more ...]   (exit status 1 if any check fails)
+Run: python3 image_check.py path/to/page.html|https://site/ [more ...] [--pages N]   (exit status 1 if any check fails)
 """
 import json
 import math
@@ -910,12 +910,12 @@ def file_totals(files: dict) -> str:
     return f"{len(files) - unopened} image files opened, {unopened} could not be opened"
 
 
-def check_site(start: str, files: dict | None = None) -> bool:
-    """Checks the images of every page found under the start address; one block per page and a total. True if any failed."""
+def check_site(start: str, files: dict | None = None, limit: int = page_check.MAX_PAGES) -> bool:
+    """Checks the images of every page found under the start address, up to the limit; one block per page and a total. True if any failed."""
     files = {} if files is None else files
     so_far = " so far in this run" if files else ""  # the cache is shared with the inputs before this one
     passed_pages = failed_pages = 0
-    for url, source, page in page_check.site_pages(start):
+    for url, source, page in page_check.site_pages(start, limit=limit):
         if isinstance(page, str):
             print(f"FAIL {url} ({page}; linked from {source})\n")
             failed_pages += 1
@@ -928,22 +928,24 @@ def check_site(start: str, files: dict | None = None) -> bool:
         for check, found in failed:
             print(f"  FAIL {check['name']}: {found}", f'    Google: "{check["quote"]}"', f"    source: {check['source']}", sep="\n")
         print("".join(f"  NOTICE {check['name']}: {found}\n" for check, passed, found in results if passed and "Notice:" in found))
-    print(f"{start}: {passed_pages + failed_pages} pages checked, {passed_pages} passed, {failed_pages} failed; {file_totals(files)}{so_far}.\n")
+    checked = passed_pages + failed_pages
+    print(f"{start}: {checked} page{'s' * (checked != 1)} checked, {passed_pages} passed, {failed_pages} failed; {file_totals(files)}{so_far}.\n")
     return failed_pages > 0
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    names, limit = page_check.page_limit(sys.argv[1:])
+    if not names:
         sys.exit(__doc__.strip().splitlines()[-1])
     any_failed, shared_files = False, {}
-    for name in sys.argv[1:]:
+    for name in names:
         if name.startswith(("http://", "https://")):
-            any_failed |= check_site(name, shared_files)
+            any_failed |= check_site(name, shared_files, limit)
             continue
         path = Path(name).resolve()
         results = run_checks(path.read_text(encoding="utf-8", errors="replace"), path, shared_files)
         any_failed |= not all(passed for _, passed, _ in results)
         print(f"== {name}\n{report(results)}\n")
-    if len(sys.argv) > 2 or not sys.argv[1].startswith(("http://", "https://")):  # a site prints its own total
+    if len(names) > 1 or not names[0].startswith(("http://", "https://")):  # a site prints its own total
         print(f"In all: {file_totals(shared_files)}.")
     sys.exit(1 if any_failed else 0)
