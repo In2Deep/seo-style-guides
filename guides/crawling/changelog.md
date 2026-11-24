@@ -11,6 +11,24 @@ or add the feed URL directly:
 
 ## November 2026
 
+November 23
+:
+
+    ### Documented additional existing crawlers and user-triggered fetchers
+
+
+    **What**: Updated the crawler and fetcher documentation:
+
+    - Added the following user agents to the [special-case crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-special-case-crawlers.md.txt) documentation: `Google-analytics-postbacks`, `Google-Calendar-Importer`, `GoogleDocs`, `Google-Edu`, `pageburst`, and `PlayStore-Google`.
+    - Added the following user agents to the [user-triggered fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers.md.txt) documentation: `AppEngine-Google`, `Google-Apps-Script`, `Google-Cloud-Tasks`, `GoogleImageProxy`, `Google Web Preview`, and `Chrome-Lighthouse`.
+    - Moved [`APIs-Google`](https://developers.google.com/crawling/docs/crawlers-fetchers/apis-user-agent.md.txt) from special-case crawlers to the [user-triggered fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers.md.txt) documentation, and corrected a typo in its documented user agent string (added the missing semicolon after `APIs-Google`). If you hardcoded the old value in your code, update the string to avoid potential bugs.
+
+
+    **Why** : These crawlers and fetchers are not new; we're documenting existing high-volume
+    clients that are more likely to show up in server logs and that we've received questions
+    about. Moving `APIs-Google` reflects that its webhook push requests come from
+    the user-triggered fetcher IP ranges and ignore `robots.txt` rules.
+
 November 17
 :
 

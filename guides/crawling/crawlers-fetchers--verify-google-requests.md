@@ -1,10 +1,8 @@
-# Verify Requests from Google Crawlers and Fetchers | Google Crawling Infrastructure
-
 # Verify requests from Google crawlers and fetchers
 
 
 You can verify if a request to your server really is
-[from Google](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers). Verification
+[from Google](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers.md.txt). Verification
 is possible for crawlers such as Googlebot, as well as other requests. This is useful if you're
 concerned that spammers or other troublemakers are accessing your site while claiming to be from
 Google.
@@ -13,14 +11,14 @@ Google's crawlers and fetchers fall into three categories:
 
 | Type | Description | Reverse DNS mask | IP ranges |
 |---|---|---|---|
-| [Common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers) | The common crawlers used for Google's products (such as Googlebot). They always respect robots.txt rules for automatic crawls. | `crawl-***-***-***-***.googlebot.com` or `geo-crawl-***-***-***-***.geo.googlebot.com` | [common-crawlers.json](https://developers.google.com/static/crawling/ipranges/common-crawlers.json) |
-| [Special-case crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-special-case-crawlers) | Crawlers or fetchers that perform specific functions for Google products (such as AdsBot) where there's an agreement between the crawled site and the product about the access or for abuse-specific crawling or fetching. These crawlers or fetchers may or may not respect robots.txt rules. | `rate-limited-proxy-***-***-***-***.google.com` | [special-crawlers.json](https://developers.google.com/static/crawling/ipranges/special-crawlers.json) |
-| [User-triggered fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers) | Tools and product functions where the end user triggers a fetch. For example, [Google Site Verifier](https://support.google.com/webmasters/answer/9008080) acts on the request of a user. Because the fetch was requested by a user, these fetchers ignore robots.txt rules. Fetchers controlled by Google originate from IPs in the `user-triggered-fetchers-google.json` object and resolve to a `google.com` hostname. IPs in the `user-triggered-fetchers.json` object resolve to `gae.googleusercontent.com` hostnames. These IPs are used, for example, if a site running on Google Cloud (GCP) has a feature that requires fetching external RSS feeds on the request of the user of that site. | `***-***-***-***.gae.googleusercontent.com` or `google-proxy-***-***-***-***.google.com` | [user-triggered-fetchers.json](https://developers.google.com/static/crawling/ipranges/user-triggered-fetchers.json), [user-triggered-fetchers-google.json](https://developers.google.com/static/crawling/ipranges/user-triggered-fetchers-google.json), and [user-triggered-agents.json](https://developers.google.com/static/crawling/ipranges/user-triggered-agents.json) |
+| [Common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers.md.txt) | The common crawlers used for Google's products (such as Googlebot). They always respect robots.txt rules for automatic crawls. | `crawl-***-***-***-***.googlebot.com` or `geo-crawl-***-***-***-***.geo.googlebot.com` | [common-crawlers.json](https://developers.google.com/static/crawling/ipranges/common-crawlers.json) |
+| [Special-case crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-special-case-crawlers.md.txt) | Crawlers or fetchers that perform specific functions for Google products (such as AdsBot) where there's an agreement between the crawled site and the product about the access or for abuse-specific crawling or fetching. These crawlers or fetchers may or may not respect robots.txt rules. | `rate-limited-proxy-***-***-***-***.google.com` | [special-crawlers.json](https://developers.google.com/static/crawling/ipranges/special-crawlers.json) |
+| [User-triggered fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers.md.txt) | Tools and product functions where the end user triggers a fetch. For example, [Google Site Verifier](https://support.google.com/webmasters/answer/9008080) acts on the request of a user. Because the fetch was requested by a user, these fetchers ignore robots.txt rules. Fetchers controlled by Google originate from IPs in the `user-triggered-fetchers-google.json` object and resolve to a `google.com` hostname. IPs in the `user-triggered-fetchers.json` object resolve to `gae.googleusercontent.com` hostnames. These IPs are used, for example, if a site running on Google Cloud (GCP) has a feature that requires fetching external RSS feeds on the request of the user of that site. | `***-***-***-***.gae.googleusercontent.com` or `google-proxy-***-***-***-***.google.com` | [user-triggered-fetchers.json](https://developers.google.com/static/crawling/ipranges/user-triggered-fetchers.json), [user-triggered-fetchers-google.json](https://developers.google.com/static/crawling/ipranges/user-triggered-fetchers-google.json), and [user-triggered-agents.json](https://developers.google.com/static/crawling/ipranges/user-triggered-agents.json) |
 
 There are two methods for verifying requests from Google:
 
-- [Manually](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests#manual): For one-off lookups, use command line tools. This method is sufficient for most use cases.
-- [Automatically](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests#automatic): For large scale lookups, use an automatic solution to match a crawler's IP address against the list of published Google IP addresses.
+- [Manually](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests.md.txt#manual): For one-off lookups, use command line tools. This method is sufficient for most use cases.
+- [Automatically](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests.md.txt#automatic): For large scale lookups, use an automatic solution to match a crawler's IP address against the list of published Google IP addresses.
 
 ## Use command line tools
 
@@ -67,7 +65,7 @@ to the lists of Google crawlers' and fetchers' IP ranges:
 
 
 For other Google IP addresses from where your site may be accessed (for example,
-[Apps Scripts](https://developers.google.com/apps-script)), match the accessing IP address
+[Dialogflow webhooks](https://cloud.google.com/dialogflow/cx/docs/concept/webhook)), match the accessing IP address
 against the general
 [list of Google IP addresses](https://www.gstatic.com/ipranges/goog.json).
 Note that the IP addresses in the JSON files are represented in

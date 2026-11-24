@@ -49,3 +49,15 @@
 ## 2026-11-21 crawling
 
 - new: crawlers-fetchers--web-bot-auth.md
+
+## 2026-11-24 seo
+
+- changed: essentials--spam-policies.md
+
+## 2026-11-24 crawling
+
+- changed: changelog.md, crawlers-fetchers--apis-user-agent.md, crawlers-fetchers--google-special-case-crawlers.md, crawlers-fetchers--google-user-triggered-fetchers.md, crawlers-fetchers--verify-google-requests.md
+
+## 2026-11-24 search-help
+
+- changed: updates.md

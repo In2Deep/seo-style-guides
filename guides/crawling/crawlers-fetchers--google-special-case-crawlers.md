@@ -4,7 +4,7 @@
 The special-case crawlers are used by specific Google products where there's an agreement between
 the crawled site and the product about the crawl process. For example, `AdsBot` ignores
 the global robots.txt user agent (`*`) with the ad publisher's permission. The general
-[technical properties](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers#crawl-technical-props)
+[technical properties](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers.md.txt#crawl-technical-props)
 of Google's crawlers also apply to the special-case crawlers.
 
 
@@ -23,17 +23,17 @@ exhaustive, it only covers the requestors that are more likely to show up in log
 we've received questions about.
 
 > [!CAUTION]
-> **Caution** : The user agent string can be spoofed. [Learn how to verify if a requestor is from Google](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests).
+> **Caution** : The user agent string can be spoofed. [Learn how to verify if a requestor is from Google](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests.md.txt).
 
-## [APIs-Google](https://developers.google.com/crawling/docs/crawlers-fetchers/apis-user-agent)
+## AdsBot
 
 :
     **User-Agent in HTTP requests**
 
     ```
-    APIs-Google (+https://developers.google.com/webmasters/APIs-Google.html)
+    AdsBot-Google (+http://www.google.com/adsbot.html)
     ```
-    **robots.txt** User-agent token in robots.txt `APIs-Google`
+    **robots.txt** User-agent token in robots.txt `AdsBot-Google`
 
     *** ** * ** ***
 
@@ -41,11 +41,11 @@ we've received questions about.
     Example robots.txt group
 
     ```
-    user-agent: APIs-Google
+    user-agent: AdsBot-Google
     allow: /archive/1Q84
     disallow: /archive/
     ```
-    **Affected products** Crawling preferences addressed to the `APIs-Google` user agent affect the delivery of push notification messages by Google APIs.
+    **Affected products** Crawling preferences addressed to the `AdsBot-Google` user agent affect Google Ads' ability to check [web page ad quality](https://support.google.com/google-ads/answer/2404197).
 
 ## AdsBot Mobile Web
 
@@ -69,27 +69,45 @@ we've received questions about.
     ```
     **Affected products** Crawling preferences addressed to the `AdsBot-Google-Mobile` user agent affect Google Ads' ability to check [web page ad quality](https://support.google.com/google-ads/answer/2404197).
 
-## AdsBot
+## Google-analytics-postbacks
 
 :
-    **User-Agent in HTTP requests**
 
-    ```
-    AdsBot-Google (+http://www.google.com/adsbot.html)
-    ```
-    **robots.txt** User-agent token in robots.txt `AdsBot-Google`
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` Google-analytics-postbacks ``` |
+    | **robots.txt** | The `Google-analytics-postbacks` user agent ignores robots.txt rules. |
+    | **Affected products** | The `Google-analytics-postbacks` user agent delivers [attribution postback requests](https://support.google.com/analytics/answer/12949019) from Google Analytics to configured ad network endpoints when conversion events occur. |
 
-    *** ** * ** ***
 
-    The global user agent (`*`) is ignored.
-    Example robots.txt group
+## Google-Calendar-Importer
 
-    ```
-    user-agent: AdsBot-Google
-    allow: /archive/1Q84
-    disallow: /archive/
-    ```
-    **Affected products** Crawling preferences addressed to the `AdsBot-Google` user agent affect Google Ads' ability to check [web page ad quality](https://support.google.com/google-ads/answer/2404197).
+:
+
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` Google-Calendar-Importer ``` |
+    | **robots.txt** | The `Google-Calendar-Importer` user agent ignores robots.txt rules. |
+    | **Affected products** | The `Google-Calendar-Importer` user agent periodically fetches and refreshes external calendar feeds (`.ics`) subscribed to by Google Calendar users. |
+
+
+## GoogleDocs
+
+:
+
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` Mozilla/5.0 (compatible; GoogleDocs; apps-spreadsheets; +http://docs.google.com) ``` |
+    | **robots.txt** | The `GoogleDocs` user agent ignores robots.txt rules. |
+    | **Affected products** | The `GoogleDocs` user agent powers Google Sheets functions that fetch data from user-specified web URLs, such as [`IMPORTHTML`](https://support.google.com/docs/answer/3093339). |
+
+
+## Google-Edu
+
+:
+
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` Google-Edu ``` |
+    | **robots.txt** | The `Google-Edu` user agent ignores robots.txt rules. |
+    | **Affected products** | The `Google-Edu` user agent verifies institutional domains submitted by administrators [applying for Google Workspace for Education](https://support.google.com/a/answer/134628). |
+
 
 ## Google-Safety
 
@@ -128,6 +146,31 @@ we've received questions about.
     ```
     **Affected products** The `Mediapartners-Google` crawler visits participating sites in order to provide them with relevant ads. Crawling preferences addressed to the `Mediapartners-Google` user agent affect various ad-related Google products (for example, [Google AdSense](https://support.google.com/adsense/answer/99376) and [Google Ad Manager](https://support.google.com/admanager/answer/6023726)).
 
+## Pageburst
+
+:
+    **User-Agent in HTTP requests** Desktop agent
+
+    ```
+    Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko; compatible; pageburst) Chrome/*W.X.Y.Z* Safari/537.36
+    ```
+    Mobile agent
+
+    ```
+    Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko; compatible; pageburst) CriOS/79.0.3945.117 Mobile/13B143 Safari/601.1.46
+    ```
+    **robots.txt** The `pageburst` user agent ignores robots.txt rules. **Affected products** The `pageburst` user agent renders web pages for Google Ads quality, landing-page safety, and page understanding. It's unaffected by crawling preferences.
+
+## PlayStore-Google
+
+:
+
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` PlayStore-Google ``` *** ** * ** *** ``` Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/*W.X.Y.Z* Safari/537.36 PlayStore-Google ``` |
+    | **robots.txt** | The `PlayStore-Google` user agent ignores robots.txt rules. |
+    | **Affected products** | The `PlayStore-Google` user agent fetches and validates various developer-submitted URLs in [Google Play Store app listings](https://support.google.com/googleplay/android-developer/answer/9859455). |
+
+
 ## Retired special-case crawlers
 
 
@@ -164,7 +207,7 @@ reference.
     Duplex on the web may ignore the `*` wildcard.
     **Affected products** Supported the Duplex on the web service.
 
-### [Google Favicon](https://developers.google.com/search/docs/appearance/favicon-in-search#crawler)
+### [Google Favicon](https://developers.google.com/search/docs/appearance/favicon-in-search.md.txt#crawler)
 
 :
     **User-Agent in HTTP requests**
@@ -191,7 +234,7 @@ reference.
     *** ** * ** ***
 
     The `AdsBot-Google-Mobile-Apps` user agent obeyed
-    [`AdsBot-Google`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-special-case-crawlers#adsbot)
+    [`AdsBot-Google`](https://developers.google.com/crawling/docs/crawlers-fetchers/google-special-case-crawlers.md.txt#adsbot)
     robots rules, but ignored the global user agent (`*`).
     **Affected products** Crawling preferences addressed to the `AdsBot-Google-Mobile-Apps` user agent affect Google Ads' ability to check Android app page [ad quality](https://support.google.com/google-ads/answer/2404197).
 

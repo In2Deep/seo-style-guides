@@ -36,8 +36,8 @@ with the intent to manipulate search rankings and mislead users. Examples of clo
 - Inserting text or keywords into a page only when the user agent that is requesting the page is a search engine, not a human visitor
 
 
-If your site uses technologies that search engines have difficulty accessing, like [JavaScript](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics)
-or [images](https://developers.google.com/search/docs/appearance/google-images#help-us-discover-all-your-images),
+If your site uses technologies that search engines have difficulty accessing, like [JavaScript](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics.md.txt)
+or [images](https://developers.google.com/search/docs/appearance/google-images.md.txt#help-us-discover-all-your-images),
 see our recommendations for making that content accessible to search engines and users without cloaking.
 
 
@@ -48,7 +48,7 @@ and avoiding being hacked.
 
 If you operate a paywall or a content-gating mechanism, we don't consider this to be cloaking
 if Google can see the full content of what's behind the paywall just like any person who has
-access to the gated material and if you follow our [Flexible Sampling general guidance](https://developers.google.com/search/docs/appearance/flexible-sampling).
+access to the gated material and if you follow our [Flexible Sampling general guidance](https://developers.google.com/search/docs/appearance/flexible-sampling.md.txt).
 
 ## Doorway abuse
 
@@ -82,7 +82,7 @@ install malicious content on their machines. Examples of hacking include:
 
 - **Code injection**: When hackers gain access to your website, they might try to inject malicious code into existing pages on your site. This often takes the form of malicious JavaScript injected directly into the site, or into iframes.
 - **Page injection** : Sometimes, due to security flaws, hackers are able to add new pages to your site that contain spammy or malicious content. These pages are often meant to manipulate search engines or to [attempt phishing](https://support.google.com/websearch/answer/106318). Your existing pages might not show signs of hacking, but these newly-created pages could harm your site's visitors or your site's performance in search results.
-- **Content injection** : Hackers might also try to subtly manipulate existing pages on your site. Their goal is to add content to your site that search engines can see but which may be harder for you and your users to spot. This can involve adding [hidden links or hidden text](https://developers.google.com/search/docs/essentials/spam-policies#hidden-text-and-links) to a page by using CSS or HTML, or it can involve more complex changes like [cloaking](https://developers.google.com/search/docs/essentials/spam-policies#cloaking).
+- **Content injection** : Hackers might also try to subtly manipulate existing pages on your site. Their goal is to add content to your site that search engines can see but which may be harder for you and your users to spot. This can involve adding [hidden links or hidden text](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#hidden-text-and-links) to a page by using CSS or HTML, or it can involve more complex changes like [cloaking](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#cloaking).
 - **Redirects**: Hackers might inject malicious code to your website that redirects some users to harmful or spammy pages. The kind of redirect sometimes depends on the referrer, user agent, or device. For example, clicking a URL in Google Search results could redirect you to a suspicious page, but there is no redirect when you visit the same URL directly from a browser.
 
 
@@ -134,7 +134,7 @@ manipulating search rankings. The following are examples of link spam:
   - Sending someone a product in exchange for them writing about it and including a link
 - Excessive link exchanges ("Link to me and I'll link to you") or partner pages exclusively for the sake of cross-linking
 - Using automated programs or services to create links to your site
-- Requiring a link as part of a Terms of Service, contract, or similar arrangement without allowing a third-party content owner the choice of [qualifying the outbound link](https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links)
+- Requiring a link as part of a Terms of Service, contract, or similar arrangement without allowing a third-party content owner the choice of [qualifying the outbound link](https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links.md.txt)
 - Text advertisements or text links that don't block ranking credit
 - Advertorials or native advertising where payment is received for articles that include links that pass ranking credit, or links with optimized anchor text in articles, guest posts, or press releases distributed on other sites. For example: There are many [wedding rings](https://www.example.com/) on the market. If you want to have a [wedding](https://www.example.com/), you will have to pick the [best ring](https://www.example.com/). You will also need to [buy flowers](https://www.example.com/) and a [wedding dress](https://www.example.com/).
 - Low-quality directory or bookmark site links
@@ -148,9 +148,9 @@ manipulating search rankings. The following are examples of link spam:
 
 Google does understand that buying and selling links is a normal part of the economy of the
 web for advertising and sponsorship purposes. It's not a violation of our policies to have
-such links as long as they are [qualified](https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links)
-with a [`rel="nofollow"`](https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links#nofollow)
-or [`rel="sponsored"`](https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links#sponsored)
+such links as long as they are [qualified](https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links.md.txt)
+with a [`rel="nofollow"`](https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links.md.txt#nofollow)
+or [`rel="sponsored"`](https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links.md.txt#sponsored)
 attribute value to the `<a>` tag.
 
 ## Machine-generated traffic
@@ -172,9 +172,40 @@ a negative and deceptive user experience, or compromised user security or privac
 
 The following are common examples of malicious practices:
 
-- [Malware](https://developers.google.com/search/docs/monitor-debug/security/malware#what_is_malware) is any software or mobile application specifically designed to harm a computer, a mobile device, the software it's running, or its users. Malware exhibits malicious behavior that can include installing software without user consent and installing harmful software such as viruses. Site owners sometimes don't realize that their downloadable files are considered malware, so these binaries might be hosted inadvertently.
-- [Unwanted software](https://developers.google.com/search/docs/monitor-debug/security/malware#what-is-unwanted-software) is an executable file or mobile application that engages in behavior that is deceptive, unexpected, or that negatively affects the user's browsing or computing experience. Examples include software that switches your home page or other browser settings to ones you don't want, or apps that leak private and personal information without proper disclosure. Site owners should make sure they don't violate the [Unwanted Software Policy](https://www.google.com/about/company/unwanted-software-policy.html) and [follow our guidelines](https://developers.google.com/search/docs/monitor-debug/security/malware#guidelines).
+- [Malware](https://developers.google.com/search/docs/monitor-debug/security/malware.md.txt#what_is_malware) is any software or mobile application specifically designed to harm a computer, a mobile device, the software it's running, or its users. Malware exhibits malicious behavior that can include installing software without user consent and installing harmful software such as viruses. Site owners sometimes don't realize that their downloadable files are considered malware, so these binaries might be hosted inadvertently.
+- [Unwanted software](https://developers.google.com/search/docs/monitor-debug/security/malware.md.txt#what-is-unwanted-software) is an executable file or mobile application that engages in behavior that is deceptive, unexpected, or that negatively affects the user's browsing or computing experience. Examples include software that switches your home page or other browser settings to ones you don't want, or apps that leak private and personal information without proper disclosure. Site owners should make sure they don't violate the [Unwanted Software Policy](https://www.google.com/about/company/unwanted-software-policy.html) and [follow our guidelines](https://developers.google.com/search/docs/monitor-debug/security/malware.md.txt#guidelines).
 - Back button hijacking is when a site interferes with user browser navigation by manipulating the browser history or other functionalities, preventing them from using their back button to immediately get back to the page they came from.
+
+### Back button hijacking FAQ
+
+#### Some back button hijacking was caused by third-party advertising platforms. Are you preventing
+sites from importing code hosted by advertising platforms?
+
+No, site owners can continue to work with advertising platforms and import code that they host.
+We only take action on pages that exhibit back button hijacking behavior.
+
+#### Can users report sites that engage in back button hijacking?
+
+Yes, users can report potential spammy behavior through the
+[spam submission report](https://search.google.com/search-console/report-spam).
+
+#### Does this policy apply to sites in Google Discover?
+
+Yes, [Discover](https://developers.google.com/search/docs/appearance/google-discover.md.txt) is a part of Google Search
+and our spam policies apply to Discover as well.
+
+#### Does the back button hijacking policy apply if a user arrives at a website from a non-Search
+channel (such as social media) and experiences back button hijacking when trying to return to the
+source?
+
+If back button hijacking happens when a user is browsing within a browser, then the policy
+applies.
+
+#### Does the back button hijacking policy apply when a website opens an external app, which then
+prevents the user from returning to the original destination?
+
+No, app navigation and "open in app" behaviors are outside the scope of the back button
+hijacking policy.
 
 ## Misleading functionality
 
@@ -203,7 +234,7 @@ Examples of scaled content abuse include, but aren't limited to:
 - Creating many pages where the content makes little or no sense to a reader but contains search keywords
 
 
-If you're hosting such content on your site, [exclude it from Search](https://developers.google.com/search/docs/crawling-indexing/control-what-you-share).
+If you're hosting such content on your site, [exclude it from Search](https://developers.google.com/search/docs/crawling-indexing/control-what-you-share.md.txt).
 
 ## Scraping
 
@@ -212,7 +243,7 @@ Scraping refers to the practice of taking content from other sites, often throug
 and hosting it with the purpose of manipulating search rankings. Examples of abusive scraping include:
 
 - Republishing content from other sites without adding any original content or value, or even citing the original source
-- Copying content from other sites, modify it only slightly (for example, by substituting synonyms or using [automated techniques](https://developers.google.com/search/docs/essentials/spam-policies#scaled-content)), and republish it
+- Copying content from other sites, modify it only slightly (for example, by substituting synonyms or using [automated techniques](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#scaled-content)), and republish it
 - Reproducing content feeds from other sites without providing some type of unique benefit to the user
 - Creating sites dedicated to embedding or compiling content, such as videos, images, or other media from other sites, without substantial added value to the user
 
@@ -222,7 +253,7 @@ and hosting it with the purpose of manipulating search rankings. Examples of abu
 The site reputation policy applies where third-party content is published on a host site mainly
 because of that host's already-established ranking signals, which it has earned primarily from its
 first-party content. The goal of this tactic is for the content to rank better than it could
-otherwise on its own. We have [made changes](https://developers.google.com/search/blog/2026/08/update-site-reputation-policy)
+otherwise on its own. We have [made changes](https://developers.google.com/search/blog/2026/08/update-site-reputation-policy.md.txt)
 applicable to the policy in the
 [European Economic Area](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:European_Economic_Area_(EEA)) (EEA).
 
@@ -248,7 +279,7 @@ Examples that are **NOT** considered inconsistent with the site reputation polic
 - Sites designed to allow user-generated content, such as a forum website or comment sections
 - Columns, opinion pieces, articles, and other work of an editorial nature
 - Third-party content (for example, "advertorial" or "native advertising" type pages) where the purpose is to share content directly to readers (such as through promotion within the publication itself), rather than hosting the content to manipulate search rankings
-- Using affiliate links throughout a page, with [links treated appropriately](https://developers.google.com/search/docs/essentials/spam-policies#link-spam), or embedding third-party ad units throughout a page
+- Using affiliate links throughout a page, with [links treated appropriately](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#link-spam), or embedding third-party ad units throughout a page
 
 
 These examples are non-exhaustive. There will be other instances where we don't take action.
@@ -426,7 +457,7 @@ redirect one URL to another. Examples of legitimate redirects include:
 
 When examining if a redirect is sneaky, consider whether or not the redirect is intended to
 deceive either the users or search engines. Learn more about how to appropriately
-[employ redirects on your site](https://developers.google.com/search/docs/crawling-indexing/301-redirects#jslocation).
+[employ redirects on your site](https://developers.google.com/search/docs/crawling-indexing/301-redirects.md.txt#jslocation).
 
 ## Thin affiliation
 
@@ -462,7 +493,7 @@ user-generated content include:
 - Spammy files uploaded to file hosting platforms
 
 
-Here are several tips on how to [prevent abuse of your site's public areas](https://developers.google.com/search/docs/monitor-debug/prevent-abuse).
+Here are several tips on how to [prevent abuse of your site's public areas](https://developers.google.com/search/docs/monitor-debug/prevent-abuse.md.txt).
 Here are our tips on [fixing hacked sites](https://web.dev/articles/hacked)
 and avoiding being hacked.
 

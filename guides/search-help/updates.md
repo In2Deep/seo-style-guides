@@ -11,6 +11,19 @@ or add the feed URL directly:
 
 ## November 2026
 
+November 23
+:
+
+    ### Added an FAQ to the back button hijacking spam policy
+
+
+    **What** : Added a
+    [back button hijacking FAQ section](https://developers.google.com/search/docs/essentials/spam-policies.md.txt#back-button-hijacking-faq)
+    to the malicious practices section of our spam policies.
+
+
+    **Why**: To answer common questions we've received about the back button hijacking policy.
+
 November 18
 :
 

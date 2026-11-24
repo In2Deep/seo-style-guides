@@ -7,7 +7,7 @@ product. For example,
 acts on a user's request, or a site hosted on Google Cloud (GCP) has a feature that allows the
 site's users to retrieve an external RSS feed. Because the fetch was requested by a user, these
 fetchers generally ignore robots.txt rules. The general
-[technical properties](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers#crawl-technical-props)
+[technical properties](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers.md.txt#crawl-technical-props)
 of Google's crawlers also apply to the user-triggered fetchers.
 
 
@@ -27,7 +27,16 @@ covers the requestors that are more likely to show up in log files and that we'v
 questions about.
 
 > [!CAUTION]
-> **Caution** : The user agent string can be spoofed. [Learn how to verify if a request is from Google](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests).
+> **Caution** : The user agent string can be spoofed. [Learn how to verify if a request is from Google](https://developers.google.com/crawling/docs/crawlers-fetchers/verify-google-requests.md.txt).
+
+## [APIs-Google](https://developers.google.com/crawling/docs/crawlers-fetchers/apis-user-agent.md.txt)
+
+:
+
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` APIs-Google; (+https://developers.google.com/webmasters/APIs-Google.html) ``` |
+    | **Associated products** | `APIs-Google` delivers webhook push notifications configured by developers in Google Cloud and Google Workspace APIs, such as [Pub/Sub push subscriptions](https://cloud.google.com/pubsub/docs/push) and [Google Drive resource change notifications](https://developers.google.com/workspace/drive/api/guides/push.md.txt). |
+
 
 ## Chrome Web Store
 
@@ -38,7 +47,7 @@ questions about.
     | **Associated products** | The Chrome Web Store fetcher requests URLs that developers provide in the metadata of their Chrome extensions and themes. |
 
 
-## [Feedfetcher](https://developers.google.com/crawling/docs/crawlers-fetchers/feedfetcher)
+## [Feedfetcher](https://developers.google.com/crawling/docs/crawlers-fetchers/feedfetcher.md.txt)
 
 :
 
@@ -81,6 +90,42 @@ questions about.
     > **Note** : Google is also experimenting with the [Web Bot Auth protocol](https://datatracker.ietf.org/doc/draft-meunier-web-bot-auth-architecture/), using the `https://agent.bot.goog` identity. Learn more about how to [authenticate requests with Web Bot Auth](https://developers.google.com/crawling/docs/crawlers-fetchers/web-bot-auth).
 
 
+## Google App Engine
+
+:
+
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` AppEngine-Google; (+http://code.google.com/appengine; appid: APPID) ``` Appended to any custom `User-Agent` set by the app. |
+    | **Associated products** | Requests initiated by applications hosted on Google App Engine Standard Environment using the [URL Fetch service](https://cloud.google.com/appengine/docs/standard/services/urlfetch/outbound-requests), where `APPID` identifies the App Engine project. To report abusive requests from an App Engine app, use the [Report suspected abuse on Google Cloud](https://support.google.com/code/contact/cloud_platform_report) form and include the `appid` value (`https://APPID.appspot.com`, omitting any `s~` prefix), source IP address, and timestamp. |
+
+
+## Google Apps Script
+
+:
+
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` Mozilla/5.0 (compatible; Google-Apps-Script; beanserver; +https://script.google.com; id: SCRIPT_ID) ``` |
+    | **Associated products** | Google Apps Script fetches external URLs and APIs on behalf of user-created scripts calling the [`UrlFetchApp`](https://developers.google.com/apps-script/reference/url-fetch.md.txt) service across Google Workspace. To report abusive requests, use the [Report suspected abuse on Google Cloud](https://support.google.com/code/contact/cloud_platform_report) form and include the full `User-Agent` string (with `id: SCRIPT_ID`), source IP address, and timestamp. |
+
+
+## Google Cloud Tasks
+
+:
+
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` Google-Cloud-Tasks ``` |
+    | **Associated products** | Google Cloud Tasks dispatches asynchronous HTTP requests and scheduled webhooks to target endpoints configured by developers in [Cloud Tasks HTTP target queues](https://cloud.google.com/tasks/docs/creating-http-target-tasks). |
+
+
+## Google Image Proxy
+
+:
+
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy) ``` |
+    | **Associated products** | Google Image Proxy fetches external images embedded in emails and documents when a user opens them (for example, [images in emails on Gmail](https://support.google.com/a/answer/3299041) to protect users from image-based security and privacy risks). |
+
+
 ## Google Messages
 
 :
@@ -108,7 +153,7 @@ questions about.
     | **Associated products** | Google Publisher Center fetches and processes [feeds that publishers explicitly supplied](https://support.google.com/news/publisher-center/answer/9545414) for use in Google News landing pages. |
 
 
-## [Google Read Aloud](https://developers.google.com/crawling/docs/crawlers-fetchers/read-aloud-user-agent)
+## [Google Read Aloud](https://developers.google.com/crawling/docs/crawlers-fetchers/read-aloud-user-agent.md.txt)
 
 :
     **User-Agent in HTTP requests** Mobile agent
@@ -121,7 +166,7 @@ questions about.
     ```
     Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 (compatible; Google-Read-Aloud; +https://support.google.com/webmasters/answer/1061943)
     ```
-    Former agent (deprecated) `google-speakr` **Associated products** Upon user request, Google Read Aloud [fetches and reads out web pages using text-to-speech (TTS)](https://developers.google.com/crawling/docs/crawlers-fetchers/read-aloud-user-agent).
+    Former agent (deprecated) `google-speakr` **Associated products** Upon user request, Google Read Aloud [fetches and reads out web pages using text-to-speech (TTS)](https://developers.google.com/crawling/docs/crawlers-fetchers/read-aloud-user-agent.md.txt).
 
 ## [Google Site Verifier](https://support.google.com/webmasters/answer/9008080)
 
@@ -130,3 +175,28 @@ questions about.
     |---|---|
     | **User-Agent in HTTP requests** | ``` Mozilla/5.0 (compatible; Google-Site-Verification/1.0) ``` |
     | **Associated products** | Google Site Verifier fetches Search Console verification tokens. |
+
+
+## Google Web Preview
+
+:
+
+    |---|---|
+    | **User-Agent in HTTP requests** | ``` Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko; Google Web Preview) Chrome/*W.X.Y.Z* Safari/537.36 ``` |
+    | **Associated products** | Google Web Preview fetches web pages on demand to generate link preview thumbnails when users attach or share URLs in Google products such as [Google Classroom](https://support.google.com/edu/classroom/answer/6020279). |
+
+
+## PageSpeed Insights
+
+:
+    **User-Agent in HTTP requests** Mobile agent
+
+    ```
+    Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/*W.X.Y.Z* Mobile Safari/537.36 Chrome-Lighthouse
+    ```
+    Desktop agent
+
+    ```
+    Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/*W.X.Y.Z* Safari/537.36 Chrome-Lighthouse
+    ```
+    **Associated products** The PageSpeed Insights user agent fetches web pages and their subresources when a user runs a performance and quality audit in [PageSpeed Insights](https://developers.google.com/speed/docs/insights/v5/about.md.txt) ([pagespeed.web.dev](https://pagespeed.web.dev/)).
