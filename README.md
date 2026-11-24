@@ -36,6 +36,7 @@ Everything runs on Python 3.10 or later with the standard library only. There is
 | `skills/images/` | The `/lx-seo:images` action: find image problems on a whole site. |
 | `skills/google-agent/` | The `/lx-seo:google-agent` action: check whether Google-Agent gets into a site, then ask what the checker can't see. |
 | `skills/schema/` | The `/lx-seo:schema` action: find markup a site could add, and draft it. `accessibility-vocabulary.md` holds the allowed values for its optional accessibility metadata. |
+| `skills/all/` | The `/lx-seo:all` action: run the four actions above on one site and write one report. |
 | `.claude-plugin/` | The plugin and marketplace manifests. The plugin is named `lx-seo`, so its actions are typed `/lx-seo:<action>`. |
 
 ## Check and update the copies
@@ -240,6 +241,7 @@ You don't call the tools yourself. Ask in plain words and the session picks the 
 | Whether Google-Agent gets into a site | `/lx-seo:google-agent https://example.com` | the `google-agent` skill and `agent_check.py` |
 | Markup a whole site could add | `/lx-seo:schema https://example.com` | the `schema` skill and `page_check.py` |
 | The same, plus accessibility metadata | `/lx-seo:schema https://example.com accessibility` | the `schema` skill and the W3C accessibility vocabulary |
+| Every check on a whole site, in one report | `/lx-seo:all https://example.com` | the `all` skill, which runs the four skills above |
 | To know if Google changed anything | "Are the saved guides current?" | `check_google_docs` |
 | What changed, and when | "What changed in the guides since 2026-11-01?" | `google_docs_changes` |
 | The newest guides | "Update the SEO guide." | `update_google_docs` |
@@ -256,6 +258,13 @@ how people with disabilities can use a page's content, using the values in the W
 Google Search doesn't use these properties, so the report lists them in a separate section and
 never ranks them with the Google suggestions. Values the HTML can't prove, such as hazards and
 contrast, are listed for the site owner to confirm.
+
+`/lx-seo:all` runs `/lx-seo:json-ld`, `/lx-seo:schema`, `/lx-seo:images` and
+`/lx-seo:google-agent` on one site. It asks its questions once at the start, runs the page, image
+and Google-Agent checkers one after another (never at once, so a site's rate limit doesn't see
+three crawlers together), and writes one report with every failure first, worst kind first. It
+reads every page several ways, so on a big site it takes a while and uses many tokens. For one
+kind of problem, that problem's action is quicker.
 
 The server has ten tools:
 
